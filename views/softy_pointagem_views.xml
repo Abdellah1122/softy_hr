@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- LIST VIEW with Quick Entry -->
+    <record id="view_softy_pointagem_list" model="ir.ui.view">
+        <field name="name">softy.pointagem.list</field>
+        <field name="model">softy.pointagem</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Pointages Mensuels" sample="1" multi_edit="1" editable="bottom">
+                <field name="employe_id" string="Employé"/>
+                <field name="periode" string="Période" widget="selection"/>
+                <field name="mois" string="Mois" readonly="1"/>
+                <field name="annee" string="Année" readonly="1"/>
+                <field name="nbr_j" string="Jours"/>
+                <field name="nbr_h" string="Heures"/>
+                <field name="h_25" string="H sup 25%"/>
+                <field name="h_50" string="H sup 50%"/>
+                <field name="h_100" string="H sup 100%"/>
+                <field name="nbr_j_conge" string="Jours congé"/>
+                <field name="ind_point_ids" widget="many2many_tags" string="Indemnités"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW with period locking logic -->
+    <record id="view_softy_pointagem_form" model="ir.ui.view">
+        <field name="name">softy.pointagem.form</field>
+        <field name="model">softy.pointagem</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Pointage Mensuel">
+                <sheet>
+                    <!-- Warning banner for locked previous period -->
+                    <div class="alert alert-warning" role="alert" 
+                         invisible="not context.get('previous_period_locked', False)">
+                        <strong>Attention !</strong> La période précédente est verrouillée car vous avez déjà commencé la période actuelle.
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1><field name="lib"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employe_id"/>
+                            <field name="periode" string="Période" widget="radio" options="{'horizontal': true}"/>
+                            <field name="mois" string="Mois" readonly="1"/>
+                            <field name="annee" string="Année" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="nbr_j" string="Jours Travaillés"/>
+                            <field name="nbr_h" string="Heures Travaillées"/>
+                            <field name="nbr_j_conge" string="Jours congé"/>
+                        </group>
+                    </group>
+                    <group string="Heures Supplémentaires">
+                        <group>
+                            <field name="h_25"/>
+                            <field name="h_50"/>
+                            <field name="h_100"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Affiliations &amp; Indemnités" name="affiliations_indemnites">
+                            <group>
+                                <group string="Affiliations (depuis l'employé)">
+                                    <field name="affiliation_ids" nolabel="1" readonly="1">
+                                        <list>
+                                            <field name="type_aff"/>
+                                            <field name="n_aff"/>
+                                            <field name="date_debut"/>
+                                            <field name="date_fin"/>
+                                            <field name="taux"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Indemnités">
+                                    <field name="ind_point_ids" nolabel="1" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- SEARCH VIEW with Grouping Options and Lock Filter -->
+    <record id="view_softy_pointagem_search" model="ir.ui.view">
+        <field name="name">softy.pointagem.search</field>
+        <field name="model">softy.pointagem</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Pointages">
+                <field name="employe_id" string="Employé"/>
+                <field name="periode" string="Période"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                
+                <filter string="Mois Actuel" name="current_month" 
+                        domain="[('periode', '=', 'current')]"/>
+                <filter string="Mois Précédent" name="previous_month" 
+                        domain="[('periode', '=', 'previous')]"/>
+                
+                <separator/>
+                
+                <group expand="1" string="Grouper Par">
+                    <filter string="Période" name="group_periode" 
+                            context="{'group_by': 'periode'}"/>
+                    <filter string="Employé" name="group_employe" 
+                            context="{'group_by': 'employe_id'}"/>
+                    <filter string="Mois" name="group_mois" 
+                            context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" 
+                            context="{'group_by': 'annee'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTION with Default Grouping -->
+    <record id="action_softy_pointagem" model="ir.actions.act_window">
+        <field name="name">Pointages Mensuels</field>
+        <field name="res_model">softy.pointagem</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_group_periode': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier pointage mensuel
+            </p>
+            <p>
+                Choisissez la période (mois actuel ou précédent) et saisissez jours, heures et heures supplémentaires.
+            </p>
+            <p>
+                <strong>Saisie rapide :</strong> Utilisez la vue liste pour saisir rapidement plusieurs pointages.
+            </p>
+            <p>
+                <strong>Important :</strong> Une fois que vous commencez la période actuelle, la période précédente sera verrouillée.
+            </p>
+        </field>
+    </record>
+
+    <!-- Modified action for Previous months with warning -->
+    <record id="action_softy_pointagem_previous" model="ir.actions.act_window">
+        <field name="name">Pointages - Mois Précédent</field>
+        <field name="res_model">softy.pointagem</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('periode', '=', 'previous')]</field>
+        <field name="context">{
+            'default_periode': 'previous', 
+            'search_default_previous_month': 1,
+            'previous_period_locked': True
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun pointage pour le mois précédent
+            </p>
+            <p>
+                <strong>Attention :</strong> Cette période peut être verrouillée si vous avez déjà commencé la période actuelle.
+            </p>
+            <p>
+                Utilisez la saisie rapide en mode liste ou créez un nouveau pointage.
+            </p>
+        </field>
+    </record>
+
+    <!-- Current month action remains the same -->
+    <record id="action_softy_pointagem_current" model="ir.actions.act_window">
+        <field name="name">Pointages - Mois Actuel</field>
+        <field name="res_model">softy.pointagem</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('periode', '=', 'current')]</field>
+        <field name="context">{'default_periode': 'current', 'search_default_current_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun pointage pour le mois actuel
+            </p>
+            <p>
+                Utilisez la saisie rapide en mode liste ou créez un nouveau pointage.
+            </p>
+        </field>
+    </record>
+
+    <!-- MENUS -->
+    <menuitem id="menu_softy_pointage"
+              name="Pointage"
+              parent="menu_softy_hr_root"
+              sequence="60"/>
+
+    <menuitem id="menu_softy_pointagem"
+              name="Pointages Mensuels"
+              parent="menu_softy_pointage"
+              action="action_softy_pointagem"
+              sequence="10"/>
+
+</odoo>

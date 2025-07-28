@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View with Filters -->
+    <record id="view_mad_search" model="ir.ui.view">
+        <field name="name">mad.search</field>
+        <field name="model">softy.mad</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Mise à Disposition">
+                <!-- Quick Search Fields -->
+                <field name="ref" string="Référence" 
+                       filter_domain="[('ref', 'ilike', self)]"/>
+                <field name="employe_id" string="Employé" 
+                       filter_domain="[('employe_id.name', 'ilike', self)]"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                
+                <!-- PERMANENT SIDEBAR PANEL -->
+                <searchpanel>
+                    <!-- Societes Section -->
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <!-- Departements Section -->
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#28a745"
+                           select="multi"/>
+                    
+                    <!-- Services Section -->
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                </searchpanel>
+                
+                <!-- Period Filters -->
+                <filter string="Janvier" name="month_01" 
+                        domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="month_02" 
+                        domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="month_03" 
+                        domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="month_04" 
+                        domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="month_05" 
+                        domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="month_06" 
+                        domain="[('mois', '=', '6')]"/>
+                
+                <separator/>
+                
+                <filter string="Juillet" name="month_07" 
+                        domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="month_08" 
+                        domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="month_09" 
+                        domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="month_10" 
+                        domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="month_11" 
+                        domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="month_12" 
+                        domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <!-- Year Filters -->
+                <filter string="Année 2025" name="year_2025" 
+                        domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" 
+                        domain="[('annee', '=', 2024)]"/>
+                <filter string="Année 2023" name="year_2023" 
+                        domain="[('annee', '=', 2023)]"/>
+                
+                <separator/>
+                
+                <!-- Amount Filters -->
+                <filter string="Montant &gt; 10 000 DH" name="high_amount" 
+                        domain="[('montant', '&gt;', 10000)]"/>
+                <filter string="Montant 5 000-10 000 DH" name="medium_amount" 
+                        domain="[('montant', '&gt;=', 5000), ('montant', '&lt;=', 10000)]"/>
+                <filter string="Montant &lt; 5 000 DH" name="low_amount" 
+                        domain="[('montant', '&lt;', 5000)]"/>
+                
+                <separator/>
+                
+                <!-- Group By Options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" 
+                            context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" 
+                            context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" 
+                            context="{'group_by': 'service_id'}"/>
+                    <filter string="Mois" name="group_mois" 
+                            context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" 
+                            context="{'group_by': 'annee'}"/>
+                    <filter string="Agent" name="group_agent" 
+                            context="{'group_by': 'agent'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View Only -->
+    <record id="view_mad_list" model="ir.ui.view">
+        <field name="name">mad.list</field>
+        <field name="model">softy.mad</field>
+        <field name="arch" type="xml">
+            <list string="Mise à Disposition" create="false" edit="false">
+                <field name="ref"/>
+                <field name="date"/>
+                <field name="employe_id"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                <field name="agent"/>
+                <field name="banque"/>
+                <field name="montant" sum="Total"/>
+                <field name="mois"/>
+                <field name="annee"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Server Action for Generation -->
+    <record id="action_mad_generate_server" model="ir.actions.server">
+        <field name="name">Générer Mise à Disposition</field>
+        <field name="model_id" ref="model_softy_mad"/>
+        <field name="state">code</field>
+        <field name="code">
+action = env['softy.mad'].generate_mad_from_bulletins()
+        </field>
+    </record>
+
+    <!-- Actions - List View Only -->
+    <record id="action_mad" model="ir.actions.act_window">
+        <field name="name">Mise à Disposition</field>
+        <field name="res_model">softy.mad</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_mad_list"/>
+        <field name="search_view_id" ref="view_mad_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Utilisez le menu "Générer MAD" pour créer les mises à disposition depuis les bulletins
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_mise_disposition"
+              name="Mise à Disposition"
+              parent="menu_reglement_paie_softy"
+              sequence="20"/>
+
+    <menuitem id="menu_mad_list"
+              name="Liste des Mises à Disposition"
+              parent="menu_mise_disposition"
+              action="action_mad"
+              sequence="10"/>
+
+    <menuitem id="menu_mad_generate"
+              name="Générer MAD"
+              parent="menu_mise_disposition"
+              action="action_mad_generate_server"
+              sequence="20"/>
+</odoo>

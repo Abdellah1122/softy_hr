@@ -1,0 +1,125 @@
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_competence_search" model="ir.ui.view">
+    <field name="name">softy.competence.search</field>
+    <field name="model">softy.competence</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="type_competence"/>
+        <field name="employe_id"/>
+        <field name="degre_maitrise"/>
+        <filter string="Excellence" name="filter_excellent" domain="[('degre_maitrise', '=', 'excellete')]"/>
+        <filter string="Bonne" name="filter_bonne" domain="[('degre_maitrise', '=', 'bonne')]"/>
+        <filter string="Management" name="filter_management" domain="[('type_competence', '=', 'management')]"/>
+        <filter string="Communication" name="filter_communication" domain="[('type_competence', '=', 'communication')]"/>
+        <separator/>
+        <filter string="Cette année" name="filter_this_year" 
+                domain="[('date_validation', '>=', datetime.datetime.now().strftime('%Y-01-01')), 
+                         ('date_validation', '&lt;', (datetime.datetime.now() + relativedelta(years=1)).strftime('%Y-01-01'))]"/>
+        <group string="Grouper par">
+          <filter string="Type de Compétence" name="group_type" context="{'group_by': 'type_competence'}"/>
+          <filter string="Niveau de Maîtrise" name="group_niveau" context="{'group_by': 'degre_maitrise'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_competence_kanban" model="ir.ui.view">
+    <field name="name">softy.competence.kanban</field>
+    <field name="model">softy.competence</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="degre_maitrise">
+        <field name="type_competence"/>
+        <field name="degre_maitrise"/>
+        <field name="date_validation"/>
+        <field name="employe_id"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="type_competence"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.degre_maitrise.raw_value == 'excellete' ? 'badge-success' :
+                          record.degre_maitrise.raw_value == 'bonne' ? 'badge-primary' :
+                          record.degre_maitrise.raw_value == 'moyenne' ? 'badge-warning' :
+                          record.degre_maitrise.raw_value == 'insuffisante' ? 'badge-danger' :
+                          'badge-secondary'
+                        }">
+                    <field name="degre_maitrise"/>
+                  </span>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="mt-2">
+                  <small class="text-muted d-block">Validée le</small>
+                  <field name="date_validation"/>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_competence_list" model="ir.ui.view">
+    <field name="name">softy.competence.list</field>
+    <field name="model">softy.competence</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1"
+            decoration-success="degre_maitrise == 'excellete'"
+            decoration-primary="degre_maitrise == 'bonne'"
+            decoration-warning="degre_maitrise == 'moyenne'"
+            decoration-danger="degre_maitrise == 'insuffisante'">
+        <field name="employe_id"/>
+        <field name="type_competence" string="Type"/>
+        <field name="degre_maitrise" string="Niveau" widget="badge"/>
+        <field name="date_validation" string="Date de Validation"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_competence_form" model="ir.ui.view">
+    <field name="name">softy.competence.form</field>
+    <field name="model">softy.competence</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="type_competence" placeholder="Type de compétence..."/>
+            </h1>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Évaluation">
+              <field name="degre_maitrise"/>
+              <field name="date_validation"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_competence" model="ir.actions.act_window">
+    <field name="name">Compétences</field>
+    <field name="res_model">softy.competence</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_niveau': 1}</field>
+  </record>
+
+</odoo>

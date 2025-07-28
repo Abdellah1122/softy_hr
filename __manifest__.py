@@ -1,0 +1,59 @@
+# In your __manifest__.py file, ADD these two lines to your 'data' list:
+
+{
+    'name': 'Softy HR',
+    'version': '1.0',
+    'category': 'Human Resources',
+    'summary': 'Pays, Ville, Société, Département, Service, Banque',
+    'description': 'Custom HR module for managing Pays, Ville, Société, Département, Service, and Banque.',
+    'depends': ['base'],
+
+    'data': [
+        'security/ir.model.access.csv',
+        'views/softy_menu.xml',
+        'views/softy_pays_views.xml',
+        'views/softy_ville_views.xml',
+        'views/softy_societe_views.xml',
+        'views/softy_departement_views.xml',
+        'views/softy_service_views.xml',
+        'views/softy_banque_views.xml',
+        'views/softy_contrat_views.xml',
+        'views/softy_membre_famille_views.xml',
+        'views/softy_document_views.xml',
+        "views/softy_affiliation_views.xml",
+        "views/softy_info_banque_employe_views.xml",
+        'views/softy_formation_views.xml',
+        'views/softy_competence_views.xml',
+        'views/softy_experience_views.xml',
+        'views/softy_langue_views.xml',
+        'views/softy_diplome_views.xml',
+        'views/softy_employe_views.xml',
+        'views/softy_absence_views.xml',
+        'views/softy_retard_views.xml',
+        'views/softy_contentieux_views.xml',
+        'views/softy_pret_views.xml',
+        'views/softy_conge_views.xml',
+        'views/softy_indemnite_views.xml',
+        'views/softy_pointagem_views.xml',
+        'views/softy_pointagej_views.xml',
+        'views/softy_bulletin_views.xml',
+        'views/softy_aff_type_views.xml',
+        'views/softy_qualification_views.xml',
+        'views/simt_views.xml',
+        'views/dec_cimr_views.xml',
+        'views/dec_cnss_views.xml',
+        'views/dec_ir_views.xml',
+        'views/mad_views.xml',
+        'views/pay_es_views.xml',
+
+
+        # ADD THESE TWO LINES:
+        'reports/bulletin_report.xml',
+        'reports/bulletin_template.xml',
+        'reports/mise_disposition_report.xml',
+        'reports/payment_espece_reports.xml'
+        
+    ],
+    'installable': True,
+    'application': True,
+}

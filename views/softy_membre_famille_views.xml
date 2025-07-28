@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_membrefamille_search" model="ir.ui.view">
+    <field name="name">softy.membrefamille.search</field>
+    <field name="model">softy.membrefamille</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="employe_id"/>
+        <field name="cin"/>
+        <field name="lien_parente"/>
+        <field name="email"/>
+        <field name="phone"/>
+        <filter string="Conjoint" name="filter_conjoint" domain="[('lien_parente', '=', 'conjoint')]"/>
+        <filter string="Enfants" name="filter_enfants" domain="[('lien_parente', '=', 'enfant')]"/>
+        <filter string="À Charge" name="filter_charge" domain="[('a_charge', '=', True)]"/>
+        <filter string="Hommes" name="filter_male" domain="[('genre', '=', 'masculin')]"/>
+        <filter string="Femmes" name="filter_female" domain="[('genre', '=', 'feminin')]"/>
+        <group string="Grouper par">
+          <filter string="Lien de Parenté" name="group_parente" context="{'group_by': 'lien_parente'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+          <filter string="Genre" name="group_genre" context="{'group_by': 'genre'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_membrefamille_kanban" model="ir.ui.view">
+    <field name="name">softy.membrefamille.kanban</field>
+    <field name="model">softy.membrefamille</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="lien_parente">
+        <field name="name"/>
+        <field name="employe_id"/>
+        <field name="cin"/>
+        <field name="lien_parente"/>
+        <field name="genre"/>
+        <field name="a_charge"/>
+        <field name="date_of_birth"/>
+        <field name="profession"/>
+        <field name="phone"/>
+        <field name="email"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="name"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.lien_parente.raw_value == 'conjoint' ? 'badge-primary' :
+                          record.lien_parente.raw_value == 'enfant' ? 'badge-success' :
+                          record.lien_parente.raw_value == 'pere' ? 'badge-info' :
+                          record.lien_parente.raw_value == 'mere' ? 'badge-info' :
+                          'badge-secondary'
+                        }">
+                    <field name="lien_parente"/>
+                  </span>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="row g-2 mb-2">
+                  <div class="col-6">
+                    <small class="text-muted d-block">Naissance</small>
+                    <field name="date_of_birth"/>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block">Genre</small>
+                    <field name="genre"/>
+                  </div>
+                </div>
+                
+                <div class="mb-2" t-if="record.profession.value">
+                  <small class="text-muted d-block">Profession</small>
+                  <field name="profession"/>
+                </div>
+                
+                <div class="mb-2" t-if="record.phone.value">
+                  <small class="text-muted d-block">Téléphone</small>
+                  <field name="phone"/>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span t-if="record.a_charge.raw_value" class="badge badge-info">À charge</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_membrefamille_list" model="ir.ui.view">
+    <field name="name">softy.membrefamille.list</field>
+    <field name="model">softy.membrefamille</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1"
+            decoration-info="lien_parente == 'conjoint'"
+            decoration-success="lien_parente == 'enfant'"
+            decoration-warning="lien_parente in ['pere', 'mere']">
+        <field name="employe_id"/>
+        <field name="name"/>
+        <field name="lien_parente" widget="badge"/>
+        <field name="genre"/>
+        <field name="date_of_birth"/>
+        <field name="profession" optional="show"/>
+        <field name="phone" optional="show"/>
+        <field name="email" optional="show"/>
+        <field name="a_charge" widget="boolean_toggle"/>
+        <field name="cin" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_membrefamille_form" model="ir.ui.view">
+    <field name="name">softy.membrefamille.form</field>
+    <field name="model">softy.membrefamille</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="first_name" placeholder="Prénom..." class="oe_inline"/>
+              <field name="last_name" placeholder="Nom..." class="oe_inline"/>
+            </h1>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Informations Personnelles">
+              <field name="cin"/>
+              <field name="date_of_birth"/>
+              <field name="birth_city_id"/>
+              <field name="genre"/>
+            </group>
+            
+            <group string="Relation Familiale">
+              <field name="lien_parente"/>
+              <field name="situation_familiale"/>
+              <field name="profession"/>
+              <field name="a_charge"/>
+            </group>
+          </group>
+
+          <group string="Contact">
+            <group>
+              <field name="street"/>
+              <field name="phone"/>
+              <field name="email"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_membrefamille" model="ir.actions.act_window">
+    <field name="name">Membres de Famille</field>
+    <field name="res_model">softy.membrefamille</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_parente': 1}</field>
+  </record>
+
+</odoo>

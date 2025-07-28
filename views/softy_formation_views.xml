@@ -1,0 +1,156 @@
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_formation_search" model="ir.ui.view">
+    <field name="name">softy.formation.search</field>
+    <field name="model">softy.formation</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="int_for"/>
+        <field name="centre"/>
+        <field name="employe_id"/>
+        <field name="domain"/>
+        <filter string="Informatique" name="filter_informatique" domain="[('domain', '=', 'informatique')]"/>
+        <filter string="Bureautique" name="filter_bureautique" domain="[('domain', '=', 'bureautique')]"/>
+        <filter string="Langues" name="filter_langues" domain="[('domain', '=', 'langues')]"/>
+        <filter string="Finance" name="filter_finance" domain="[('domain', '=', 'finance')]"/>
+        <separator/>
+        <filter string="Cette année" name="filter_this_year" 
+                domain="[('date_fin', '>=', datetime.datetime.now().strftime('%Y-01-01')), 
+                         ('date_fin', '&lt;', (datetime.datetime.now() + relativedelta(years=1)).strftime('%Y-01-01'))]"/>
+        <group string="Grouper par">
+          <filter string="Domaine" name="group_domain" context="{'group_by': 'domain'}"/>
+          <filter string="Centre" name="group_centre" context="{'group_by': 'centre'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_formation_kanban" model="ir.ui.view">
+    <field name="name">softy.formation.kanban</field>
+    <field name="model">softy.formation</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="domain">
+        <field name="int_for"/>
+        <field name="int_dip"/>
+        <field name="centre"/>
+        <field name="employe_id"/>
+        <field name="date_debut"/>
+        <field name="date_fin"/>
+        <field name="domain"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="int_for"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.domain.raw_value == 'informatique' ? 'badge-primary' :
+                          record.domain.raw_value == 'finance' ? 'badge-success' :
+                          record.domain.raw_value == 'langues' ? 'badge-info' :
+                          record.domain.raw_value == 'bureautique' ? 'badge-warning' :
+                          'badge-secondary'
+                        }">
+                    <field name="domain"/>
+                  </span>
+                </div>
+                
+                <div class="mb-2">
+                  <h6 class="text-muted mb-1">Diplôme</h6>
+                  <field name="int_dip"/>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="mb-2">
+                  <small class="text-muted d-block">Centre de formation</small>
+                  <field name="centre"/>
+                </div>
+                
+                <div class="row g-2">
+                  <div class="col-6">
+                    <small class="text-muted d-block">Début</small>
+                    <field name="date_debut"/>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block">Fin</small>
+                    <field name="date_fin"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_formation_list" model="ir.ui.view">
+    <field name="name">softy.formation.list</field>
+    <field name="model">softy.formation</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1">
+        <field name="employe_id"/>
+        <field name="int_for" string="Formation"/>
+        <field name="int_dip" string="Diplôme"/>
+        <field name="domain" widget="badge" 
+               decoration-primary="domain == 'informatique'"
+               decoration-success="domain == 'finance'"
+               decoration-info="domain == 'langues'"
+               decoration-warning="domain == 'bureautique'"/>
+        <field name="centre" string="Centre"/>
+        <field name="date_debut" string="Début"/>
+        <field name="date_fin" string="Fin"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_formation_form" model="ir.ui.view">
+    <field name="name">softy.formation.form</field>
+    <field name="model">softy.formation</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="int_for" placeholder="Intitulé de la formation..."/>
+            </h1>
+            <h2 class="text-muted">
+              <field name="int_dip" placeholder="Diplôme obtenu..."/>
+            </h2>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Formation">
+              <field name="domain"/>
+              <field name="centre"/>
+            </group>
+            
+            <group string="Période">
+              <field name="date_debut"/>
+              <field name="date_fin"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_formation" model="ir.actions.act_window">
+    <field name="name">Formations</field>
+    <field name="res_model">softy.formation</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_domain': 1}</field>
+  </record>
+
+</odoo>

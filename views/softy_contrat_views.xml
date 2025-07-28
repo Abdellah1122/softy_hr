@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Enhanced Kanban View -->
+  <record id="view_softy_contrat_kanban" model="ir.ui.view">
+    <field name="name">softy.contrat.kanban</field>
+    <field name="model">softy.contrat</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1" default_group_by="type_contrat">
+        <field name="id"/>
+        <field name="ref"/>
+        <field name="employe_id"/>
+        <field name="date_debut"/>
+        <field name="date_fin"/>
+        <field name="salaire"/>
+        <field name="type_contrat"/>
+        <field name="duree_mois"/>
+        <field name="periodicite"/>
+        <field name="type_payment"/>
+        
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card o_kanban_global_click" style="border-radius: 12px; border: 1px solid #e3f2fd; box-shadow: 0 2px 8px rgba(0,123,255,0.08); background: white;">
+              
+              <!-- Clean Header -->
+              <div style="padding: 16px; border-bottom: 1px solid #f8f9fa;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-file-text-o" style="font-size: 24px; color: #1976d2;" title="Contrat"/>
+                    </div>
+                    <div>
+                      <div style="font-weight: 600; color: #1a1a1a; font-size: 16px; margin-bottom: 2px;">
+                        <field name="ref"/>
+                      </div>
+                      <div style="color: #6c757d; font-size: 13px;">
+                        <field name="employe_id"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button" href="#" role="button" style="color: #6c757d;">
+                      <i class="fa fa-ellipsis-v" title="Options"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Status Badge -->
+              <div style="padding: 12px 16px 0 16px;">
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                  <div t-if="record.type_contrat.raw_value == 'cdi'" style="display: inline-flex; align-items: center; gap: 4px; background: #e8f5e8; color: #388e3c; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-check-circle" style="font-size: 10px;" title="CDI"/>
+                    <field name="type_contrat"/>
+                  </div>
+                  <div t-elif="record.type_contrat.raw_value in ['cdd', 'cdd2', 'cdd3', 'cdd6', 'cdd11']" style="display: inline-flex; align-items: center; gap: 4px; background: #fff3e0; color: #f57c00; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-clock-o" style="font-size: 10px;" title="CDD"/>
+                    <field name="type_contrat"/>
+                  </div>
+                  <div t-elif="record.type_contrat.raw_value == 'anapec'" style="display: inline-flex; align-items: center; gap: 4px; background: #f3e5f5; color: #7b1fa2; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-graduation-cap" style="font-size: 10px;" title="ANAPEC"/>
+                    <field name="type_contrat"/>
+                  </div>
+                  <div t-else="" style="display: inline-flex; align-items: center; gap: 4px; background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <field name="type_contrat"/>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Clean Content -->
+              <div style="padding: 0 16px 16px 16px;">
+                <!-- Action Buttons -->
+                <div class="o_kanban_card_manage_section o_kanban_manage_view" style="margin-bottom: 12px;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap: 8px;">
+                    <a type="edit" class="btn btn-primary btn-sm" role="button" style="border-radius: 6px;">
+                      Modifier
+                    </a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm" role="button" style="border-radius: 6px;">
+                      Supprimer
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- Contract Info -->
+                <div style="display: grid; gap: 8px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e8f5e8; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-calendar" style="font-size: 12px; color: #388e3c;" title="Début"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Début:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="date_debut"/></span>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #fff3e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-calendar-o" style="font-size: 12px; color: #f57c00;" title="Fin"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Fin:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="date_fin"/></span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.duree_mois.raw_value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e3f2fd; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-hourglass-half" style="font-size: 12px; color: #1976d2;" title="Durée"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Durée:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="duree_mois"/> mois</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Salary Badge -->
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f8f9fa;">
+                  <div style="display: inline-flex; align-items: center; gap: 6px; background: #e8f5e8; padding: 4px 8px; border-radius: 16px;">
+                    <i class="fa fa-money" style="color: #388e3c; font-size: 12px;" title="Salaire"/>
+                    <span style="color: #388e3c; font-size: 12px; font-weight: 500;">
+                      <field name="salaire" widget="monetary"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Enhanced List View -->
+  <record id="view_softy_contrat_list" model="ir.ui.view">
+    <field name="name">softy.contrat.list</field>
+    <field name="model">softy.contrat</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list sample="1" 
+            decoration-success="type_contrat == 'cdi'"
+            decoration-warning="type_contrat in ['cdd', 'cdd2', 'cdd3', 'cdd6', 'cdd11']"
+            decoration-info="type_contrat == 'anapec'"
+            decoration-muted="type_contrat == 'cdt'">
+        <field name="ref" string="Référence"/>
+        <field name="employe_id" string="Employé"/>
+        <field name="type_contrat" string="Type" widget="badge"/>
+        <field name="date_debut" string="Date Début"/>
+        <field name="date_fin" string="Date Fin"/>
+        <field name="duree_mois" string="Durée (mois)" optional="show"/>
+        <field name="salaire" string="Salaire" widget="monetary"/>
+        <field name="periodicite" string="Périodicité" optional="hide"/>
+        <field name="type_payment" string="Type Paiement" optional="hide"/>
+        <field name="date_signature" string="Signature" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Enhanced Form View -->
+  <record id="view_softy_contrat_form" model="ir.ui.view">
+    <field name="name">softy.contrat.form</field>
+    <field name="model">softy.contrat</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Contrat">
+        <sheet style="background: #fafafa;">
+          
+          <!-- Header Section -->
+          <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: flex-start; gap: 24px;">
+              <!-- Contract Icon -->
+              <div style="flex-shrink: 0;">
+                <div style="width: 80px; height: 80px; border-radius: 12px; background: #e3f2fd; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-file-text-o" style="font-size: 32px; color: #1976d2;" title="Contrat"/>
+                </div>
+              </div>
+              
+              <!-- Contract Details -->
+              <div style="flex: 1; min-width: 0;">
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Référence du Contrat</div>
+                  <field name="ref" placeholder="Référence unique du contrat" 
+                         style="font-size: 24px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Employé</div>
+                  <field name="employe_id" placeholder="Sélectionner un employé" 
+                         style="font-size: 18px; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e3f2fd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-file-text" style="color: #1976d2;" title="Type Contrat"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Type de Contrat</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="type_contrat" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e8f5e8; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-money" style="color: #388e3c;" title="Salaire"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Salaire</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="salaire" widget="monetary" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #fff3e0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-hourglass-half" style="color: #f57c00;" title="Durée"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Durée</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="duree_mois" readonly="1"/> mois</div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #f3e5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-credit-card" style="color: #7b1fa2;" title="Paiement"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Type Paiement</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="type_payment" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clean Tabs -->
+          <notebook>
+            <page string="Informations Contractuelles">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Contract Type Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-file-text" style="color: #1976d2;" title="Type"/>
+                      Type et Période
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Type de Contrat</div>
+                        <field name="type_contrat" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Début</div>
+                        <field name="date_debut" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Fin</div>
+                        <field name="date_fin" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Salary Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-money" style="color: #388e3c;" title="Rémunération"/>
+                      Rémunération
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Salaire</div>
+                        <field name="salaire" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Périodicité</div>
+                        <field name="periodicite" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Type de Paiement</div>
+                        <field name="type_payment" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Dates Administratives">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Signature Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-pencil" style="color: #1976d2;" title="Signature"/>
+                      Signature et Administration
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Signature</div>
+                        <field name="date_signature" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Début Administration</div>
+                        <field name="debut_administration" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Seniority Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-calendar-check-o" style="color: #388e3c;" title="Ancienneté"/>
+                      Ancienneté
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Début Ancienneté</div>
+                        <field name="debut_anciennete" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                    
+                    <!-- Info Box -->
+                    <div style="background: #f8f9fa; border-left: 4px solid #388e3c; padding: 16px; border-radius: 0 8px 8px 0; margin-top: 20px;">
+                      <div style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">Information</div>
+                      <div style="color: #1a1a1a; font-size: 14px;">
+                        La date de début d'ancienneté peut être différente de la date de début du contrat 
+                        en cas de reprise d'ancienneté d'un précédent employeur.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Enhanced Search View -->
+  <record id="view_softy_contrat_search" model="ir.ui.view">
+    <field name="name">softy.contrat.search</field>
+    <field name="model">softy.contrat</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="ref" string="Référence"/>
+        <field name="employe_id" string="Employé"/>
+        <field name="type_contrat" string="Type"/>
+        
+        <separator/>
+        
+        <filter string="CDI" name="filter_cdi" 
+                domain="[('type_contrat', '=', 'cdi')]"/>
+        <filter string="CDD" name="filter_cdd" 
+                domain="[('type_contrat', 'in', ['cdd', 'cdd2', 'cdd3', 'cdd6', 'cdd11'])]"/>
+        <filter string="ANAPEC" name="filter_anapec" 
+                domain="[('type_contrat', '=', 'anapec')]"/>
+        <filter string="Contrat de Tâche" name="filter_cdt" 
+                domain="[('type_contrat', '=', 'cdt')]"/>
+        
+        <separator/>
+        
+        <filter string="Actifs" name="filter_active" 
+                domain="[('date_fin', '>=', context_today())]"/>
+        <filter string="Expirés" name="filter_expired" 
+                domain="[('date_fin', '&lt;', context_today())]"/>
+        <filter string="Signés" name="filter_signed" 
+                domain="[('date_signature', '!=', False)]"/>
+        
+        <separator/>
+        
+        <filter string="Paiement Mensuel" name="filter_monthly" 
+                domain="[('type_payment', '=', 'mensuel')]"/>
+        <filter string="Paiement Horaire" name="filter_hourly" 
+                domain="[('type_payment', '=', 'horaire')]"/>
+        
+        <separator/>
+        
+        <filter string="Par Type" name="group_type" 
+                context="{'group_by': 'type_contrat'}"/>
+        <filter string="Par Employé" name="group_employee" 
+                context="{'group_by': 'employe_id'}"/>
+        <filter string="Par Type Paiement" name="group_payment" 
+                context="{'group_by': 'type_payment'}"/>
+        <filter string="Par Périodicité" name="group_periodicite" 
+                context="{'group_by': 'periodicite'}"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_contrat" model="ir.actions.act_window">
+    <field name="name">Gestion des Contrats</field>
+    <field name="res_model">softy.contrat</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align: center; padding: 40px;">
+        <div style="margin-bottom: 20px;">
+          <i class="fa fa-file-text-o fa-3x" style="color: #1976d2;"/>
+        </div>
+        <h2 style="color: #1a1a1a; font-weight: 600; margin-bottom: 12px;">
+          Créez votre premier contrat
+        </h2>
+        <p style="color: #6c757d; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+          Gérez facilement tous les contrats de vos employés avec 
+          un suivi complet des dates et des conditions contractuelles.
+        </p>
+      </div>
+    </field>
+  </record>
+
+</odoo>

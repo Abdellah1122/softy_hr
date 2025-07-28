@@ -1,0 +1,917 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Enhanced Kanban View -->
+<record id="view_softy_employe_kanban" model="ir.ui.view">
+    <field name="name">softy.employe.kanban</field>
+    <field name="model">softy.employe</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1">
+        <field name="id"/>
+        <field name="image_1920"/>
+        <field name="name"/>
+        <field name="matricule"/>
+        <field name="cin"/>
+        <field name="type_contrat"/>
+        <field name="salaire_mensuel"/>
+        <field name="paie_blocke"/>
+        <field name="date_embauche"/>
+        <field name="age"/>
+        <field name="email"/>
+        <field name="tel"/>
+        <field name="genre"/>
+        <field name="situation_familiale"/>
+        <field name="service_id"/>
+        <field name="departement_id"/>
+        <field name="societe_id"/>
+        <field name="taux_horaire"/>
+        <field name="taux_journalier"/>
+        <field name="qualification_id"/>
+        <field name="mode_payment"/>
+        
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card o_kanban_global_click" style="border-radius: 12px; border: 1px solid #e3f2fd; box-shadow: 0 2px 8px rgba(0,123,255,0.08); background: white;">
+              
+              <!-- Clean Header -->
+              <div style="padding: 16px; border-bottom: 1px solid #f8f9fa;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                      <field name="image_1920" widget="image" class="o_kanban_image" 
+                             options="{'preview_image': 'image_1920', 'size': [48, 48]}"
+                             style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%;"/>
+                    </div>
+                    <div>
+                      <div style="font-weight: 600; color: #1a1a1a; font-size: 16px; margin-bottom: 2px;">
+                        <field name="name"/>
+                      </div>
+                      <div style="color: #6c757d; font-size: 13px;">
+                        Mat: <field name="matricule"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button" href="#" role="button" style="color: #6c757d;">
+                      <i class="fa fa-ellipsis-v" title="Options"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Status Badges -->
+              <div style="padding: 12px 16px 0 16px;">
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+                  <div t-if="record.type_contrat.raw_value == 'cdi'" style="display: inline-flex; align-items: center; gap: 4px; background: #e8f5e8; color: #388e3c; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-check-circle" style="font-size: 10px;" title="CDI"/>
+                    <field name="type_contrat"/>
+                  </div>
+                  <div t-elif="record.type_contrat.raw_value == 'cdd'" style="display: inline-flex; align-items: center; gap: 4px; background: #fff3e0; color: #f57c00; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-clock-o" style="font-size: 10px;" title="CDD"/>
+                    <field name="type_contrat"/>
+                  </div>
+                  <div t-else="" style="display: inline-flex; align-items: center; gap: 4px; background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <field name="type_contrat"/>
+                  </div>
+                  
+                  <div t-if="record.paie_blocke.raw_value" style="display: inline-flex; align-items: center; gap: 4px; background: #ffebee; color: #d32f2f; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500;">
+                    <i class="fa fa-ban" style="font-size: 10px;" title="Bloqué"/>
+                    Bloqué
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Clean Content -->
+              <div style="padding: 0 16px 16px 16px;">
+                <!-- Action Buttons -->
+                <div class="o_kanban_card_manage_section o_kanban_manage_view" style="margin-bottom: 12px;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap: 8px;">
+                    <a type="edit" class="btn btn-primary btn-sm" role="button" style="border-radius: 6px;">
+                      Modifier
+                    </a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm" role="button" style="border-radius: 6px;">
+                      Supprimer
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- Employee Info -->
+                <div style="display: grid; gap: 8px;">
+                  <div t-if="record.service_id.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e3f2fd; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-building" style="font-size: 12px; color: #1976d2;" title="Service"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Service:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="service_id"/></span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.departement_id.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #fff3e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-sitemap" style="font-size: 12px; color: #f57c00;" title="Département"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Dép:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="departement_id"/></span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.email.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #f3e5f5; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-envelope" style="font-size: 12px; color: #7b1fa2;" title="Email"/>
+                    </div>
+                    <div style="font-size: 13px; color: #1a1a1a;">
+                      <field name="email"/>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e8f5e8; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-calendar" style="font-size: 12px; color: #388e3c;" title="Âge"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Âge:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="age"/> ans</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Salary Badge -->
+                <div t-if="record.salaire_mensuel.raw_value" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f8f9fa;">
+                  <div style="display: inline-flex; align-items: center; gap: 6px; background: #e8f5e8; padding: 4px 8px; border-radius: 16px;">
+                    <i class="fa fa-money" style="color: #388e3c; font-size: 12px;" title="Salaire"/>
+                    <span style="color: #388e3c; font-size: 12px; font-weight: 500;">
+                      <field name="salaire_mensuel" widget="monetary"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Enhanced List View -->
+  <record id="view_softy_employe_list" model="ir.ui.view">
+    <field name="name">softy.employe.list</field>
+    <field name="model">softy.employe</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list sample="1">
+        <field name="image_1920" widget="image" class="o_list_image"/>
+        <field name="matricule" string="Matricule"/>
+        <field name="name" string="Nom Complet"/>
+        <field name="societe_id" string="Société"/>
+        <field name="departement_id" string="Département"/>
+        <field name="service_id" string="Service"/>
+        <field name="type_contrat" widget="badge" 
+               decoration-success="type_contrat == 'cdi'" 
+               decoration-warning="type_contrat == 'cdd'"
+               decoration-info="type_contrat in ['stage', 'autre']"/>
+        <field name="salaire_mensuel" string="Salaire" widget="monetary" optional="show"/>
+        <field name="taux_horaire" string="Taux H." widget="monetary" optional="hide"/>
+        <field name="taux_journalier" string="Taux J." widget="monetary" optional="hide"/>
+        <field name="date_embauche" string="Embauche" optional="show"/>
+        <field name="age" string="Âge" optional="show"/>
+        <field name="email" string="Email" widget="email" optional="hide"/>
+        <field name="tel" string="Téléphone" optional="hide"/>
+        <field name="genre" string="Genre" optional="hide"/>
+        <field name="situation_familiale" string="Situation" optional="hide"/>
+        <field name="qualification_id" string="Qualification" optional="hide"/>
+        <field name="mode_payment" string="Mode Paiement" optional="hide"/>
+        <field name="paie_blocke" string="Paie Bloquée" widget="boolean_toggle" 
+               decoration-danger="paie_blocke == True"/>
+        <field name="nbr_enfant" string="Enfants" optional="hide"/>
+        <field name="lieu_naissance" string="Lieu Naissance" optional="hide"/>
+        <field name="cin" string="CIN" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Enhanced Form View -->
+  <record id="view_softy_employe_form" model="ir.ui.view">
+    <field name="name">softy.employe.form</field>
+    <field name="model">softy.employe</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Employé">
+        <header>
+          <button name="action_block_payroll" type="object"
+                  class="btn-warning"
+                  string="Bloquer Paie"
+                  confirm="Êtes-vous sûr de vouloir bloquer la paie de cet employé?"
+                  invisible="paie_blocke"/>
+          <button name="action_unblock_payroll" type="object"
+                  class="btn-success"
+                  string="Débloquer Paie"
+                  invisible="not paie_blocke"/>
+          
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_documents" type="object"
+                    class="oe_stat_button" icon="fa-file-text">
+              <field name="document_count" widget="statinfo" string="Documents"/>
+            </button>
+            <button name="action_view_family" type="object"
+                    class="oe_stat_button" icon="fa-users">
+              <field name="family_count" widget="statinfo" string="Famille"/>
+            </button>
+            <button name="action_view_diplomas" type="object"
+                    class="oe_stat_button" icon="fa-graduation-cap">
+              <field name="diploma_count" widget="statinfo" string="Diplômes"/>
+            </button>
+            <button name="action_view_experiences" type="object"
+                    class="oe_stat_button" icon="fa-briefcase">
+              <field name="experience_count" widget="statinfo" string="Expériences"/>
+            </button>
+            <button name="action_view_formations" type="object"
+                    class="oe_stat_button" icon="fa-book">
+              <field name="formation_count" widget="statinfo" string="Formations"/>
+            </button>
+            <button name="action_view_competences" type="object"
+                    class="oe_stat_button" icon="fa-star">
+              <field name="competence_count" widget="statinfo" string="Compétences"/>
+            </button>
+          </div>
+        </header>
+        
+        <sheet style="background: #fafafa;">
+          
+          <!-- Alert for blocked payroll -->
+          <div invisible="not paie_blocke" style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 12px; border-radius: 8px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa fa-exclamation-triangle" style="color: #f39c12;" title="Attention"/>
+              <strong>Attention:</strong> La paie de cet employé est bloquée.
+            </div>
+            <div invisible="not motif_blockage" style="margin-top: 8px;">
+              <strong>Motif:</strong> <field name="motif_blockage" readonly="1"/>
+            </div>
+          </div>
+          
+          <!-- Header Section -->
+          <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: flex-start; gap: 24px;">
+              <!-- Employee Photo -->
+              <div style="flex-shrink: 0;">
+                <field name="image_1920" widget="image" 
+                       options="{'preview_image': 'image_1920', 'size': [120, 120]}"
+                       style="border-radius: 50%; border: 3px solid #f0f0f0;"/>
+              </div>
+              
+              <!-- Employee Details -->
+              <div style="flex: 1; min-width: 0;">
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Matricule</div>
+                  <field name="matricule" placeholder="Matricule unique de l'employé" 
+                         style="font-size: 18px; font-weight: 600; color: #1976d2; border: 2px solid #e3f2fd; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; background: #f8fdff;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Prénom</div>
+                  <field name="first_name" placeholder="Prénom de l'employé" 
+                         style="font-size: 20px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nom de Famille</div>
+                  <field name="last_name" placeholder="Nom de famille" 
+                         style="font-size: 20px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nom Complet</div>
+                  <div style="font-size: 24px; font-weight: 600; color: #1a1a1a; padding: 8px 0;">
+                    <field name="name" readonly="1"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e3f2fd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-id-card" style="color: #1976d2;" title="Identification"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Matricule</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="matricule" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e8f5e8; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-briefcase" style="color: #388e3c;" title="Contrat"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Type Contrat</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="type_contrat" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #fff3e0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-money" style="color: #f57c00;" title="Salaire"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Salaire Mensuel</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="salaire_mensuel" widget="monetary" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #f3e5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-calendar" style="color: #7b1fa2;" title="Âge"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Âge</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="age" readonly="1"/> ans</div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #fff8e1; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-star" style="color: #ffa000;" title="Qualification"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Qualification</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="qualification_id" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clean Tabs -->
+          <notebook>
+            <page string="Informations Personnelles">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Identity Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-user" style="color: #1976d2;" title="Identité"/>
+                      Identité
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">CIN</div>
+                        <field name="cin" placeholder="Numéro CIN" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Naissance</div>
+                        <field name="date_naissance" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Lieu de Naissance</div>
+                        <field name="lieu_naissance" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Genre</div>
+                        <field name="genre" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Family & Contact Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-home" style="color: #388e3c;" title="Famille"/>
+                      Famille &amp; Contact
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Situation Familiale</div>
+                        <field name="situation_familiale" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nombre d'Enfants</div>
+                        <field name="nbr_enfant" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Email</div>
+                        <field name="email" widget="email" placeholder="email@exemple.com" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Téléphone</div>
+                        <field name="tel" placeholder="+212 XX XX XX XX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Adresse</div>
+                        <field name="rue" placeholder="Adresse complète" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Qualification</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Contrat &amp; Paie">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Contract Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-file-text" style="color: #1976d2;" title="Contrat"/>
+                      Informations Contrat
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date d'Embauche</div>
+                        <field name="date_embauche" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Contrat</div>
+                        <field name="contrat_id" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Service</div>
+                        <field name="service_id" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Référence Contrat</div>
+                        <field name="ref_contrat" readonly="1"
+                               style="width: 100%; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; background: #f8f9fa;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Payroll Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-money" style="color: #388e3c;" title="Paie"/>
+                      Gestion de la Paie
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Taux Horaire</div>
+                        <field name="taux_horaire" widget="monetary" readonly="1"
+                               style="width: 100%; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; background: #f8f9fa;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Taux Journalier</div>
+                        <field name="taux_journalier" widget="monetary" readonly="1"
+                               style="width: 100%; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; background: #f8f9fa;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Paie Bloquée</div>
+                        <field name="paie_blocke" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div invisible="not paie_blocke">
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Blocage</div>
+                        <field name="date_blockage" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div invisible="not paie_blocke">
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Motif de Blocage</div>
+                        <field name="motif_blockage" placeholder="Raison du blocage" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Informations Bancaires">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                
+                <!-- Payment Mode Section - Prominent -->
+                <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                  <h3 style="color: #1976d2; font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-credit-card" style="color: #1976d2;" title="Mode de Paiement"/>
+                    Mode de Paiement
+                  </h3>
+                  <div style="display: grid; gap: 16px;">
+                    <div>
+                      <div class="o_form_label" style="color: #1976d2; font-size: 14px; font-weight: 600; margin-bottom: 8px; display: block;">Choisir le Mode de Paiement :</div>
+                      <field name="mode_payment" widget="radio" 
+                             style="font-size: 16px;"/>
+                    </div>
+                  </div>
+                </div>
+                
+                
+                <!-- Bank Information Section - Only visible for Virement -->
+                <div invisible="mode_payment != 'vir'" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Primary Bank Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-university" style="color: #1976d2;" title="Banque Principale"/>
+                      Banque Principale
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Banque</div>
+                        <field name="banque_name" readonly="1"
+                               style="width: 100%; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; background: #f8f9fa;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Numéro de Compte</div>
+                        <field name="n_compte_banque" readonly="1"
+                               style="width: 100%; border: 1px solid #f0f0f0; border-radius: 8px; padding: 12px; background: #f8f9fa;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Bank Details Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-credit-card" style="color: #f57c00;" title="Détails Bancaires"/>
+                      Tous les Comptes
+                    </h3>
+                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px;">
+                      <field name="info_banque_ids" nolabel="1">
+                        <list editable="bottom">
+                          <field name="name" string="Banque"/>
+                          <field name="n_acc" string="N° Compte"/>
+                          <field name="agence" string="Agence"/>
+                          <field name="n_carte" string="N° Carte"/>
+                        </list>
+                      </field>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Info message when bank info is hidden -->
+                <div invisible="mode_payment == 'vir'" style="background: #f8f9fa; border: 2px dashed #9e9e9e; border-radius: 8px; padding: 24px; text-align: center;">
+                  <div style="color: #9e9e9e; font-size: 16px; margin-bottom: 8px;">
+                    <i class="fa fa-info-circle" style="font-size: 24px;" title="Information"/>
+                  </div>
+                  <div style="color: #6c757d; font-size: 14px; font-weight: 500;">
+                    Les informations bancaires ne sont nécessaires que pour le mode de paiement "Virement".
+                  </div>
+                  <div style="color: #9e9e9e; font-size: 13px; margin-top: 4px;">
+                    Sélectionnez "Virement" ci-dessus pour configurer les détails bancaires.
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Affiliations">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa fa-shield" style="color: #388e3c;" title="Affiliations"/>
+                  Affiliations CNSS, CIMR, etc.
+                </h3>
+                <field name="affiliation_ids" nolabel="1">
+                  <list editable="bottom">
+                    <field name="aff_type_id" string="Type Affiliation"/>
+                    <field name="n_aff" string="Numéro"/>
+                    <field name="taux" string="Taux (%)" widget="float" options="{'digits': [5, 4]}"/>
+                    <field name="plafond" string="Plafond (MAD)" widget="monetary"/>
+                    <field name="date_debut" string="Date Début"/>
+                    <field name="date_fin" string="Date Fin"/>
+                    <field name="diffusion_info" string="Info Diffusion"/>
+                  </list>
+                </field>
+              </div>
+            </page>
+            
+            <page string="Documents">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa fa-file-text" style="color: #1976d2;" title="Documents"/>
+                  Documents de l'Employé
+                </h3>
+                <field name="document_ids" nolabel="1">
+                  <list>
+                    <field name="ref" string="Référence"/>
+                    <field name="titre" string="Titre"/>
+                    <field name="langue" string="Langue"/>
+                    <field name="date_livraison" string="Date Livraison"/>
+                    <field name="authorite" string="Autorité"/>
+                  </list>
+                  <form>
+                    <sheet style="background: #fafafa;">
+                      <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                          <div>
+                            <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px;">Informations du Document</h3>
+                            <div style="display: grid; gap: 16px;">
+                              <div>
+                                <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Référence</div>
+                                <field name="ref" style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                              </div>
+                              <div>
+                                <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Titre</div>
+                                <field name="titre" style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                              </div>
+                              <div>
+                                <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Langue</div>
+                                <field name="langue" style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px;">Détails</h3>
+                            <div style="display: grid; gap: 16px;">
+                              <div>
+                                <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Livraison</div>
+                                <field name="date_livraison" style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                              </div>
+                              <div>
+                                <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Autorité</div>
+                                <field name="authorite" style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div style="margin-top: 24px;">
+                          <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px;">Fichier Document</h3>
+                          <field name="doc" widget="binary" filename="titre"/>
+                        </div>
+                      </div>
+                    </sheet>
+                  </form>
+                </field>
+              </div>
+            </page>
+            
+            <page string="Famille">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa fa-users" style="color: #388e3c;" title="Famille"/>
+                  Membres de la Famille
+                </h3>
+                <field name="famille_ids" nolabel="1">
+                  <list editable="bottom">
+                    <field name="first_name" string="Prénom"/>
+                    <field name="last_name" string="Nom"/>
+                    <field name="lien_parente" string="Lien de Parenté"/>
+                    <field name="date_of_birth" string="Date de Naissance"/>
+                    <field name="genre" string="Genre"/>
+                    <field name="a_charge" string="À Charge"/>
+                  </list>
+                </field>
+              </div>
+            </page>
+            
+            <page string="Qualifications">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Diplomas Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-graduation-cap" style="color: #1976d2;" title="Diplômes"/>
+                      Diplômes
+                    </h3>
+                    <field name="diplome_ids" nolabel="1">
+                      <list>
+                        <field name="int_dip" string="Intitulé"/>
+                        <field name="niveau" string="Niveau"/>
+                        <field name="filiere" string="Filière"/>
+                        <field name="mention" string="Mention"/>
+                      </list>
+                    </field>
+                  </div>
+                  
+                  <!-- Experiences Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-briefcase" style="color: #f57c00;" title="Expériences"/>
+                      Expériences
+                    </h3>
+                    <field name="experience_ids" nolabel="1">
+                      <list>
+                        <field name="soc" string="Société"/>
+                        <field name="sec_activite" string="Secteur"/>
+                        <field name="date_debut" string="Début"/>
+                        <field name="date_fin" string="Fin"/>
+                        <field name="degre_maitrise" string="Maîtrise"/>
+                      </list>
+                    </field>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Compétences &amp; Formations">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Skills Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-star" style="color: #7b1fa2;" title="Compétences"/>
+                      Compétences
+                    </h3>
+                    <field name="competence_ids" nolabel="1">
+                      <list>
+                        <field name="type_competence" string="Type"/>
+                        <field name="degre_maitrise" string="Maîtrise"/>
+                        <field name="date_validation" string="Validation"/>
+                      </list>
+                    </field>
+                  </div>
+                  
+                  <!-- Training Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-book" style="color: #388e3c;" title="Formations"/>
+                      Formations
+                    </h3>
+                    <field name="formation_ids" nolabel="1">
+                      <list>
+                        <field name="int_for" string="Intitulé"/>
+                        <field name="domain" string="Domaine"/>
+                        <field name="date_debut" string="Début"/>
+                        <field name="date_fin" string="Fin"/>
+                        <field name="centre" string="Centre"/>
+                      </list>
+                    </field>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Langues">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa fa-globe" style="color: #1976d2;" title="Langues"/>
+                  Compétences Linguistiques
+                </h3>
+                <field name="langue_ids" nolabel="1">
+                  <list>
+                    <field name="lang" string="Langue"/>
+                    <field name="nic_conn" string="Niveau Connaissance"/>
+                    <field name="type_con" string="Type Connaissance"/>
+                    <field name="degre_maitrise" string="Degré Maîtrise"/>
+                    <field name="formation" string="Formation"/>
+                  </list>
+                </field>
+              </div>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Enhanced Search View with Sidebar -->
+  <record id="view_softy_employe_search" model="ir.ui.view">
+    <field name="name">softy.employe.search</field>
+    <field name="model">softy.employe</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name" string="Nom Complet"/>
+        <field name="matricule" string="Matricule"/>
+        <field name="cin" string="CIN"/>
+        <field name="email" string="Email"/>
+        <field name="service_id" string="Service"/>
+        <field name="departement_id" string="Département"/>
+        <field name="type_contrat" string="Type Contrat"/>
+        <field name="qualification_id" string="Qualification"/>
+        <field name="mode_payment" string="Mode Paiement"/>
+        
+        <searchpanel>
+          <field name="societe_id" 
+                 string="Sociétés" 
+                 icon="fa-building"
+                 color="#007bff"
+                 select="multi"/>
+          
+          <field name="departement_id" 
+                 string="Départements" 
+                 icon="fa-sitemap"
+                 color="#17a2b8"
+                 select="multi"/>
+          
+          <field name="service_id" 
+                 string="Services" 
+                 icon="fa-users"
+                 color="#fd7e14"
+                 select="multi"/>
+          
+          <field name="type_contrat" 
+                 string="Types Contrat" 
+                 icon="fa-file-text"
+                 color="#28a745"
+                 select="multi"/>
+          
+          <field name="mode_payment" 
+                 string="Modes Paiement" 
+                 icon="fa-credit-card"
+                 color="#6f42c1"
+                 select="multi"/>
+        </searchpanel>
+        
+        <separator/>
+        
+        <filter string="CDI" name="filter_cdi" 
+                domain="[('type_contrat', '=', 'cdi')]"/>
+        <filter string="CDD" name="filter_cdd" 
+                domain="[('type_contrat', '=', 'cdd')]"/>
+        <filter string="Stage" name="filter_stage" 
+                domain="[('type_contrat', '=', 'stage')]"/>
+        
+        <separator/>
+        
+        <filter string="Paie Bloquée" name="filter_blocked" 
+                domain="[('paie_blocke', '=', True)]"/>
+        <filter string="Paie Active" name="filter_active" 
+                domain="[('paie_blocke', '=', False)]"/>
+        
+        <separator/>
+        
+        <filter string="Hommes" name="filter_men" 
+                domain="[('genre', '=', 'masculin')]"/>
+        <filter string="Femmes" name="filter_women" 
+                domain="[('genre', '=', 'feminin')]"/>
+        
+        <separator/>
+        
+        <filter string="Avec Photo" name="filter_with_photo" 
+                domain="[('image_1920', '!=', False)]"/>
+        <filter string="Avec Email" name="filter_with_email" 
+                domain="[('email', '!=', False)]"/>
+        <filter string="Avec Qualification" name="filter_with_qualification" 
+                domain="[('qualification_id', '!=', False)]"/>
+        
+        <separator/>
+        
+        <filter string="Paiement Virement" name="filter_virement" 
+                domain="[('mode_payment', '=', 'vir')]"/>
+        <filter string="Paiement Chèque" name="filter_cheque" 
+                domain="[('mode_payment', '=', 'cheque')]"/>
+        <filter string="Paiement Espèces" name="filter_especes" 
+                domain="[('mode_payment', '=', 'esp')]"/>
+        <filter string="Cash Entreprise" name="filter_cash" 
+                domain="[('mode_payment', '=', 'ca')]"/>
+        
+        <separator/>
+        
+        <group expand="0" string="Grouper par">
+          <filter string="Société" name="group_societe" 
+                  context="{'group_by': 'societe_id'}"/>
+          <filter string="Département" name="group_departement" 
+                  context="{'group_by': 'departement_id'}"/>
+          <filter string="Service" name="group_service" 
+                  context="{'group_by': 'service_id'}"/>
+          <filter string="Type Contrat" name="group_contract" 
+                  context="{'group_by': 'type_contrat'}"/>
+          <filter string="Genre" name="group_genre" 
+                  context="{'group_by': 'genre'}"/>
+          <filter string="Qualification" name="group_qualification" 
+                  context="{'group_by': 'qualification_id'}"/>
+          <filter string="Mode Paiement" name="group_payment" 
+                  context="{'group_by': 'mode_payment'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_employe" model="ir.actions.act_window">
+    <field name="name">Gestion des Employés</field>
+    <field name="res_model">softy.employe</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align: center; padding: 40px;">
+        <div style="margin-bottom: 20px;">
+          <i class="fa fa-users fa-3x" style="color: #1976d2;"/>
+        </div>
+        <h2 style="color: #1a1a1a; font-weight: 600; margin-bottom: 12px;">
+          Ajoutez votre premier employé
+        </h2>
+        <p style="color: #6c757d; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+          Gérez facilement toutes les informations de vos employés, 
+          leurs contrats, documents et qualifications dans une interface moderne.
+        </p>
+      </div>
+    </field>
+  </record>
+
+</odoo>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View with Sidebar Panel like Bulletin -->
+    <record id="view_simt_search" model="ir.ui.view">
+        <field name="name">simt.search</field>
+        <field name="model">softy.simt</field>
+        <field name="arch" type="xml">
+            <search string="Recherche SIMT">
+                <!-- Quick Search Fields -->
+                <field name="matricule" string="Matricule" 
+                       filter_domain="[('matricule', 'ilike', self)]"/>
+                <field name="nom_complet" string="Employé" 
+                       filter_domain="[('nom_complet', 'ilike', self)]"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                
+                <!-- PERMANENT SIDEBAR PANEL -->
+                <searchpanel>
+                    <!-- Societes Section -->
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <!-- Departements Section -->
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#28a745"
+                           select="multi"/>
+                    
+                    <!-- Services Section -->
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                </searchpanel>
+                
+                <!-- Period Filters -->
+                <filter string="Janvier" name="month_01" 
+                        domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="month_02" 
+                        domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="month_03" 
+                        domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="month_04" 
+                        domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="month_05" 
+                        domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="month_06" 
+                        domain="[('mois', '=', '6')]"/>
+                
+                <separator/>
+                
+                <filter string="Juillet" name="month_07" 
+                        domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="month_08" 
+                        domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="month_09" 
+                        domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="month_10" 
+                        domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="month_11" 
+                        domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="month_12" 
+                        domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <!-- Year Filters -->
+                <filter string="Année 2025" name="year_2025" 
+                        domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" 
+                        domain="[('annee', '=', 2024)]"/>
+                <filter string="Année 2023" name="year_2023" 
+                        domain="[('annee', '=', 2023)]"/>
+                
+                <separator/>
+                
+                <!-- Amount Filters -->
+                <filter string="Montant &gt; 10 000 DH" name="high_amount" 
+                        domain="[('montant_salarie', '&gt;', 10000)]"/>
+                <filter string="Montant 5 000-10 000 DH" name="medium_amount" 
+                        domain="[('montant_salarie', '&gt;=', 5000), ('montant_salarie', '&lt;=', 10000)]"/>
+                <filter string="Montant &lt; 5 000 DH" name="low_amount" 
+                        domain="[('montant_salarie', '&lt;', 5000)]"/>
+                
+                <separator/>
+                
+                <!-- Group By Options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" 
+                            context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" 
+                            context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" 
+                            context="{'group_by': 'service_id'}"/>
+                    <filter string="Mois" name="group_mois" 
+                            context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" 
+                            context="{'group_by': 'annee'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View (simple, no button) -->
+    <!-- List View with Download Button -->
+    <record id="view_simt_list" model="ir.ui.view">
+        <field name="name">simt.list</field>
+        <field name="model">softy.simt</field>
+        <field name="arch" type="xml">
+            <list string="SIMT" create="false">
+                <header>
+                    <button name="generate_simt_txt_file" type="object" 
+                            string="Télécharger SIMT (Liste Actuelle)" 
+                            class="btn-primary" 
+                            icon="fa-download"
+                            help="Télécharge un fichier SIMT avec seulement les enregistrements actuellement affichés (après filtres)"/>
+                </header>
+                <field name="matricule"/>
+                <field name="nom_complet"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                <field name="n_acc_salarie"/>
+                <field name="montant_salarie"/>
+                <field name="montant_centime"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="date_complete"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View with filter fields -->
+    <record id="view_simt_form" model="ir.ui.view">
+        <field name="name">simt.form</field>
+        <field name="model">softy.simt</field>
+        <field name="arch" type="xml">
+            <form string="SIMT" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group string="Employé">
+                            <field name="bulletin_id" readonly="1"/>
+                            <field name="employe_id" readonly="1"/>
+                            <field name="matricule" readonly="1"/>
+                            <field name="nom_complet" readonly="1"/>
+                        </group>
+                        <group string="Organisation">
+                            <field name="societe_id" readonly="1"/>
+                            <field name="departement_id" readonly="1"/>
+                            <field name="service_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Paiement">
+                            <field name="n_acc_salarie" readonly="1"/>
+                            <field name="montant_salarie" readonly="1"/>
+                            <field name="montant_centime" readonly="1"/>
+                        </group>
+                        <group string="Période">
+                            <field name="mois" readonly="1"/>
+                            <field name="annee" readonly="1"/>
+                            <field name="date_complete" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Remove the wizard form - using server action instead -->
+
+    <!-- Server Action for TXT File Generation with Current Domain -->
+    <record id="action_simt_generate_txt" model="ir.actions.server">
+        <field name="name">Télécharger SIMT (Filtrés)</field>
+        <field name="model_id" ref="model_softy_simt"/>
+        <field name="binding_model_id" ref="model_softy_simt"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+# Get the current domain from the search context
+domain = context.get('search_default_domain', [])
+if not domain and context.get('active_ids'):
+    # If no domain but has active_ids, use them
+    records = model.browse(context.get('active_ids', []))
+else:
+    # Use current filtered records
+    records = model.search(domain) if domain else model.search([])
+
+action = records.with_context(force_domain=True).generate_simt_txt_file()
+        </field>
+    </record>
+
+    <!-- Server Action for Generation (bypasses form creation) -->
+    <record id="action_simt_generate_server" model="ir.actions.server">
+        <field name="name">Générer SIMT Fichier</field>
+        <field name="model_id" ref="model_softy_simt"/>
+        <field name="state">code</field>
+        <field name="code">
+action = env['softy.simt'].generate_simt_from_bulletins()
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_simt" model="ir.actions.act_window">
+        <field name="name">Virements</field>
+        <field name="res_model">softy.simt</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_simt_list"/>
+        <field name="search_view_id" ref="view_simt_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Utilisez le menu "Générer SIMT" pour créer les virements depuis les bulletins
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_reglement_paie_softy"
+              name="Règlement de paie"
+              parent="menu_softy_hr_root"
+              sequence="80"/>
+
+    <menuitem id="menu_virement"
+              name="Virement"
+              parent="menu_reglement_paie_softy"
+              sequence="10"/>
+
+    <menuitem id="menu_virement_list"
+              name="Liste des Virements"
+              parent="menu_virement"
+              action="action_simt"
+              sequence="10"/>
+
+    <menuitem id="menu_virement_generate"
+              name="Générer SIMT"
+              parent="menu_virement"
+              action="action_simt_generate_server"
+              sequence="20"/>
+</odoo>

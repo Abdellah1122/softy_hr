@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Kanban View -->
+  <record id="view_softy_info_banque_employe_kanban" model="ir.ui.view">
+    <field name="name">softy.info_banque_employe.kanban</field>
+    <field name="model">softy.info_banque_employe</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1">
+        <field name="id"/>
+        <field name="n_acc"/>
+        <field name="name"/>
+        <field name="employe_id"/>
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card o_kanban_global_click"
+                 style="border-radius:12px;
+                        border:1px solid #e3f2fd;
+                        box-shadow:0 2px 8px rgba(0,123,255,0.08);
+                        background:white;">
+
+              <!-- Header -->
+              <div style="padding:16px; border-bottom:1px solid #f8f9fa;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:12px; height:12px;
+                                border-radius:50%; background:#1976d2;">
+                    </div>
+                    <div>
+                      <div style="font-weight:600; color:#1a1a1a; font-size:16px;">
+                        <field name="n_acc"/>
+                      </div>
+                      <div style="color:#6c757d; font-size:13px;">
+                        Banque: <field name="name"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button"
+                       href="#" role="button" style="color:#6c757d;">
+                      <i class="fa fa-ellipsis-v"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div style="padding:16px;">
+                <div class="o_kanban_card_manage_section o_kanban_manage_view"
+                     style="margin-bottom:12px;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap:8px;">
+                    <a type="edit" class="btn btn-primary btn-sm"
+                       role="button" style="border-radius:6px;">Modifier</a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm"
+                       role="button" style="border-radius:6px;">Supprimer</a>
+                  </div>
+                </div>
+
+                <div style="display:grid; gap:8px;">
+                  
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px;
+                                background:#e0f7fa; border-radius:4px;
+                                display:flex; align-items:center;
+                                justify-content:center;">
+                      <i class="fa fa-user" style="font-size:12px; color:#00796b;"/>
+                    </div>
+                    <div>
+                      <span style="color:#6c757d; font-size:12px;">Employé:</span>
+                      <span style="color:#1a1a1a; font-weight:500; margin-left:4px;">
+                        <field name="employe_id"/>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div t-if="record.agence.value" style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px;
+                                background:#fff3e0; border-radius:4px;
+                                display:flex; align-items:center;
+                                justify-content:center;">
+                      <i class="fa fa-building" style="font-size:12px; color:#ff6f00;"/>
+                    </div>
+                    <div style="font-size:13px; color:#1a1a1a;">
+                      Agence: <field name="agence"/>
+                    </div>
+                  </div>
+
+                  <div t-if="record.n_acc.value" style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px;
+                                background:#e8f5e8; border-radius:4px;
+                                display:flex; align-items:center;
+                                justify-content:center;">
+                      <i class="fa fa-credit-card" style="font-size:12px; color:#388e3c;"/>
+                    </div>
+                    <div style="font-size:13px; color:#1a1a1a;">
+                      Compte: <field name="n_acc"/>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+
+  <!-- List View -->
+  <record id="view_softy_info_banque_employe_list" model="ir.ui.view">
+    <field name="name">softy.info_banque_employe.list</field>
+    <field name="model">softy.info_banque_employe</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list string="Infos Banque Employé">
+        <field name="n_acc" string="N° Compte"/>
+        <field name="name" string="Banque"/>
+        <field name="agence" string="Agence" optional="show"/>
+        <field name="n_carte" string="N° Carte" optional="show"/>
+        <field name="employe_id" string="Employé"/>
+      </list>
+    </field>
+  </record>
+
+
+  <!-- Form View -->
+  <record id="view_softy_info_banque_employe_form" model="ir.ui.view">
+    <field name="name">softy.info_banque_employe.form</field>
+    <field name="model">softy.info_banque_employe</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Information Banque Employé">
+        <sheet style="background:#fafafa;">
+          
+          <!-- Header Card -->
+          <div style="background:white; padding:24px;
+                      border-radius:12px; margin-bottom:24px;
+                      box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex; align-items:flex-start; gap:24px;">
+              <div style="flex:1; min-width:0;">
+                <div style="margin-bottom:16px;">
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    N° Compte Bancaire
+                  </div>
+                  <field name="n_acc" placeholder="Numéro de compte"
+                         style="font-size:16px; color:#1a1a1a;
+                                border:1px solid #e0e0e0;
+                                border-radius:8px; padding:8px 12px;"/>
+                </div>
+                <div>
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    Employé
+                  </div>
+                  <field name="employe_id" placeholder="Sélectionner un employé"
+                         style="font-size:16px; color:#1a1a1a;
+                                border:1px solid #e0e0e0;
+                                border-radius:8px; padding:8px 12px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bank Details Tab -->
+          <notebook>
+            <page string="Détails Banque">
+              <div style="background:white; padding:24px;
+                          border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display:grid;
+                            grid-template-columns:1fr 1fr; gap:32px;">
+                  
+                  <div>
+                    <div class="o_form_label"
+                         style="color:#6c757d; font-size:13px;
+                                font-weight:500; margin-bottom:4px;">
+                      Nom Banque
+                    </div>
+                    <field name="name"
+                           style="width:100%; border:1px solid #e0e0e0;
+                                  border-radius:8px; padding:12px;"/>
+                  </div>
+                  
+                  <div>
+                    <div class="o_form_label"
+                         style="color:#6c757d; font-size:13px;
+                                font-weight:500; margin-bottom:4px;">
+                      Agence
+                    </div>
+                    <field name="agence" placeholder="Nom de l’agence"
+                           style="width:100%; border:1px solid #e0e0e0;
+                                  border-radius:8px; padding:12px;"/>
+                  </div>
+
+                  <div>
+                    <div class="o_form_label"
+                         style="color:#6c757d; font-size:13px;
+                                font-weight:500; margin-bottom:4px;">
+                      N° Carte Bancaire
+                    </div>
+                    <field name="n_carte" placeholder="Numéro de carte"
+                           style="width:100%; border:1px solid #e0e0e0;
+                                  border-radius:8px; padding:12px;"/>
+                  </div>
+                </div>
+              </div>
+            </page>
+          </notebook>
+
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+
+  <!-- Search View -->
+  <record id="view_softy_info_banque_employe_search" model="ir.ui.view">
+    <field name="name">softy.info_banque_employe.search</field>
+    <field name="model">softy.info_banque_employe</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="n_acc" string="Compte"/>
+        <field name="name" string="Banque"/>
+        <field name="employe_id" string="Employé"/>
+        <separator/>
+        <filter string="Par Banque" name="group_banque"
+                context="{'group_by':'name'}"/>
+        <filter string="Par Employé" name="group_employe"
+                context="{'group_by':'employe_id'}"/>
+      </search>
+    </field>
+  </record>
+
+
+  <!-- Action -->
+  <record id="action_softy_info_banque_employe" model="ir.actions.act_window">
+    <field name="name">Gestion Info Banque Employé</field>
+    <field name="res_model">softy.info_banque_employe</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align:center; padding:40px;">
+        <div style="margin-bottom:20px;">
+          <i class="fa fa-university fa-3x" style="color:#1976d2;"/>
+        </div>
+        <h2 style="color:#1a1a1a; font-weight:600; margin-bottom:12px;">
+          Créez une info bancaire pour votre employé
+        </h2>
+        <p style="color:#6c757d; max-width:400px; margin:0 auto;">
+          Enregistrez le compte, l’agence et la carte bancaire de vos employés
+          pour automatiser les virements salariaux.
+        </p>
+      </div>
+    </field>
+  </record>
+
+</odoo>

@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- SEARCH VIEW WITH SIDEBAR PANEL -->
+<record id="view_softy_bulletin_search" model="ir.ui.view">
+        <field name="name">softy.bulletin.search</field>
+        <field name="model">softy.bulletin</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Bulletins">
+                <!-- Quick Search Fields -->
+                <field name="employe_id" string="Employé" 
+                       filter_domain="[('employe_id', 'ilike', self)]"/>
+                <field name="lib" string="Libellé" 
+                       filter_domain="[('lib', 'ilike', self)]"/>
+                <field name="pointagem_id" string="Pointage"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                
+                <!-- PERMANENT SIDEBAR PANEL -->
+                <searchpanel>
+                    <!-- Societes Section -->
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <!-- Departements Section -->
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#28a745"
+                           select="multi"/>
+                    
+                    <!-- Services Section -->
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                </searchpanel>
+                
+                <!-- Period Filters -->
+                <filter string="Mois Actuel" name="current_month" 
+                        domain="[('periode', '=', 'current')]"/>
+                <filter string="Mois Précédent" name="previous_month" 
+                        domain="[('periode', '=', 'previous')]"/>
+                
+                <separator/>
+                
+                <!-- Month Filters -->
+                <filter string="Janvier" name="month_01" 
+                        domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="month_02" 
+                        domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="month_03" 
+                        domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="month_04" 
+                        domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="month_05" 
+                        domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="month_06" 
+                        domain="[('mois', '=', '6')]"/>
+                <filter string="Juillet" name="month_07" 
+                        domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="month_08" 
+                        domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="month_09" 
+                        domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="month_10" 
+                        domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="month_11" 
+                        domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="month_12" 
+                        domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <!-- Salary Range Filters -->
+                <filter string="Salaire Net &gt; 10 000 DH" name="high_salary" 
+                        domain="[('salaire_net_payer', '&gt;', 10000)]"/>
+                <filter string="Salaire Net 5 000-10 000 DH" name="medium_salary" 
+                        domain="[('salaire_net_payer', '&gt;=', 5000), ('salaire_net_payer', '&lt;=', 10000)]"/>
+                <filter string="Salaire Net &lt; 5 000 DH" name="low_salary" 
+                        domain="[('salaire_net_payer', '&lt;', 5000)]"/>
+                
+                <separator/>
+                
+                <!-- Year Filters -->
+                <filter string="Année 2025" name="year_2025" 
+                        domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" 
+                        domain="[('annee', '=', 2024)]"/>
+                <filter string="Année 2023" name="year_2023" 
+                        domain="[('annee', '=', 2023)]"/>
+                
+                <separator/>
+                
+                <!-- Group By Options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Période" name="group_periode" 
+                            context="{'group_by': 'periode'}"/>
+                    <filter string="Employé" name="group_employe" 
+                            context="{'group_by': 'employe_id'}"/>
+                    <filter string="Service" name="group_service" 
+                            context="{'group_by': 'service_id'}"/>
+                    <filter string="Département" name="group_departement" 
+                            context="{'group_by': 'departement_id'}"/>
+                    <filter string="Société" name="group_societe" 
+                            context="{'group_by': 'societe_id'}"/>
+                    <filter string="Mois" name="group_mois" 
+                            context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" 
+                            context="{'group_by': 'annee'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- LIST VIEW -->
+    <record id="view_softy_bulletin_list" model="ir.ui.view">
+        <field name="name">softy.bulletin.list</field>
+        <field name="model">softy.bulletin</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Bulletins de Paie" sample="1" 
+                  decoration-success="salaire_net_payer &gt; 10000"
+                  decoration-warning="salaire_net_payer &gt;= 5000 and salaire_net_payer &lt;= 10000"
+                  decoration-muted="salaire_net_payer &lt; 5000">
+                
+                <!-- Generation Buttons Header -->
+                <header>
+                    <button name="action_generate_bulletins_current_period" type="object"
+                            class="btn-primary"
+                            string="Générer Bulletins - Mois Actuel"
+                            icon="fa-plus"
+                            confirm="Voulez-vous générer automatiquement tous les bulletins de paie pour le mois actuel ? Cette action créera un bulletin pour chaque pointage du mois actuel qui n'a pas encore de bulletin."
+                            help="Génère automatiquement tous les bulletins pour tous les pointages du mois actuel qui n'ont pas encore de bulletin"/>
+                    <button name="action_generate_bulletins_previous_period" type="object"
+                            class="btn-secondary"
+                            string="Générer Bulletins - Mois Précédent"
+                            icon="fa-clock-o"
+                            confirm="Voulez-vous générer automatiquement tous les bulletins de paie pour le mois précédent ? Cette action créera un bulletin pour chaque pointage du mois précédent qui n'a pas encore de bulletin."
+                            help="Génère automatiquement tous les bulletins pour tous les pointages du mois précédent qui n'ont pas encore de bulletin"/>
+                </header>
+                
+                <!-- Main Fields List -->
+                <field name="employe_id" string="Employé"/>
+                <field name="societe_id" string="Société"/>
+                <field name="departement_id" string="Département"/>
+                <field name="service_id" string="Service"/>
+                <field name="periode" string="Période"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                <field name="nbr_j" string="Jours Travaillés"/>
+                <field name="nbr_j_conge" string="Jours Congé"/>
+                <field name="salaire_brut" string="Salaire Brut" widget="monetary"/>
+                <field name="salaire_brut_imp" string="Brut Imposable" widget="monetary"/>
+                <field name="total_cotisation" string="Cotisations" widget="monetary"/>
+                <field name="ir" string="IR" widget="monetary"/>
+                <field name="salaire_net_payer" string="Net à Payer" widget="monetary"/>
+                
+                <!-- Hidden fields for search/filter purposes -->
+                <field name="pointagem_id" invisible="1"/>
+                <field name="lib" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_softy_bulletin_form" model="ir.ui.view">
+        <field name="name">softy.bulletin.form</field>
+        <field name="model">softy.bulletin</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Bulletin de Paie">
+                <header>
+                    <button name="action_print_bulletin" type="object"
+                            class="btn-primary"
+                            string="Imprimer Bulletin"
+                            icon="fa-print"/>
+                    <button name="action_view_pointage" type="object"
+                            class="btn-secondary"
+                            string="Voir Pointage"
+                            icon="fa-calendar"/>
+                    <button name="action_view_employe" type="object"
+                            class="btn-info"
+                            string="Voir Employé"
+                            icon="fa-user"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="lib"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Informations Générales">
+                            <field name="pointagem_id" required="1"/>
+                            <field name="employe_id" readonly="1"/>
+                            <field name="periode" readonly="1"/>
+                            <field name="mois" readonly="1"/>
+                            <field name="annee" readonly="1"/>
+                            <field name="nbr_j" readonly="1" string="Jours Travaillés"/>
+                            <field name="nbr_j_conge" readonly="1" string="Jours Congé"/>
+                        </group>
+                        <group string="Hiérarchie Organisationnelle">
+                            <field name="societe_id" readonly="1" string="Société"/>
+                            <field name="departement_id" readonly="1" string="Département"/>
+                            <field name="service_id" readonly="1" string="Service"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Summary Section -->
+                    <group>
+                        <group string="Résumé Final">
+                            <field name="salaire_brut" readonly="1" widget="monetary" 
+                                   style="font-weight: bold;"/>
+                            <field name="total_cotisation" readonly="1" widget="monetary"
+                                   style="color: red;"/>
+                            <field name="ir" readonly="1" widget="monetary"
+                                   style="color: orange;"/>
+                            <field name="salaire_net_payer" readonly="1" widget="monetary" 
+                                   style="font-weight: bold; font-size: 1.3em; color: green;"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <!-- Detailed Calculations Tab -->
+                        <page string="Détails des Calculs" name="calculations">
+                            <group>
+                                <group string="1. Salaire de Base et Indemnités">
+                                    <field name="salaire_brut" readonly="1" widget="monetary" 
+                                           string="Salaire Brut Total"/>
+                                    <field name="indemnites_imposables" readonly="1" widget="monetary"/>
+                                    <field name="indemnites_non_imposables" readonly="1" widget="monetary"/>
+                                    <field name="salaire_brut_imp" readonly="1" widget="monetary" 
+                                           string="Salaire Brut Imposable"/>
+                                </group>
+                                
+                                <group string="2. Frais Professionnels">
+                                    <field name="taux_fp" readonly="1" widget="percentage" 
+                                           string="Taux Frais Prof."/>
+                                    <field name="frais_pro" readonly="1" widget="monetary" 
+                                           string="Frais Professionnels"/>
+                                    <field name="salaire_net_imp" readonly="1" widget="monetary" 
+                                           string="Salaire Net Imposable"/>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="3. Impôt sur le Revenu">
+                                    <field name="taux_ir" readonly="1" widget="percentage" 
+                                           string="Taux IR"/>
+                                    <field name="deduction_fiscale" readonly="1" widget="monetary" 
+                                           string="Déduction Fiscale"/>
+                                    <field name="deduction_charge_famille" readonly="1" widget="monetary" 
+                                           string="Déduction Charges Famille"/>
+                                    <field name="ir" readonly="1" widget="monetary" 
+                                           string="Impôt sur Revenu"/>
+                                </group>
+                                
+                                <group string="4. Cotisations Sociales">
+                                    <field name="total_cotisation" readonly="1" widget="monetary" 
+                                           string="Total Cotisations"/>
+                                </group>
+                            </group>
+                            
+                            <!-- Calculation Flow Visual -->
+                            <separator string="Formule de Calcul"/>
+                            <div class="alert alert-info">
+                                <p><strong>Flux de calcul :</strong></p>
+                                <p>1. <strong>Salaire Brut</strong> = (Taux horaire × Heures) + Heures Sup + (Indemnités × (Jours Travaillés + Jours Congé))</p>
+                                <p>2. <strong>Salaire Brut Imposable</strong> = Salaire Brut - Indemnités Non Imposables</p>
+                                <p>3. <strong>Frais Professionnels</strong> = min(SBI × Taux FP, 2916.67)</p>
+                                <p>4. <strong>Salaire Net Imposable</strong> = SBI - Frais Pro - Cotisations</p>
+                                <p>5. <strong>IR</strong> = max(0, (SNI × Taux IR) - Déduction Fiscale - Charges Famille)</p>
+                                <p>6. <strong>Net à Payer</strong> = Salaire Brut - Cotisations - IR</p>
+                            </div>
+                        </page>
+                        
+                        <!-- Employee Information Tab -->
+                        <page string="Informations Employé" name="employee_info">
+                            <group>
+                                <group string="Données de Base">
+                                    <field name="employe_id" readonly="1" string="Employé"/>
+                                    <field name="pointagem_id" readonly="1" string="Pointage Mensuel"/>
+                                    <field name="nbr_j" readonly="1" string="Jours Travaillés"/>
+                                    <field name="nbr_j_conge" readonly="1" string="Jours Congé"/>
+                                </group>
+                                
+                                <group string="Période de Paie">
+                                    <field name="periode" readonly="1" string="Période"/>
+                                    <field name="mois" readonly="1" string="Mois"/>
+                                    <field name="annee" readonly="1" string="Année"/>
+                                </group>
+                            </group>
+                            
+                            <group>
+                                <group string="Structure Organisationnelle">
+                                    <field name="societe_id" readonly="1" string="Société"/>
+                                    <field name="departement_id" readonly="1" string="Département"/>
+                                    <field name="service_id" readonly="1" string="Service"/>
+                                </group>
+                            </group>
+                            
+                            <separator string="Actions rapides"/>
+                            <div class="alert alert-success" role="alert">
+                                <p><strong>Actions disponibles :</strong></p>
+                                <ul>
+                                    <li>Utilisez le bouton "Voir Pointage" pour consulter les détails des heures et indemnités</li>
+                                    <li>Utilisez le bouton "Voir Employé" pour voir les affiliations et informations personnelles</li>
+                                    <li>Utilisez le bouton "Imprimer Bulletin" pour générer le PDF</li>
+                                </ul>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- KANBAN VIEW -->
+    <record id="view_softy_bulletin_kanban" model="ir.ui.view">
+        <field name="name">softy.bulletin.kanban</field>
+        <field name="model">softy.bulletin</field>
+        <field name="type">kanban</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" default_group_by="periode">
+                <!-- All necessary fields -->
+                <field name="lib"/>
+                <field name="employe_id"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="periode"/>
+                <field name="salaire_brut"/>
+                <field name="salaire_brut_imp"/>
+                <field name="salaire_net_payer"/>
+                <field name="ir"/>
+                <field name="total_cotisation"/>
+                <field name="frais_pro"/>
+                <field name="taux_ir"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                <field name="nbr_j"/>
+                <field name="nbr_j_conge"/>
+                
+                <!-- Generation Buttons in Kanban Header -->
+                <header>
+                    <button name="action_generate_bulletins_current_period" type="object"
+                            class="btn btn-primary me-2"
+                            string="Générer Mois Actuel"
+                            icon="fa-plus"
+                            confirm="Voulez-vous générer automatiquement tous les bulletins de paie pour le mois actuel ?"/>
+                    <button name="action_generate_bulletins_previous_period" type="object"
+                            class="btn btn-secondary"
+                            string="Générer Mois Précédent"
+                            icon="fa-clock-o"
+                            confirm="Voulez-vous générer automatiquement tous les bulletins de paie pour le mois précédent ?"/>
+                </header>
+                
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_card o_kanban_card_hover">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong><field name="employe_id"/></strong>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fa fa-building me-1"/> 
+                                        <field name="societe_id"/>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fa fa-sitemap me-1"/> 
+                                        <field name="departement_id"/>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fa fa-users me-1"/> 
+                                        <field name="service_id"/>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                            
+                            <div class="o_kanban_card_content">
+                                <div class="row mb-2">
+                                    <div class="col-7 text-muted small">Salaire Brut</div>
+                                    <div class="col-5 text-end">
+                                        <strong class="text-dark">
+                                            <field name="salaire_brut" widget="monetary"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-7 text-muted small">Brut Imposable</div>
+                                    <div class="col-5 text-end text-info">
+                                        <field name="salaire_brut_imp" widget="monetary"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-7 text-muted small">Cotisations</div>
+                                    <div class="col-5 text-end text-danger">
+                                        <field name="total_cotisation" widget="monetary"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-7 text-muted small">Frais Pro</div>
+                                    <div class="col-5 text-end text-muted">
+                                        <field name="frais_pro" widget="monetary"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-2">
+                                    <div class="col-7 text-muted small">IR (<field name="taux_ir"/>%)</div>
+                                    <div class="col-5 text-end text-warning">
+                                        <field name="ir" widget="monetary"/>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-2"/>
+                                
+                                <div class="row">
+                                    <div class="col-7">
+                                        <strong class="text-dark">Net à Payer</strong>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <strong class="text-success h6 mb-0">
+                                            <field name="salaire_net_payer" widget="monetary"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="o_kanban_card_footer mt-3">
+                                <div class="btn-group btn-group-sm w-100" role="group">
+                                    <button name="action_view_employe" type="object" 
+                                            class="btn btn-outline-primary btn-sm">
+                                        <i class="fa fa-user"/> Employé
+                                    </button>
+                                    <button name="action_view_pointage" type="object" 
+                                            class="btn btn-outline-secondary btn-sm">
+                                        <i class="fa fa-calendar"/> Pointage
+                                    </button>
+                                    <button name="action_print_bulletin" type="object" 
+                                            class="btn btn-outline-success btn-sm">
+                                        <i class="fa fa-print"/> PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Server Actions for Generation -->
+    <record id="server_action_generate_current" model="ir.actions.server">
+        <field name="name">Générer Bulletins - Mois Actuel</field>
+        <field name="model_id" ref="model_softy_bulletin"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_generate_bulletins_current_period()</field>
+    </record>
+
+    <record id="server_action_generate_previous" model="ir.actions.server">
+        <field name="name">Générer Bulletins - Mois Précédent</field>
+        <field name="model_id" ref="model_softy_bulletin"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_generate_bulletins_previous_period()</field>
+    </record>
+
+    <!-- MAIN ACTION with Sidebar -->
+    <record id="action_softy_bulletin" model="ir.actions.act_window">
+        <field name="name">Bulletins de Paie</field>
+        <field name="res_model">softy.bulletin</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_softy_bulletin_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Système de Génération Automatique des Bulletins de Paie
+            </p>
+            
+            <div class="alert alert-primary">
+                <h4><strong>🎯 Sidebar de Filtres :</strong></h4>
+                <p>Utilisez le <strong>panneau de gauche</strong> pour filtrer rapidement par :</p>
+                <ul class="mb-0">
+                    <li><strong>🏢 Sociétés</strong> - Sélectionnez une ou plusieurs sociétés</li>
+                    <li><strong>🏛️ Départements</strong> - Filtrez par département</li>
+                    <li><strong>👥 Services</strong> - Filtrez par service</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-success">
+                <h5><strong>Workflow Optimisé :</strong></h5>
+                <ol class="mb-0">
+                    <li><strong>Pointages :</strong> Saisissez les heures et indemnités dans "Pointages Mensuels"</li>
+                    <li><strong>Génération :</strong> Cliquez sur "Générer Bulletins" pour créer automatiquement tous les bulletins</li>
+                    <li><strong>Filtrage :</strong> Utilisez le sidebar pour filtrer par organisation</li>
+                    <li><strong>Vérification :</strong> Consultez les calculs détaillés dans chaque bulletin</li>
+                    <li><strong>Impression :</strong> Utilisez le bouton "Imprimer" pour les PDFs finaux</li>
+                </ol>
+            </div>
+            
+            <div class="alert alert-info">
+                <strong>🚀 Actions Rapides :</strong><br/>
+                Utilisez les boutons "Générer Bulletins" dans le menu ou en haut des listes pour traiter automatiquement tous les pointages !
+            </div>
+        </field>
+    </record>
+
+    <!-- Complete Menu Structure -->
+    <menuitem id="menu_softy_paie"
+              name="Paie"
+              parent="menu_softy_hr_root"
+              sequence="70"/>
+
+    <menuitem id="menu_softy_bulletin"
+              name="Bulletins de Paie"
+              parent="menu_softy_paie"
+              action="action_softy_bulletin"
+              sequence="10"/>
+
+    <!-- Generation Actions in Menu -->
+    <menuitem id="menu_generate_current"
+              name="Générer Bulletins - Mois Actuel"
+              parent="menu_softy_paie"
+              action="server_action_generate_current"
+              sequence="20"/>
+
+    <menuitem id="menu_generate_previous"
+              name="Générer Bulletins - Mois Précédent"
+              parent="menu_softy_paie"
+              action="server_action_generate_previous"
+              sequence="30"/>
+
+</odoo>

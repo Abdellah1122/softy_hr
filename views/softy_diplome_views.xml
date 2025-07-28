@@ -1,0 +1,176 @@
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_diplome_search" model="ir.ui.view">
+    <field name="name">softy.diplome.search</field>
+    <field name="model">softy.diplome</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="int_dip"/>
+        <field name="specialite"/>
+        <field name="etablissement"/>
+        <field name="employe_id"/>
+        <filter string="Licence" name="filter_licence" domain="[('niveau', '=', 'licence')]"/>
+        <filter string="Maîtrise" name="filter_maitrise" domain="[('niveau', '=', 'maitrise')]"/>
+        <filter string="Doctorat" name="filter_doctorat" domain="[('niveau', '=', 'doctorat')]"/>
+        <filter string="École d'Ingénieurs" name="filter_ingenieur" domain="[('niveau', '=', 'ecole_ingenieur')]"/>
+        <separator/>
+        <filter string="Informatique" name="filter_informatique" domain="[('filiere', '=', 'informatique')]"/>
+        <filter string="Gestion" name="filter_gestion" domain="[('filiere', '=', 'gestion')]"/>
+        <filter string="Économie" name="filter_economie" domain="[('filiere', '=', 'economie')]"/>
+        <separator/>
+        <filter string="Très Bien" name="filter_tres_bien" domain="[('mention', '=', 'tres_bien')]"/>
+        <filter string="Bien" name="filter_bien" domain="[('mention', '=', 'bien')]"/>
+        <group string="Grouper par">
+          <filter string="Niveau" name="group_niveau" context="{'group_by': 'niveau'}"/>
+          <filter string="Filière" name="group_filiere" context="{'group_by': 'filiere'}"/>
+          <filter string="Mention" name="group_mention" context="{'group_by': 'mention'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_diplome_kanban" model="ir.ui.view">
+    <field name="name">softy.diplome.kanban</field>
+    <field name="model">softy.diplome</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="niveau">
+        <field name="int_dip"/>
+        <field name="specialite"/>
+        <field name="etablissement"/>
+        <field name="niveau"/>
+        <field name="filiere"/>
+        <field name="mention"/>
+        <field name="employe_id"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="int_dip"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.niveau.raw_value == 'doctorat' ? 'badge-success' :
+                          record.niveau.raw_value == 'ecole_ingenieur' ? 'badge-primary' :
+                          record.niveau.raw_value == 'maitrise' ? 'badge-info' :
+                          record.niveau.raw_value == 'licence' ? 'badge-warning' :
+                          'badge-secondary'
+                        }">
+                    <field name="niveau"/>
+                  </span>
+                </div>
+                
+                <div class="mb-2">
+                  <h6 class="text-muted mb-1">Spécialité</h6>
+                  <field name="specialite"/>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="mb-2">
+                  <small class="text-muted d-block">Établissement</small>
+                  <field name="etablissement"/>
+                </div>
+                
+                <div class="row g-2">
+                  <div class="col-6">
+                    <span class="badge" 
+                          t-attf-class="#{
+                            record.filiere.raw_value == 'informatique' ? 'badge-primary' :
+                            record.filiere.raw_value == 'gestion' ? 'badge-success' :
+                            record.filiere.raw_value == 'economie' ? 'badge-info' :
+                            'badge-secondary'
+                          }">
+                      <field name="filiere"/>
+                    </span>
+                  </div>
+                  <div class="col-6">
+                    <span class="badge" 
+                          t-attf-class="#{
+                            record.mention.raw_value == 'tres_bien' ? 'badge-success' :
+                            record.mention.raw_value == 'bien' ? 'badge-primary' :
+                            record.mention.raw_value == 'assez_bien' ? 'badge-info' :
+                            'badge-secondary'
+                          }">
+                      <field name="mention"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_diplome_list" model="ir.ui.view">
+    <field name="name">softy.diplome.list</field>
+    <field name="model">softy.diplome</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1"
+            decoration-success="mention in ['tres_bien', 'bien']"
+            decoration-info="niveau in ['doctorat', 'ecole_ingenieur']"
+            decoration-warning="niveau in ['licence', 'maitrise']">
+        <field name="employe_id"/>
+        <field name="int_dip" string="Diplôme"/>
+        <field name="specialite" string="Spécialité"/>
+        <field name="niveau" widget="badge"/>
+        <field name="filiere" widget="badge"/>
+        <field name="mention" widget="badge" 
+               decoration-success="mention == 'tres_bien'"
+               decoration-primary="mention == 'bien'"
+               decoration-info="mention == 'assez_bien'"/>
+        <field name="etablissement" string="Établissement" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_diplome_form" model="ir.ui.view">
+    <field name="name">softy.diplome.form</field>
+    <field name="model">softy.diplome</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="int_dip" placeholder="Intitulé du diplôme..."/>
+            </h1>
+            <h2 class="text-muted">
+              <field name="specialite" placeholder="Spécialité..."/>
+            </h2>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Diplôme">
+              <field name="niveau"/>
+              <field name="filiere"/>
+              <field name="mention"/>
+            </group>
+            
+            <group string="Institution">
+              <field name="etablissement"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_diplome" model="ir.actions.act_window">
+    <field name="name">Diplômes</field>
+    <field name="res_model">softy.diplome</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_niveau': 1}</field>
+  </record>
+
+</odoo>

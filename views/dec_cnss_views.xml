@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View -->
+    <record id="view_declaration_cnss_search" model="ir.ui.view">
+        <field name="name">declarationcnss.search</field>
+        <field name="model">softy.declarationcnss</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Déclarations CNSS">
+                <field name="matricule"/>
+                <field name="nom_complet"/>
+                <field name="n_aff"/>
+                <field name="annee"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                <field name="jours_travaille"/>
+                
+                <searchpanel>
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#17a2b8"
+                           select="multi"/>
+                    
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                    
+                    <field name="type_aff" 
+                           string="Types CNSS" 
+                           icon="fa-shield"
+                           color="#28a745"
+                           select="multi"/>
+                </searchpanel>
+                
+                <filter string="Janvier" name="month_01" domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="month_02" domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="month_03" domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="month_04" domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="month_05" domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="month_06" domain="[('mois', '=', '6')]"/>
+                
+                <separator/>
+                
+                <filter string="Juillet" name="month_07" domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="month_08" domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="month_09" domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="month_10" domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="month_11" domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="month_12" domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <filter string="CNSS Standard" name="cnss_standard" domain="[('type_aff.type_aff', '=', 'cnss')]"/>
+                
+                <separator/>
+                
+                <filter string="Année 2025" name="year_2025" domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" domain="[('annee', '=', 2024)]"/>
+                
+                <separator/>
+                
+                <filter string="Temps plein (≥22 jours)" name="full_time" domain="[('jours_travaille', '>=', 22)]"/>
+                <filter string="Temps partiel (15-21 jours)" name="part_time" domain="[('jours_travaille', '>=', 15), ('jours_travaille', '&lt;', 22)]"/>
+                <filter string="Moins de 15 jours" name="low_days" domain="[('jours_travaille', '&lt;', 15)]"/>
+                
+                <separator/>
+                
+                <filter string="Cotisation &gt; 200 DH" name="high_cotisation" domain="[('cotisation', '&gt;', 200)]"/>
+                <filter string="Cotisation 100-200 DH" name="medium_cotisation" domain="[('cotisation', '&gt;=', 100), ('cotisation', '&lt;=', 200)]"/>
+                <filter string="Cotisation &lt; 100 DH" name="low_cotisation" domain="[('cotisation', '&lt;', 100)]"/>
+                <filter string="Cotisation = 0 DH" name="zero_cotisation" domain="[('cotisation', '=', 0)]"/>
+                
+                <separator/>
+                
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
+                    <filter string="Type CNSS" name="group_type_cnss" context="{'group_by': 'type_aff'}"/>
+                    <filter string="Jours Travaillés" name="group_jours" context="{'group_by': 'jours_travaille'}"/>
+                    <filter string="Mois" name="group_mois" context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" context="{'group_by': 'annee'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_declaration_cnss_list" model="ir.ui.view">
+        <field name="name">declarationcnss.list</field>
+        <field name="model">softy.declarationcnss</field>
+        <field name="arch" type="xml">
+            <list string="Déclarations CNSS" create="false">
+                <field name="employe_id"/>
+                <field name="matricule"/>
+                <field name="n_aff"/>
+                <field name="type_aff"/>
+                <field name="taux_cnss"/>
+                <field name="jours_travaille"/>
+                <field name="salaire"/>
+                <field name="cotisation"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                <field name="date_aff"/>
+                <field name="date_fin_aff"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_declaration_cnss_form" model="ir.ui.view">
+        <field name="name">declarationcnss.form</field>
+        <field name="model">softy.declarationcnss</field>
+        <field name="arch" type="xml">
+            <form string="Déclaration CNSS" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group string="Employé">
+                            <field name="bulletin_id" readonly="1"/>
+                            <field name="employe_id" readonly="1"/>
+                            <field name="matricule" readonly="1"/>
+                            <field name="nom_complet" readonly="1"/>
+                            <field name="situation" readonly="1"/>
+                        </group>
+                        <group string="Affiliation CNSS">
+                            <field name="n_aff" readonly="1"/>
+                            <field name="type_aff" readonly="1"/>
+                            <field name="taux_cnss" readonly="1"/>
+                            <field name="date_aff" readonly="1"/>
+                            <field name="date_fin_aff" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Calculs">
+                            <field name="jours_travaille" readonly="1"/>
+                            <field name="salaire" readonly="1"/>
+                            <field name="cotisation" readonly="1"/>
+                        </group>
+                        <group string="Période">
+                            <field name="annee" readonly="1"/>
+                            <field name="mois" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Organisation">
+                            <field name="societe_id" readonly="1"/>
+                            <field name="departement_id" readonly="1"/>
+                            <field name="service_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Server Action for Generation -->
+    <record id="action_declaration_cnss_generate_server" model="ir.actions.server">
+        <field name="name">Générer Déclarations CNSS</field>
+        <field name="model_id" ref="model_softy_declarationcnss"/>
+        <field name="state">code</field>
+        <field name="code">
+current_year = 2025
+declarations = env['softy.declarationcnss'].generate_declarations_for_period(current_year)
+if declarations:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Succès',
+            'message': f'{len(declarations)} déclaration(s) CNSS générée(s).',
+            'type': 'success',
+            'sticky': False,
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Information',
+            'message': 'Aucune nouvelle déclaration CNSS à générer.',
+            'type': 'info',
+            'sticky': False,
+        }
+    }
+        </field>
+    </record>
+
+    <!-- Main Action -->
+    <record id="action_declaration_cnss" model="ir.actions.act_window">
+        <field name="name">Déclarations CNSS</field>
+        <field name="res_model">softy.declarationcnss</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_declaration_cnss_list"/>
+        <field name="search_view_id" ref="view_declaration_cnss_search"/>
+        <field name="context">{'search_default_year_2025': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune déclaration CNSS trouvée
+            </p>
+            <p>
+                Les déclarations CNSS sont générées automatiquement à partir des bulletins de paie.
+                Utilisez le menu "Générer les Déclarations" pour créer les déclarations manquantes.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_declaration_cnss_softy"
+              name="Déclaration CNSS"
+              parent="menu_declarations_softy"
+              sequence="20"/>
+
+    <menuitem id="menu_declaration_cnss_list"
+              name="Liste des Déclarations"
+              parent="menu_declaration_cnss_softy"
+              action="action_declaration_cnss"
+              sequence="10"/>
+
+    <menuitem id="menu_declaration_cnss_generate"
+              name="Générer les Déclarations"
+              parent="menu_declaration_cnss_softy"
+              action="action_declaration_cnss_generate_server"
+              sequence="20"/>
+
+</odoo>

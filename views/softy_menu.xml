@@ -1,0 +1,331 @@
+<!-- File: views/softy_menu.xml -->
+<odoo>
+  <!-- Root menu -->
+  <menuitem id="menu_softy_hr_root"
+            name="Softy HR"
+            sequence="10"/>
+
+
+  <!-- 2) Structure -->
+  <menuitem id="menu_softy_organigramme"
+            name="Structure"
+            parent="menu_softy_hr_root"
+            sequence="20"/>
+  <record id="action_softy_societe" model="ir.actions.act_window">
+    <field name="name">Sociétés</field>
+    <field name="res_model">softy.societe</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_societe"
+            name="Sociétés"
+            parent="menu_softy_organigramme"
+            action="action_softy_societe"/>
+  <record id="action_softy_departement" model="ir.actions.act_window">
+    <field name="name">Départements</field>
+    <field name="res_model">softy.departement</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_departement"
+            name="Départements"
+            parent="menu_softy_organigramme"
+            action="action_softy_departement"/>
+  <record id="action_softy_service" model="ir.actions.act_window">
+    <field name="name">Services</field>
+    <field name="res_model">softy.service</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_service"
+            name="Services"
+            parent="menu_softy_organigramme"
+            action="action_softy_service"/>
+
+  <!-- 5) RH Adm Du Personnel -->
+  <menuitem id="menu_softy_rh_admin_personnel"
+            name="RH Adm Du Personnel"
+            parent="menu_softy_hr_root"
+            sequence="30"/>
+
+  <!-- a) Information Employés -->
+  <menuitem id="menu_softy_emp_info"
+            name="Information Employés"
+            parent="menu_softy_rh_admin_personnel"
+            sequence="10"/>
+            
+  <record id="action_softy_employe" model="ir.actions.act_window">
+    <field name="name">Employés</field>
+    <field name="res_model">softy.employe</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_employe"
+            name="Employés"
+            parent="menu_softy_emp_info"
+            sequence="40"
+            action="action_softy_employe"/>
+
+  <record id="action_softy_affiliation" model="ir.actions.act_window">
+    <field name="name">Affiliations</field>
+    <field name="res_model">softy.affiliation</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_affiliation"
+            name="Affiliations"
+            parent="menu_softy_emp_info"
+            sequence="10"
+            action="action_softy_affiliation"/>
+  
+
+
+          
+  <record id="action_softy_info_banque_employe" model="ir.actions.act_window">
+    <field name="name">Info Banque Employé</field>
+    <field name="res_model">softy.info_banque_employe</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_info_banque_employe"
+            name="Info Banque Employé"
+            parent="menu_softy_emp_info"
+            sequence="20"
+            action="action_softy_info_banque_employe"/>
+
+  <!-- b) Dossier Employé -->
+  <menuitem id="menu_softy_dossier_employee"
+            name="Dossier Employé"
+            parent="menu_softy_rh_admin_personnel"
+            sequence="20"/>
+  <record id="action_softy_contrat" model="ir.actions.act_window">
+    <field name="name">Contrats</field>
+    <field name="res_model">softy.contrat</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_contrat"
+            name="Contrats"
+            parent="menu_softy_dossier_employee"
+            sequence="10"
+            action="action_softy_contrat"/>
+  <record id="action_softy_membrefamille" model="ir.actions.act_window">
+    <field name="name">Membres de Famille</field>
+    <field name="res_model">softy.membrefamille</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_membrefamille"
+            name="Membres de Famille"
+            parent="menu_softy_dossier_employee"
+            sequence="20"
+            action="action_softy_membrefamille"/>
+  <record id="action_softy_document" model="ir.actions.act_window">
+    <field name="name">Documents</field>
+    <field name="res_model">softy.document</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_document"
+            name="Documents"
+            parent="menu_softy_dossier_employee"
+            sequence="30"
+            action="action_softy_document"/>
+
+  <!-- c) Compétences & Formations -->
+  <menuitem id="menu_softy_competence_formation"
+            name="Compétences &amp; Formations"
+            parent="menu_softy_rh_admin_personnel"
+            sequence="30"/>
+  <record id="action_softy_formation" model="ir.actions.act_window">
+    <field name="name">Formations</field>
+    <field name="res_model">softy.formation</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_formation"
+            name="Formations"
+            parent="menu_softy_competence_formation"
+            sequence="10"
+            action="action_softy_formation"/>
+
+  <record id="action_softy_competence" model="ir.actions.act_window">
+    <field name="name">Compétences</field>
+    <field name="res_model">softy.competence</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_competence"
+            name="Compétences"
+            parent="menu_softy_competence_formation"
+            sequence="20"
+            action="action_softy_competence"/>
+
+  <record id="action_softy_diplome" model="ir.actions.act_window">
+    <field name="name">Diplômes</field>
+    <field name="res_model">softy.diplome</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_diplome"
+            name="Diplômes"
+            parent="menu_softy_competence_formation"
+            sequence="25"
+            action="action_softy_diplome"/>
+
+  <record id="action_softy_experience" model="ir.actions.act_window">
+    <field name="name">Expériences</field>
+    <field name="res_model">softy.experience</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_experience"
+            name="Expériences"
+            parent="menu_softy_competence_formation"
+            sequence="30"
+            action="action_softy_experience"/>
+  <record id="action_softy_langue" model="ir.actions.act_window">
+    <field name="name">Langues</field>
+    <field name="res_model">softy.langue</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_langue"
+            name="Langues"
+            parent="menu_softy_competence_formation"
+            sequence="40"
+            action="action_softy_langue"/>
+
+
+  <menuitem id="menu_softy_gestion_personnelle"
+            name="Gestion Personnelle"
+            parent="menu_softy_rh_admin_personnel"
+            sequence="50"/>
+
+  <!-- Absences action & menu -->
+  <record id="action_softy_absence" model="ir.actions.act_window">
+    <field name="name">Absences</field>
+    <field name="res_model">softy.absence</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Cliquez pour enregistrer une absence.
+      </p>
+    </field>
+  </record>
+  <menuitem id="menu_softy_absence"
+            name="Absences"
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_absence"
+            sequence="1"/>
+  <!-- Retards action -->
+  <record id="action_softy_retard" model="ir.actions.act_window">
+    <field name="name">Retards</field>
+    <field name="res_model">softy.retard</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Cliquez pour déclarer un retard.
+      </p>
+    </field>
+  </record>
+
+  <!-- Retards menu item -->
+  <menuitem id="menu_softy_retard"
+            name="Retards"
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_retard"
+            sequence="2"/>
+
+   <record id="action_softy_contentieux" model="ir.actions.act_window">
+    <field name="name">Contentieux</field>
+    <field name="res_model">softy.contentieux</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Cliquez pour enregistrer un nouveau contentieux.
+      </p>
+    </field>
+  </record>
+
+  <!-- Contentieux menu item -->
+  <menuitem id="menu_softy_contentieux"
+            name="Contentieux"
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_contentieux"
+            sequence="3"/>
+
+    <!-- Prêts action -->
+  <record id="action_softy_pret" model="ir.actions.act_window">
+    <field name="name">Prêts</field>
+    <field name="res_model">softy.pret</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Cliquez pour créer un nouveau dossier de prêt.
+      </p>
+    </field>
+  </record>
+
+  <!-- Prêts menu item -->
+  <menuitem id="menu_softy_pret"
+            name="Prêts"
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_pret"
+            sequence="4"/>
+
+    <!-- Congés action -->
+  <record id="action_softy_conge" model="ir.actions.act_window">
+    <field name="name">Congés</field>
+    <field name="res_model">softy.conge</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Cliquez pour enregistrer un congé.
+      </p>
+    </field>
+  </record>
+
+  <!-- Congés menu item -->
+  <menuitem id="menu_softy_conge"
+            name="Congés"
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_conge"
+            sequence="5"/>
+
+  <!-- 0) Paramètres submenu under Softy HR root -->
+  <menuitem id="menu_softy_parametres"
+            name="Paramètres"
+            parent="menu_softy_hr_root"
+            sequence="200"/>
+
+  <!-- Place Indemnités here -->
+  <record id="action_softy_indemnite" model="ir.actions.act_window">
+    <field name="name">Indemnités</field>
+    <field name="res_model">softy.indemnite</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+  <menuitem id="menu_softy_indemnite"
+            name="Indemnités"
+            parent="menu_softy_parametres"
+            action="action_softy_indemnite"
+            sequence="10"/>
+
+    <record id="action_softy_aff_type" model="ir.actions.act_window">
+    <field name="name">Types d'affiliation</field>
+    <field name="res_model">softy.aff_type</field>
+    <field name="view_mode">kanban,list,form</field>
+  </record>
+
+  <menuitem id="menu_softy_aff_type"
+            name="Types d'affiliation"
+            parent="menu_softy_parametres"
+            sequence="20"
+            action="action_softy_aff_type"/>
+
+    <record id="action_softy_pays" model="ir.actions.act_window">
+    <field name="name">Pays</field>
+    <field name="res_model">softy.pays</field>
+    <field name="view_mode">list,form</field>
+  </record>
+  <menuitem id="menu_softy_pays"
+            name="Pays"
+            parent="menu_softy_parametres"
+            action="action_softy_pays"/>
+  <record id="action_softy_ville" model="ir.actions.act_window">
+    <field name="name">Villes</field>
+    <field name="res_model">softy.ville</field>
+    <field name="view_mode">list,form</field>
+  </record>
+  <menuitem id="menu_softy_ville"
+            name="Villes"
+            parent="menu_softy_parametres"
+            action="action_softy_ville"/>
+
+</odoo>

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Kanban View -->
+  <record id="view_softy_service_kanban" model="ir.ui.view">
+    <field name="name">softy.service.kanban</field>
+    <field name="model">softy.service</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1">
+        <field name="id"/>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="libelle"/>
+        <field name="ref"/>
+        <field name="departement_id"/>
+        <field name="societe_id"/>
+        <templates>
+          <t t-name="card">
+            <div
+              class="o_kanban_card o_kanban_global_click"
+              style="border-radius: 12px;
+                     border: 1px solid #e3f2fd;
+                     box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+                     background: white;">
+              
+              <!-- Header -->
+              <div style="padding:16px; border-bottom:1px solid #f8f9fa;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:12px; height:12px;
+                                border-radius:50%; background:#1976d2;">
+                    </div>
+                    <div>
+                      <div style="font-weight:600; color:#1a1a1a; font-size:16px;">
+                        <field name="name"/>
+                      </div>
+                      <div style="color:#6c757d; font-size:13px;">
+                        Code: <field name="code"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button"
+                       href="#" role="button" style="color:#6c757d;">
+                      <i class="fa fa-ellipsis-v"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Body -->
+              <div style="padding:16px;">
+                
+                <div class="o_kanban_card_manage_section o_kanban_manage_view"
+                     style="margin-bottom:12px;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap:8px;">
+                    <a type="edit" class="btn btn-primary btn-sm"
+                       role="button" style="border-radius:6px;">
+                      Modifier
+                    </a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm"
+                       role="button" style="border-radius:6px;">
+                      Supprimer
+                    </a>
+                  </div>
+                </div>
+                
+                <div style="display:grid; gap:8px;">
+                  
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; background:#e0f7fa;
+                                border-radius:4px; display:flex;
+                                align-items:center; justify-content:center;">
+                      <i class="fa fa-sitemap"
+                         style="font-size:12px; color:#00796b;"/>
+                    </div>
+                    <div>
+                      <span style="color:#6c757d; font-size:12px;">Département:</span>
+                      <span style="color:#1a1a1a; font-weight:500; margin-left:4px;">
+                        <field name="departement_id"/>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; background:#f1f8e9;
+                                border-radius:4px; display:flex;
+                                align-items:center; justify-content:center;">
+                      <i class="fa fa-building"
+                         style="font-size:12px; color:#558b2f;"/>
+                    </div>
+                    <div>
+                      <span style="color:#6c757d; font-size:12px;">Société:</span>
+                      <span style="color:#1a1a1a; font-weight:500; margin-left:4px;">
+                        <field name="societe_id"/>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.libelle.value"
+                       style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; background:#e8eaf6;
+                                border-radius:4px; display:flex;
+                                align-items:center; justify-content:center;">
+                      <i class="fa fa-comment"
+                         style="font-size:12px; color:#303f9f;"/>
+                    </div>
+                    <div style="font-size:13px; color:#1a1a1a;">
+                      <field name="libelle"/>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.ref.value"
+                       style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:24px; height:24px; background:#fff3e0;
+                                border-radius:4px; display:flex;
+                                align-items:center; justify-content:center;">
+                      <i class="fa fa-hashtag"
+                         style="font-size:12px; color:#ff6f00;"/>
+                    </div>
+                    <div style="font-size:13px; color:#1a1a1a;">
+                      Réf: <field name="ref"/>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_service_list" model="ir.ui.view">
+    <field name="name">softy.service.list</field>
+    <field name="model">softy.service</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list string="Services">
+        <field name="code" string="Code"/>
+        <field name="name" string="Nom"/>
+        <field name="libelle" string="Libellé"/>
+        <field name="ref" string="Référence"/>
+        <field name="departement_id" string="Département"/>
+        <field name="societe_id" string="Société" readonly="1"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_service_form" model="ir.ui.view">
+    <field name="name">softy.service.form</field>
+    <field name="model">softy.service</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Service">
+        <sheet style="background:#fafafa;">
+          
+          <!-- Header Card -->
+          <div style="background:white; padding:24px;
+                      border-radius:12px; margin-bottom:24px;
+                      box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display:flex; align-items:flex-start; gap:24px;">
+              
+              <div style="flex:1; min-width:0;">
+                <div style="margin-bottom:16px;">
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    Code Service
+                  </div>
+                  <field name="code" placeholder="Code du service"
+                         style="font-size:16px; color:#1a1a1a;
+                                border:1px solid #e0e0e0;
+                                border-radius:8px;
+                                padding:8px 12px;"/>
+                </div>
+                
+                <div style="margin-bottom:16px;">
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    Nom du Service
+                  </div>
+                  <field name="name" placeholder="Nom du service"
+                         style="font-size:24px; font-weight:600;
+                                color:#1a1a1a; border:none;
+                                background:transparent; padding:0;"/>
+                </div>
+                
+                <div style="margin-bottom:16px;">
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    Libellé Complet
+                  </div>
+                  <field name="libelle" placeholder="Libellé complet"
+                         style="font-size:16px; color:#1a1a1a;
+                                border:1px solid #e0e0e0;
+                                border-radius:8px;
+                                padding:8px 12px;"/>
+                </div>
+                
+                <div>
+                  <div class="o_form_label"
+                       style="color:#6c757d; font-size:13px;
+                              font-weight:500; margin-bottom:4px;">
+                    Référence Service
+                  </div>
+                  <field name="ref" placeholder="Référence du service"
+                         style="font-size:16px; color:#1a1a1a;
+                                border:1px solid #e0e0e0;
+                                border-radius:8px;
+                                padding:8px 12px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tabs -->
+          <notebook>
+            
+            <!-- Structure Tab -->
+            <page string="Structure">
+              <div style="background:white; padding:24px;
+                          border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display:grid;
+                            grid-template-columns:1fr 1fr; gap:32px;">
+                  
+                  <div>
+                    <div class="o_form_label"
+                         style="color:#6c757d; font-size:13px;
+                                font-weight:500; margin-bottom:4px;">
+                      Département
+                    </div>
+                    <field name="departement_id"
+                           placeholder="Sélectionner un département"
+                           style="width:100%; border:1px solid #e0e0e0;
+                                  border-radius:8px; padding:12px;"/>
+                  </div>
+                  
+                  <div>
+                    <div class="o_form_label"
+                         style="color:#6c757d; font-size:13px;
+                                font-weight:500; margin-bottom:4px;">
+                      Société
+                    </div>
+                    <field name="societe_id" readonly="1"
+                           style="width:100%; border:1px solid #e0e0e0;
+                                  border-radius:8px; padding:12px;
+                                  background:#f8f9fa;"/>
+                  </div>
+                  
+                </div>
+              </div>
+            </page>
+            
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search View -->
+  <record id="view_softy_service_search" model="ir.ui.view">
+    <field name="name">softy.service.search</field>
+    <field name="model">softy.service</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="code" string="Code"/>
+        <field name="name" string="Nom"/>
+        <field name="libelle" string="Libellé"/>
+        <field name="ref" string="Référence"/>
+        
+        <separator/>
+        
+        <filter string="Par Département"
+                name="group_departement"
+                context="{'group_by':'departement_id'}"/>
+        <filter string="Par Société"
+                name="group_societe"
+                context="{'group_by':'societe_id'}"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_service" model="ir.actions.act_window">
+    <field name="name">Gestion des Services</field>
+    <field name="res_model">softy.service</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align:center; padding:40px;">
+        <div style="margin-bottom:20px;">
+          <i class="fa fa-sitemap fa-3x" style="color:#1976d2;"/>
+        </div>
+        <h2 style="color:#1a1a1a; font-weight:600; margin-bottom:12px;">
+          Créez votre premier service
+        </h2>
+        <p style="color:#6c757d; max-width:400px; margin:0 auto;">
+          Gérez vos services, liez-les à un département et
+          suivez la structure de votre entreprise dans une
+          interface claire et moderne.
+        </p>
+      </div>
+    </field>
+  </record>
+
+</odoo>

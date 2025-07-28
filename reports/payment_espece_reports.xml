@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Paper Format - Minimal Margins -->
+    <record id="paperformat_espece_minimal" model="report.paperformat">
+        <field name="name">Espèce Minimal Margins</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Individual Report Declaration -->
+    <record id="report_espece_receipt_document" model="ir.actions.report">
+        <field name="name">Reçu de Paiement Espèce - Individuel</field>
+        <field name="model">softy.pespece</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softy_hr.report_espece_receipt_individual_template</field>
+        <field name="report_file">softy_hr.report_espece_receipt_individual_template</field>
+        <field name="binding_model_id" ref="model_softy_pespece"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_espece_minimal"/>
+    </record>
+
+    <!-- Collective Report Declaration -->
+    <record id="report_espece_receipt_collective_document" model="ir.actions.report">
+        <field name="name">Reçu de Paiement Espèce - Collectif</field>
+        <field name="model">softy.pespece</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softy_hr.report_espece_receipt_collective_template</field>
+        <field name="report_file">softy_hr.report_espece_receipt_collective_template</field>
+        <field name="binding_model_id" ref="model_softy_pespece"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_espece_minimal"/>
+    </record>
+
+    <!-- Individual Receipt Template -->
+    <template id="report_espece_receipt_individual_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="espece">
+                <div class="page" style="font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11pt; line-height: 1.3; color: #1a1a1a; margin: 0; padding: 30px; background: #ffffff;">
+
+                    <!-- HEADER SECTION -->
+                    <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid #e5e5e5; padding-bottom: 20px;">
+                        <div style="font-size: 20pt; font-weight: 600; margin-bottom: 8px; color: #000;">
+                            <t t-if="espece.societe_id">
+                                <span t-field="espece.societe_id.rs"/>
+                            </t>
+                            <t t-else="">
+                                [NOM DE L'ENTREPRISE]
+                            </t>
+                        </div>
+                        <div t-if="espece.societe_id and espece.societe_id.address">
+                            <span t-field="espece.societe_id.address"/>
+                        </div>
+                        <div t-if="espece.societe_id">
+                            <span t-if="espece.societe_id.tel" t-field="espece.societe_id.tel"/>
+                            <span t-if="espece.societe_id.tel and espece.societe_id.email"> / </span>
+                            <span t-if="espece.societe_id.email" t-field="espece.societe_id.email"/>
+                        </div>
+                    </div>
+
+                    <!-- DOCUMENT TITLE -->
+                    <div style="font-size: 14pt; font-weight: 500; margin: 30px 0 20px 0; color: #2d2d2d; letter-spacing: 0.5px;">
+                        RECU DE PAIEMENT EN ESPECES
+                    </div>
+
+                    <!-- DATE SECTION -->
+                    <div style="text-align: right; margin-bottom: 30px; font-weight: 400;">
+                        <strong>Date:</strong> <span t-field="espece.date" t-options="{'widget': 'date', 'format': 'd/M/yyyy'}"/>
+                    </div>
+
+                    <!-- ADDITIONAL INFO -->
+                    <div t-if="espece.representant" style="margin: 20px 0; font-weight: 500;">
+                        <strong>Representant:</strong> <span t-field="espece.representant"/>
+                    </div>
+
+                    <div style="margin: 20px 0; font-weight: 500;">
+                        <strong>Periode:</strong> <span t-field="espece.mois"/> <span t-field="espece.annee"/>
+                    </div>
+
+                    <!-- PAYMENT TABLE FOR SINGLE EMPLOYEE -->
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0 40px 0; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+                        <thead>
+                            <tr>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 110px;">
+                                    MATRICULE
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px;">
+                                    NOM ET PRENOM
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 100px;">
+                                    MONTANT
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 220px;">
+                                    MONTANT EN LETTRES
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 140px;">
+                                    SIGNATURE
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="height: 50px;">
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
+                                    <span t-field="espece.employe_id.matricule"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
+                                    <span t-field="espece.montant" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: left; padding-left: 15px; height: 45px; vertical-align: middle; background: #ffffff; font-size: 9pt;">
+                                    <span t-field="espece.montant_en_lettres"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 65px; vertical-align: middle; background: #fafafa;">
+                                    <!-- Signature space -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Collective Receipt Template - ALL RECORDS IN ONE TABLE -->
+    <template id="report_espece_receipt_collective_template">
+        <t t-call="web.html_container">
+            <!-- SINGLE PAGE CONTAINER - NOT IN LOOP -->
+            <div class="page" style="font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11pt; line-height: 1.3; color: #1a1a1a; margin: 0; padding: 30px; background: #ffffff;">
+
+                <!-- HEADER SECTION -->
+                <div style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid #e5e5e5; padding-bottom: 20px;">
+                    <div style="font-size: 20pt; font-weight: 600; margin-bottom: 8px; color: #000;">
+                        <t t-if="docs and docs[0].societe_id">
+                            <span t-field="docs[0].societe_id.rs"/>
+                        </t>
+                        <t t-else="">
+                            [NOM DE L'ENTREPRISE]
+                        </t>
+                    </div>
+                    <div t-if="docs and docs[0].societe_id and docs[0].societe_id.address">
+                        <span t-field="docs[0].societe_id.address"/>
+                    </div>
+                    <div t-if="docs and docs[0].societe_id">
+                        <span t-if="docs[0].societe_id.tel" t-field="docs[0].societe_id.tel"/>
+                        <span t-if="docs[0].societe_id.tel and docs[0].societe_id.email"> / </span>
+                        <span t-if="docs[0].societe_id.email" t-field="docs[0].societe_id.email"/>
+                    </div>
+                </div>
+
+                <!-- DOCUMENT TITLE -->
+                <div style="font-size: 14pt; font-weight: 500; margin: 30px 0 20px 0; color: #2d2d2d; letter-spacing: 0.5px;">
+                    RECU DE PAIEMENT EN ESPECES - EMPLOYES
+                </div>
+
+                <!-- DATE SECTION -->
+                <div style="text-align: right; margin-bottom: 30px; font-weight: 400;">
+                    <strong>Date:</strong> ___________________
+                </div>
+
+                <!-- PAYMENT TABLE WITH ALL RECORDS -->
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0 40px 0; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+                    <thead>
+                        <tr>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 110px;">
+                                MATRICULE
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px;">
+                                NOM ET PRENOM
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 100px;">
+                                MONTANT
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 220px;">
+                                MONTANT EN LETTRES
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 140px;">
+                                SIGNATURE
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- LOOP THROUGH ALL RECORDS HERE - INSIDE THE TABLE -->
+                        <t t-foreach="docs" t-as="espece">
+                            <tr style="height: 50px;">
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
+                                    <span t-field="espece.employe_id.matricule"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
+                                    <span t-field="espece.montant" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: left; padding-left: 15px; height: 45px; vertical-align: middle; background: #ffffff; font-size: 9pt;">
+                                    <span t-field="espece.montant_en_lettres"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 65px; vertical-align: middle; background: #fafafa;">
+                                    <!-- Signature space -->
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- OBSERVATIONS -->
+                <div style="margin: 30px 0;">
+                    <strong>Observations:</strong>
+                    <div style="border: 1px solid #d1d5db; height: 80px; padding: 10px; margin-top: 10px; background: #fafafa;"></div>
+                </div>
+
+                <!-- SIGNATURES SECTION -->
+                <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+                    <div style="text-align: center; width: 200px;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Prepare par:</div>
+                        <div style="border-bottom: 1px solid #000; height: 60px; margin: 10px 0;"></div>
+                        <div style="font-size: 10pt;">Nom: _______________</div>
+                        <div style="font-size: 10pt;">Date: _______________</div>
+                    </div>
+                    
+                    <div style="text-align: center; width: 200px;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Verifie par:</div>
+                        <div style="border-bottom: 1px solid #000; height: 60px; margin: 10px 0;"></div>
+                        <div style="font-size: 10pt;">Nom: _______________</div>
+                        <div style="font-size: 10pt;">Date: _______________</div>
+                    </div>
+                    
+                    <div style="text-align: center; width: 200px;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">Approuve par:</div>
+                        <div style="border-bottom: 1px solid #000; height: 60px; margin: 10px 0;"></div>
+                        <div style="font-size: 10pt;">Nom: _______________</div>
+                        <div style="font-size: 10pt;">Date: _______________</div>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="margin-top: 40px;margin-bottom:2em; border-top: 1px solid #e5e5e5; padding-top: 20px; text-align: center; font-size: 9pt; color: #6b7280;">
+                    <div t-if="docs and docs[0].societe_id and (docs[0].societe_id.i_fiscale or docs[0].societe_id.rc)">
+                        <strong>
+                            <span t-if="docs[0].societe_id.i_fiscale">I.F N° <span t-field="docs[0].societe_id.i_fiscale"/></span>
+                            <span t-if="docs[0].societe_id.rc"> - R.C. <span t-field="docs[0].societe_id.rc"/></span>
+                            <span t-if="docs[0].societe_id.patente"> - Patente : <span t-field="docs[0].societe_id.patente"/></span>
+                            <span t-if="docs[0].societe_id.n_cnss"> - C.N.S.S <span t-field="docs[0].societe_id.n_cnss"/></span>
+                        </strong>
+                    </div>
+                    <div t-if="docs and docs[0].societe_id and (docs[0].societe_id.address or docs[0].societe_id.ville_id)">
+                        <strong>
+                            <span t-if="docs[0].societe_id.address" t-field="docs[0].societe_id.address"/>
+                            <span t-if="docs[0].societe_id.ville_id"> - <span t-field="docs[0].societe_id.ville_id.name"/></span>
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <!-- Minimalist Kanban View -->
+  <record id="view_softy_societe_kanban" model="ir.ui.view">
+    <field name="name">softy.societe.kanban</field>
+    <field name="model">softy.societe</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1">
+        <field name="id"/>
+        <field name="logo"/>
+        <field name="rs"/>
+        <field name="code"/>
+        <field name="rc"/>
+        <field name="ville_id"/>
+        <field name="email"/>
+        <field name="tel"/>
+        <field name="capital"/>
+        
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card o_kanban_global_click" style="border-radius: 12px; border: 1px solid #e3f2fd; box-shadow: 0 2px 8px rgba(0,123,255,0.08); background: white;">
+              
+              <!-- Clean Header -->
+              <div style="padding: 16px; border-bottom: 1px solid #f8f9fa;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                      <field name="logo" widget="image" class="o_kanban_image" 
+                             options="{'preview_image': 'logo', 'size': [48, 48]}"
+                             style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;"/>
+                    </div>
+                    <div>
+                      <div style="font-weight: 600; color: #1a1a1a; font-size: 16px; margin-bottom: 2px;">
+                        <field name="rs"/>
+                      </div>
+                      <div style="color: #6c757d; font-size: 13px;">
+                        Code: <field name="code"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button" href="#" role="button" style="color: #6c757d;">
+                      <i class="fa fa-ellipsis-v" title="Options"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Clean Content -->
+              <div style="padding: 16px;">
+                <!-- Action Buttons -->
+                <div class="o_kanban_card_manage_section o_kanban_manage_view" style="margin-bottom: 12px;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap: 8px;">
+                    <a type="edit" class="btn btn-primary btn-sm" role="button" style="border-radius: 6px;">
+                      Modifier
+                    </a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm" role="button" style="border-radius: 6px;">
+                      Supprimer
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- Company Info -->
+                <div style="display: grid; gap: 8px;">
+                  <div t-if="record.rc.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e3f2fd; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-certificate" style="font-size: 12px; color: #1976d2;" title="RC"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">RC:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="rc"/></span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.ville_id.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #e8f5e8; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-map-marker" style="font-size: 12px; color: #388e3c;" title="Ville"/>
+                    </div>
+                    <div>
+                      <span style="color: #6c757d; font-size: 12px;">Ville:</span>
+                      <span style="color: #1a1a1a; font-weight: 500; margin-left: 4px;"><field name="ville_id"/></span>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.email.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #fff3e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-envelope" style="font-size: 12px; color: #f57c00;" title="Email"/>
+                    </div>
+                    <div style="font-size: 13px; color: #1a1a1a;">
+                      <field name="email"/>
+                    </div>
+                  </div>
+                  
+                  <div t-if="record.tel.value" style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: #f3e5f5; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-phone" style="font-size: 12px; color: #7b1fa2;" title="Téléphone"/>
+                    </div>
+                    <div style="font-size: 13px; color: #1a1a1a;">
+                      <field name="tel"/>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Capital Badge -->
+                <div t-if="record.capital.raw_value" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #f8f9fa;">
+                  <div style="display: inline-flex; align-items: center; gap: 6px; background: #e8f5e8; padding: 4px 8px; border-radius: 16px;">
+                    <i class="fa fa-money" style="color: #388e3c; font-size: 12px;" title="Capital"/>
+                    <span style="color: #388e3c; font-size: 12px; font-weight: 500;">
+                      <field name="capital" widget="monetary"/>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Clean List View -->
+  <record id="view_softy_societe_list" model="ir.ui.view">
+    <field name="name">softy.societe.list</field>
+    <field name="model">softy.societe</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list sample="1">
+        <field name="logo" widget="image" class="o_list_image"/>
+        <field name="code" string="Code"/>
+        <field name="rs" string="Raison Sociale"/>
+        <field name="ville_id" string="Ville"/>
+        <field name="rc" string="Registre Commerce"/>
+        <field name="email" string="Email" widget="email" optional="show"/>
+        <field name="tel" string="Téléphone" optional="show"/>
+        <field name="n_cnss" string="N° CNSS" optional="hide"/>
+        <field name="capital" string="Capital" widget="monetary" optional="hide"/>
+        <field name="banque_id" string="Banque" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Minimalist Form View -->
+  <record id="view_softy_societe_form" model="ir.ui.view">
+    <field name="name">softy.societe.form</field>
+    <field name="model">softy.societe</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Société">
+        <sheet style="background: #fafafa;">
+          
+          <!-- Header Section -->
+          <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: flex-start; gap: 24px;">
+              <!-- Company Logo -->
+              <div style="flex-shrink: 0;">
+                <field name="logo" widget="image" 
+                       options="{'preview_image': 'logo', 'size': [120, 120]}"
+                       style="border-radius: 12px; border: 2px solid #f0f0f0;"/>
+              </div>
+              
+              <!-- Company Details -->
+              <div style="flex: 1; min-width: 0;">
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Raison Sociale</div>
+                  <field name="rs" placeholder="Nom de la société" 
+                         style="font-size: 24px; font-weight: 600; color: #1a1a1a; border: none; background: transparent; padding: 0;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Code Société</div>
+                  <field name="code" placeholder="Code unique" 
+                         style="font-size: 16px; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Libellé Commercial</div>
+                  <field name="libelle" placeholder="Nom commercial" 
+                         style="font-size: 16px; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e3f2fd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-certificate" style="color: #1976d2;" title="Registre Commerce"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Registre Commerce</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="rc" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e8f5e8; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-id-card" style="color: #388e3c;" title="ICE"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Identifiant ICE</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="ice" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #fff3e0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-money" style="color: #f57c00;" title="Capital"/>
+                </div>
+                <div>
+                  <div style="color: #6c757d; font-size: 13px;">Capital Social</div>
+                  <div style="font-weight: 600; color: #1a1a1a;"><field name="capital" widget="monetary" readonly="1"/></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clean Tabs -->
+          <notebook>
+            <page string="Coordonnées">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Address Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-map-marker" style="color: #1976d2;" title="Adresse"/>
+                      Adresse
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Adresse Complète</div>
+                        <field name="address" placeholder="Adresse complète" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Ville</div>
+                        <field name="ville_id" placeholder="Sélectionner une ville" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Contact Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-phone" style="color: #388e3c;" title="Contact"/>
+                      Contact
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Téléphone Principal</div>
+                        <field name="tel" placeholder="+212 XX XX XX XX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Téléphone Secondaire</div>
+                        <field name="tel2" placeholder="+212 XX XX XX XX (optionnel)" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Email</div>
+                        <field name="email" widget="email" placeholder="contact@entreprise.ma" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Site Web</div>
+                        <field name="siteweb" widget="url" placeholder="https://www.entreprise.ma" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Informations Légales">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Legal Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-certificate" style="color: #1976d2;" title="Informations Légales"/>
+                      Registre Commercial
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Registre Commerce</div>
+                        <field name="rc" placeholder="RC XXXXXX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Patente</div>
+                        <field name="patente" placeholder="Numéro de patente" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Identifiant Fiscal</div>
+                        <field name="i_fiscale" placeholder="IF XXXXXXXX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Identifiant ICE</div>
+                        <field name="ice" placeholder="ICE XXXXXXXXXXXXXXX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Social Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-university" style="color: #f57c00;" title="Organismes Sociaux"/>
+                      Organismes Sociaux
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Numéro CNSS</div>
+                        <field name="n_cnss" placeholder="CNSS XXXXXXX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Numéro CIMR</div>
+                        <field name="n_cimr" placeholder="CIMR XXXXXXX" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Capital Social</div>
+                        <field name="capital" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Banque Principale</div>
+                        <field name="banque_id" placeholder="Sélectionner une banque" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Temps de Travail">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Work Time Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-clock-o" style="color: #7b1fa2;" title="Temps de Travail"/>
+                      Configuration du Temps
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Heures par Mois</div>
+                        <field name="nbr_heures_mois" placeholder="ex: 191" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Jours par Mois</div>
+                        <field name="nbr_jours_mois" placeholder="ex: 22" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Heures par Jour</div>
+                        <field name="nbr_heures_jour" placeholder="ex: 8" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Salary Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-money" style="color: #388e3c;" title="Grille Salariale"/>
+                      Grille Salariale
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Salaire Min. par Heure</div>
+                        <field name="salaire_min_h" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Salaire Max. par Heure</div>
+                        <field name="salaire_max_h" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Salaire Min. par Mois</div>
+                        <field name="salaire_min_m" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                      <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Salaire Max. par Mois</div>
+                        <field name="salaire_max_m" widget="monetary" placeholder="0.00 MAD" 
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+            
+            <page string="Organisation">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                  
+                  <!-- Departments Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-sitemap" style="color: #1976d2;" title="Départements"/>
+                      Départements
+                    </h3>
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Départements Actifs</div>
+                      <field name="departement_ids" widget="many2many_tags"
+                             placeholder="Sélectionner les départements"/>
+                    </div>
+                  </div>
+                  
+                  <!-- Services Section -->
+                  <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                      <i class="fa fa-cogs" style="color: #f57c00;" title="Services"/>
+                      Services
+                    </h3>
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Services Disponibles</div>
+                      <field name="service_ids" widget="many2many_tags"
+                             placeholder="Sélectionner les services"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Clean Search View -->
+  <record id="view_softy_societe_search" model="ir.ui.view">
+    <field name="name">softy.societe.search</field>
+    <field name="model">softy.societe</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="rs" string="Raison Sociale"/>
+        <field name="code" string="Code"/>
+        <field name="libelle" string="Libellé"/>
+        <field name="ville_id" string="Ville"/>
+        <field name="rc" string="RC"/>
+        <field name="email" string="Email"/>
+        
+        <separator/>
+        
+        <filter string="Avec Logo" name="filter_with_logo" 
+                domain="[('logo', '!=', False)]"/>
+        <filter string="Avec Site Web" name="filter_with_website" 
+                domain="[('siteweb', '!=', False)]"/>
+        <filter string="Avec Capital" name="filter_with_capital" 
+                domain="[('capital', '>', 0)]"/>
+        
+        <separator/>
+        
+        <filter string="Par Ville" name="group_ville" 
+                context="{'group_by': 'ville_id'}"/>
+        <filter string="Par Banque" name="group_banque" 
+                context="{'group_by': 'banque_id'}"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_societe" model="ir.actions.act_window">
+    <field name="name">Gestion des Sociétés</field>
+    <field name="res_model">softy.societe</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align: center; padding: 40px;">
+        <div style="margin-bottom: 20px;">
+          <i class="fa fa-building fa-3x" style="color: #1976d2;"/>
+        </div>
+        <h2 style="color: #1a1a1a; font-weight: 600; margin-bottom: 12px;">
+          Créez votre première société
+        </h2>
+        <p style="color: #6c757d; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+          Gérez facilement toutes les informations de vos sociétés, 
+          départements et services dans une interface claire et moderne.
+        </p>
+      </div>
+    </field>
+  </record>
+
+</odoo>

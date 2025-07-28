@@ -1,0 +1,166 @@
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_experience_search" model="ir.ui.view">
+    <field name="name">softy.experience.search</field>
+    <field name="model">softy.experience</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="soc"/>
+        <field name="sec_activite"/>
+        <field name="employe_id"/>
+        <field name="degre_maitrise"/>
+        <filter string="Finance" name="filter_finance" domain="[('sec_activite', '=', 'finance')]"/>
+        <filter string="Industrie" name="filter_industrie" domain="[('sec_activite', '=', 'industrie')]"/>
+        <filter string="Services" name="filter_services" domain="[('sec_activite', '=', 'services')]"/>
+        <filter string="Administration" name="filter_admin" domain="[('sec_activite', '=', 'administration')]"/>
+        <separator/>
+        <filter string="Excellence" name="filter_excellent" domain="[('degre_maitrise', '=', 'excellente')]"/>
+        <filter string="Bonne" name="filter_bonne" domain="[('degre_maitrise', '=', 'bonne')]"/>
+        <separator/>
+        <filter string="Expériences récentes" name="filter_recent" 
+                domain="[('date_fin', '>=', (context_today() - relativedelta(years=2)).strftime('%Y-%m-%d'))]"/>
+        <group string="Grouper par">
+          <filter string="Secteur d'Activité" name="group_secteur" context="{'group_by': 'sec_activite'}"/>
+          <filter string="Degré de Maîtrise" name="group_maitrise" context="{'group_by': 'degre_maitrise'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_experience_kanban" model="ir.ui.view">
+    <field name="name">softy.experience.kanban</field>
+    <field name="model">softy.experience</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="sec_activite">
+        <field name="sec_activite"/>
+        <field name="soc"/>
+        <field name="employe_id"/>
+        <field name="date_debut"/>
+        <field name="date_fin"/>
+        <field name="degre_maitrise"/>
+        <field name="motif_depart"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="soc"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.sec_activite.raw_value == 'finance' ? 'badge-success' :
+                          record.sec_activite.raw_value == 'industrie' ? 'badge-primary' :
+                          record.sec_activite.raw_value == 'services' ? 'badge-info' :
+                          record.sec_activite.raw_value == 'administration' ? 'badge-warning' :
+                          'badge-secondary'
+                        }">
+                    <field name="sec_activite"/>
+                  </span>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="row g-2 mb-2">
+                  <div class="col-6">
+                    <small class="text-muted d-block">Début</small>
+                    <field name="date_debut"/>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block">Fin</small>
+                    <field name="date_fin"/>
+                  </div>
+                </div>
+                
+                <div class="mb-2">
+                  <span class="badge" 
+                        t-attf-class="#{
+                          record.degre_maitrise.raw_value == 'excellente' ? 'badge-success' :
+                          record.degre_maitrise.raw_value == 'bonne' ? 'badge-primary' :
+                          record.degre_maitrise.raw_value == 'moyenne' ? 'badge-warning' :
+                          record.degre_maitrise.raw_value == 'insuffisante' ? 'badge-danger' :
+                          'badge-secondary'
+                        }">
+                    <field name="degre_maitrise"/>
+                  </span>
+                </div>
+                
+                <div class="mt-2" t-if="record.motif_depart.value">
+                  <small class="text-muted d-block">Motif de départ</small>
+                  <small><field name="motif_depart"/></small>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_experience_list" model="ir.ui.view">
+    <field name="name">softy.experience.list</field>
+    <field name="model">softy.experience</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1"
+            decoration-success="degre_maitrise == 'excellente'"
+            decoration-primary="degre_maitrise == 'bonne'"
+            decoration-warning="degre_maitrise == 'moyenne'"
+            decoration-danger="degre_maitrise == 'insuffisante'">
+        <field name="employe_id"/>
+        <field name="soc" string="Société"/>
+        <field name="sec_activite" string="Secteur" widget="badge"/>
+        <field name="date_debut" string="Début"/>
+        <field name="date_fin" string="Fin"/>
+        <field name="degre_maitrise" string="Maîtrise" widget="badge"/>
+        <field name="motif_depart" string="Motif de départ" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_experience_form" model="ir.ui.view">
+    <field name="name">softy.experience.form</field>
+    <field name="model">softy.experience</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="soc" placeholder="Nom de la société..."/>
+            </h1>
+            <h2 class="text-muted">
+              <field name="sec_activite" placeholder="Secteur d'activité..."/>
+            </h2>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Période d'Emploi">
+              <field name="date_debut"/>
+              <field name="date_fin"/>
+            </group>
+            
+            <group string="Évaluation">
+              <field name="degre_maitrise"/>
+              <field name="motif_depart"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_experience" model="ir.actions.act_window">
+    <field name="name">Expériences Professionnelles</field>
+    <field name="res_model">softy.experience</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_secteur': 1}</field>
+  </record>
+
+</odoo>

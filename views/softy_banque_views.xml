@@ -1,0 +1,85 @@
+<odoo>
+  <record id="view_softy_banque_kanban" model="ir.ui.view">
+    <field name="name">softy.banque.kanban</field>
+    <field name="model">softy.banque</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_small_column">
+        <!-- Declare all fields you use in the template -->
+        <field name="active"/>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="agence"/>
+        <field name="email"/>
+
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_card oe_kanban_global_click"
+                 t-att-style="
+                   'border-left:4px solid '
+                   + (record.active.raw_value ? '#5cb85c' : '#d9534f')
+                   + '; padding-left:8px;'
+                 "
+                 t-att-title="record.name.raw_value">
+              <strong><field name="name"/></strong>
+              <div class="o_kanban_subtitle"><field name="code"/></div>
+              <div class="o_kanban_text"><field name="agence"/></div>
+              <div class="o_kanban_text"><field name="email"/></div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_banque_list" model="ir.ui.view">
+    <field name="name">softy.banque.list</field>
+    <field name="model">softy.banque</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="libelle"/>
+        <field name="agence"/>
+        <field name="n_compte"/>
+        <field name="lib_societe"/>
+        <field name="ref"/>
+        <field name="address"/>
+        <field name="email"/>
+        <field name="tel"/>
+        <field name="responsable"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_banque_form" model="ir.ui.view">
+    <field name="name">softy.banque.form</field>
+    <field name="model">softy.banque</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <field name="logo" widget="image" class="oe_avatar"/>
+            <field name="code"/>
+            <field name="name"/>
+            <field name="libelle"/>
+            <field name="agence"/>
+            <field name="n_compte"/>
+            <field name="lib_societe"/>
+            <field name="ref"/>
+            <field name="address"/>
+            <field name="email"/>
+            <field name="tel"/>
+            <field name="responsable"/>
+            <field name="active"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+</odoo>

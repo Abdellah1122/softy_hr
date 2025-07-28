@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- SEARCH VIEW -->
+  <record id="view_softy_conge_search" model="ir.ui.view">
+    <field name="name">softy.conge.search</field>
+    <field name="model">softy.conge</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="employe_id"/>
+        <field name="ref_conge"/>
+        <filter string="Annuel" name="filter_annuel"
+                domain="[('nature_conge','=','congeannuel')]"/>
+        <filter string="Maladie" name="filter_maladie"
+                domain="[('nature_conge','=','congedemaladie')]"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- KANBAN VIEW -->
+  <record id="view_softy_conge_kanban" model="ir.ui.view">
+    <field name="name">softy.conge.kanban</field>
+    <field name="model">softy.conge</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="nature_conge">
+        <field name="ref_conge"/>
+        <field name="employe_id"/>
+        <field name="date_depart"/>
+        <field name="duree_jour"/>
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card">
+              <strong><field name="ref_conge"/></strong>
+              <div class="mt-1">
+                <field name="employe_id" widget="many2one"/>
+              </div>
+              <div class="mt-1 small text-muted">
+                <field name="nature_conge"/>
+              </div>
+              <div class="mt-1">
+                Du <field name="date_depart"/> au <field name="date_reprise"/>
+              </div>
+              <div class="mt-1">
+                Durée : <field name="duree_jour"/> j
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- LIST VIEW -->
+  <record id="view_softy_conge_list" model="ir.ui.view">
+    <field name="name">softy.conge.list</field>
+    <field name="model">softy.conge</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="employe_id"/>
+        <field name="ref_conge"/>
+        <field name="motif"/>
+        <field name="nature_conge" widget="badge"/>
+        <field name="date_depart"/>
+        <field name="date_reprise"/>
+        <field name="duree_jour"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- FORM VIEW -->
+  <record id="view_softy_conge_form" model="ir.ui.view">
+    <field name="name">softy.conge.form</field>
+    <field name="model">softy.conge</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Congé">
+        <sheet>
+          <group>
+            <field name="employe_id"/>
+            <field name="ref_conge"/>
+            <field name="motif"/>
+          </group>
+          <group>
+            <field name="nature_conge" widget="selection"/>
+            <field name="date_depart"/>
+            <field name="date_reprise"/>
+            <field name="duree_jour" readonly="1"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+</odoo>

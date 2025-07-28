@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View -->
+    <record id="view_declaration_cimr_search" model="ir.ui.view">
+        <field name="name">declarationcimr.search</field>
+        <field name="model">softy.declarationcimr</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Déclarations CIMR">
+                <field name="matricule"/>
+                <field name="nom_complet"/>
+                <field name="n_aff"/>
+                <field name="annee"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                
+                <searchpanel>
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#17a2b8"
+                           select="multi"/>
+                    
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                    
+                    <field name="type_aff" 
+                           string="Types CIMR" 
+                           icon="fa-percent"
+                           color="#28a745"
+                           select="multi"/>
+                </searchpanel>
+                
+                <filter string="T1" name="trimestre_1" domain="[('trimestre', '=', '1')]"/>
+                <filter string="T2" name="trimestre_2" domain="[('trimestre', '=', '2')]"/>
+                <filter string="T3" name="trimestre_3" domain="[('trimestre', '=', '3')]"/>
+                <filter string="T4" name="trimestre_4" domain="[('trimestre', '=', '4')]"/>
+                
+                <separator/>
+                
+                <filter string="CIMR Standard" name="cimr_standard" domain="[('type_aff.type_aff', '=', 'ccimr')]"/>
+                <filter string="CIMR 6%" name="cimr_6" domain="[('type_aff.type_aff', '=', 'ccimr6')]"/>
+                <filter string="CIMR 7%" name="cimr_7" domain="[('type_aff.type_aff', '=', 'ccimr7')]"/>
+                <filter string="CIMR 10%" name="cimr_10" domain="[('type_aff.type_aff', '=', 'ccimr10')]"/>
+                
+                <separator/>
+                
+                <filter string="Année 2025" name="year_2025" domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" domain="[('annee', '=', 2024)]"/>
+                
+                <separator/>
+                
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
+                    <filter string="Type CIMR" name="group_type_cimr" context="{'group_by': 'type_aff'}"/>
+                    <filter string="Trimestre" name="group_trimestre" context="{'group_by': 'trimestre'}"/>
+                    <filter string="Année" name="group_annee" context="{'group_by': 'annee'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_declaration_cimr_list" model="ir.ui.view">
+        <field name="name">declarationcimr.list</field>
+        <field name="model">softy.declarationcimr</field>
+        <field name="arch" type="xml">
+            <list string="Déclarations CIMR" create="false">
+                <field name="employe_id"/>
+                <field name="matricule"/>
+                <field name="n_aff"/>
+                <field name="type_aff"/>
+                <field name="taux_cimr"/>
+                <field name="salaire"/>
+                <field name="cotisation"/>
+                <field name="trimestre"/>
+                <field name="mois"/>
+                <field name="annee"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Server Action for Generation -->
+    <record id="action_declaration_cimr_generate_server" model="ir.actions.server">
+        <field name="name">Générer Déclarations CIMR</field>
+        <field name="model_id" ref="model_softy_declarationcimr"/>
+        <field name="state">code</field>
+        <field name="code">
+current_year = 2025
+declarations = env['softy.declarationcimr'].generate_declarations_for_period(current_year)
+if declarations:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Succès',
+            'message': f'{len(declarations)} déclaration(s) CIMR générée(s).',
+            'type': 'success',
+            'sticky': False,
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Information',
+            'message': 'Aucune nouvelle déclaration CIMR à générer.',
+            'type': 'info',
+            'sticky': False,
+        }
+    }
+        </field>
+    </record>
+
+    <!-- Main Action -->
+    <record id="action_declaration_cimr" model="ir.actions.act_window">
+        <field name="name">Déclarations CIMR</field>
+        <field name="res_model">softy.declarationcimr</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_declaration_cimr_list"/>
+        <field name="search_view_id" ref="view_declaration_cimr_search"/>
+        <field name="context">{'search_default_year_2025': 1}</field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_declarations_softy"
+              name="Déclarations Sociales"
+              parent="menu_softy_hr_root"
+              sequence="90"/>
+
+    <menuitem id="menu_declaration_cimr_softy"
+              name="Déclaration CIMR"
+              parent="menu_declarations_softy"
+              sequence="10"/>
+
+    <menuitem id="menu_declaration_cimr_list"
+              name="Liste des Déclarations"
+              parent="menu_declaration_cimr_softy"
+              action="action_declaration_cimr"
+              sequence="10"/>
+
+    <menuitem id="menu_declaration_cimr_generate"
+              name="Générer les Déclarations"
+              parent="menu_declaration_cimr_softy"
+              action="action_declaration_cimr_generate_server"
+              sequence="20"/>
+
+</odoo>

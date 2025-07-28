@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Simple Kanban View -->
+  <record id="view_softy_qualification_kanban" model="ir.ui.view">
+    <field name="name">softy.qualification.kanban</field>
+    <field name="model">softy.qualification</field>
+    <field name="type">kanban</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_mobile" sample="1">
+        <field name="id"/>
+        <field name="code"/>
+        <field name="qualification"/>
+        
+        <templates>
+          <t t-name="card">
+            <div class="o_kanban_card o_kanban_global_click" style="border-radius: 12px; border: 1px solid #e3f2fd; box-shadow: 0 2px 8px rgba(0,123,255,0.08); background: white;">
+              
+              <!-- Clean Header -->
+              <div style="padding: 16px; border-bottom: 1px solid #f8f9fa;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #fff8e1; display: flex; align-items: center; justify-content: center;">
+                      <i class="fa fa-star" style="font-size: 24px; color: #ffa000;" title="Qualification"/>
+                    </div>
+                    <div>
+                      <div style="font-weight: 600; color: #1a1a1a; font-size: 16px; margin-bottom: 2px;">
+                        <field name="qualification"/>
+                      </div>
+                      <div style="color: #6c757d; font-size: 13px;">
+                        Code: <field name="code"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="o_kanban_manage_button_section">
+                    <a class="o_kanban_manage_toggle_button" href="#" role="button" style="color: #6c757d;">
+                      <i class="fa fa-ellipsis-v" title="Options"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div style="padding: 16px;">
+                <div class="o_kanban_card_manage_section o_kanban_manage_view" style="margin-bottom: 0;">
+                  <div class="o_kanban_card_manage_section_buttons" style="gap: 8px;">
+                    <a type="edit" class="btn btn-primary btn-sm" role="button" style="border-radius: 6px;">
+                      Modifier
+                    </a>
+                    <a type="delete" class="btn btn-outline-secondary btn-sm" role="button" style="border-radius: 6px;">
+                      Supprimer
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Simple List View -->
+  <record id="view_softy_qualification_list" model="ir.ui.view">
+    <field name="name">softy.qualification.list</field>
+    <field name="model">softy.qualification</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1">
+        <field name="code" string="Code"/>
+        <field name="qualification" string="Qualification"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Simple Form View -->
+  <record id="view_softy_qualification_form" model="ir.ui.view">
+    <field name="name">softy.qualification.form</field>
+    <field name="model">softy.qualification</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Qualification">
+        <sheet style="background: #fafafa;">
+          
+          <!-- Header Section -->
+          <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: flex-start; gap: 24px;">
+              <!-- Qualification Icon -->
+              <div style="flex-shrink: 0;">
+                <div style="width: 80px; height: 80px; border-radius: 12px; background: #fff8e1; display: flex; align-items: center; justify-content: center;">
+                  <i class="fa fa-star" style="font-size: 32px; color: #ffa000;" title="Qualification"/>
+                </div>
+              </div>
+              
+              <!-- Qualification Details -->
+              <div style="flex: 1; min-width: 0;">
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Code de la Qualification</div>
+                  <field name="code" placeholder="Code unique (ex: QUAL001)" 
+                         style="font-size: 18px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                  <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nom de la Qualification</div>
+                  <field name="qualification" placeholder="Nom de la qualification" 
+                         style="font-size: 20px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px;"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Section -->
+          <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="background: #f8f9fa; border-left: 4px solid #ffa000; padding: 16px; border-radius: 0 8px 8px 0;">
+              <div style="color: #ffa000; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa fa-info-circle" title="Information"/>
+                Information
+              </div>
+              <div style="color: #1a1a1a; font-size: 14px;">
+                Les qualifications permettent de catégoriser les compétences et niveaux de formation des employés. 
+                Chaque qualification doit avoir un code unique pour faciliter l'identification.
+              </div>
+            </div>
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Simple Search View -->
+  <record id="view_softy_qualification_search" model="ir.ui.view">
+    <field name="name">softy.qualification.search</field>
+    <field name="model">softy.qualification</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="code" string="Code"/>
+        <field name="qualification" string="Qualification"/>
+        
+        <separator/>
+        
+        <filter string="Par Code" name="group_code" 
+                context="{'group_by': 'code'}"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_qualification" model="ir.actions.act_window">
+    <field name="name">Qualifications</field>
+    <field name="res_model">softy.qualification</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+      <div style="text-align: center; padding: 40px;">
+        <div style="margin-bottom: 20px;">
+          <i class="fa fa-star fa-3x" style="color: #ffa000;"/>
+        </div>
+        <h2 style="color: #1a1a1a; font-weight: 600; margin-bottom: 12px;">
+          Créez votre première qualification
+        </h2>
+        <p style="color: #6c757d; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+          Définissez les qualifications pour catégoriser les compétences 
+          et niveaux de formation de vos employés.
+        </p>
+      </div>
+    </field>
+  </record>
+
+  <!-- Menu Item -->
+  <menuitem id="menu_softy_qualification"
+            name="Qualifications"
+            parent="menu_softy_competence_formation"
+            action="action_softy_qualification"
+            sequence="5"/>
+
+</odoo>

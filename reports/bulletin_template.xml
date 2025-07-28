@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="bulletin_paie_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="bulletin">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 15px; min-height: 100vh; box-sizing: border-box; page-break-inside: avoid; display: flex; flex-direction: column;">
+                        
+                        <!-- Main Content -->
+                        <div style="flex: 1;">
+<!-- Company Logo and Title -->
+                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <div style="width: 120px; height: 90px; margin-right: 20px;">
+                                    <t t-if="bulletin.societe_id and bulletin.societe_id.logo">
+                                        <img t-att-src="image_data_uri(bulletin.societe_id.logo)" style="width: 120px; height: 90px; object-fit: contain; border: 2px solid #333; border-radius: 8px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Fallback gradient logo -->
+                                        <div style="width: 120px; height: 90px; background: linear-gradient(45deg, #1e3a8a 0%, #3b82f6 50%, #ef4444 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px solid #333;">
+                                            <div style="color: white; font-weight: bold; font-size: 14px; text-align: center;">
+                                                <div style="background: #1e3a8a; padding: 3px 6px; border-radius: 4px; margin-bottom: 3px;">
+                                                    <t t-if="bulletin.societe_id and bulletin.societe_id.code">
+                                                        <t t-esc="bulletin.societe_id.code"/>
+                                                    </t>
+                                                    <t t-else="">GIS</t>
+                                                </div>
+                                                <div style="font-size: 8px; line-height: 1.2;">
+                                                    <t t-if="bulletin.societe_id and bulletin.societe_id.rs">
+                                                        <t t-esc="bulletin.societe_id.rs[:25]"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        GENERAL<br/>
+                                                        INTELLIGENCE<br/>
+                                                        SERVICES
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div style="flex: 1; text-align: center;">
+                                    <h1 style="font-size: 20px; font-weight: bold; margin: 0; color: #000;">BULLETIN DE PAIE</h1>
+                                </div>
+                            </div>
+
+                            <!-- Employer Section -->
+                            <div style="display: flex; margin-bottom: 15px; gap: 10px;">
+                                <!-- Employer Info -->
+                                <div style="flex: 1;">
+                                    <div style="background: #3b82f6; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 12px; border: 2px solid #3b82f6;">
+                                        EMPLOYEUR
+                                    </div>
+                                    <div style="border: 2px solid #3b82f6; padding: 15px; text-align: center; min-height: 80px; display: flex; flex-direction: column; justify-content: center;">
+                                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">
+                                            <t t-esc="bulletin.societe_id.rs if bulletin.societe_id else 'GIS'"/>
+                                        </div>
+                                        <div style="font-size: 10px;">
+                                            N° CNSS <strong><t t-esc="bulletin.societe_id.n_cnss if bulletin.societe_id else '5123903'"/></strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Employee Matricule and Function -->
+                                <div style="flex: 1;">
+                                    <div style="background: #3b82f6; color: white; padding: 8px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; border: 2px solid #3b82f6;">
+                                        <span>Matricule</span>
+                                        <span>Fonction</span>
+                                    </div>
+                                    <div style="border: 2px solid #3b82f6; padding: 15px; min-height: 80px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <strong style="font-size: 14px;"><t t-esc="bulletin.employe_id.matricule"/></strong>
+                                            <strong style="font-size: 14px;"><t t-esc="bulletin.employe_id.qualification_id.qualification if bulletin.employe_id.qualification_id else 'N/A'"/></strong>
+                                        </div>
+                                        <div style="margin-bottom: 8px;">
+                                            <strong>Periode : <t t-esc="dict(bulletin.fields_get(['mois'])['mois']['selection'])[bulletin.mois].upper()"/> - <t t-esc="bulletin.annee"/></strong>
+                                        </div>
+                                        <div>
+                                            CNSS <strong><t t-esc="bulletin.employe_id.cin"/></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employee Details Section -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="background: #3b82f6; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 12px; border: 2px solid #3b82f6;">
+                                    SALARIE
+                                </div>
+                                <div style="border: 2px solid #3b82f6; padding: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <div style="flex: 2;">
+                                            <div style="margin-bottom: 5px;"><strong>Nom &amp; Prenom</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.name"/></span></div>
+                                            <div style="margin-bottom: 5px;"><strong>N° CIN</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.cin"/></span></div>
+                                            <div style="margin-bottom: 5px;"><strong>Date Embauche</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.date_embauche.strftime('%d/%m/%Y') if bulletin.employe_id.date_embauche else 'N/A'"/></span></div>
+                                            <div style="margin-bottom: 5px;"><strong>Date Naissance</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.date_naissance.strftime('%d/%m/%Y') if bulletin.employe_id.date_naissance else 'N/A'"/></span></div>
+                                        </div>
+                                        <div style="flex: 1; text-align: right;">
+                                            <div style="margin-bottom: 5px;">
+                                                <strong>SF</strong> 
+                                                <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;">
+                                                    <t t-if="bulletin.employe_id.situation_familiale == 'celibataire'">C</t>
+                                                    <t t-elif="bulletin.employe_id.situation_familiale == 'marie'">M</t>
+                                                    <t t-elif="bulletin.employe_id.situation_familiale == 'divorce'">D</t>
+                                                    <t t-elif="bulletin.employe_id.situation_familiale == 'veuf'">V</t>
+                                                    <t t-else="">C</t>
+                                                </span> 
+                                                <strong>Nb Enfant :</strong> 
+                                                <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.nbr_enfant"/></span> 
+                                                <strong>Deduction</strong> 
+                                                <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="'{:.2f}'.format(bulletin.deduction_charge_famille)"/></span>
+                                            </div>
+                                            <div style="margin-bottom: 5px;"><strong>MENS/HOR</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;">H</span></div>
+                                            <div style="margin-bottom: 5px;">
+                                                <strong>Paiement</strong> 
+                                                <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;">
+                                                    <t t-if="bulletin.employe_id.mode_payment == 'vir'">V</t>
+                                                    <t t-elif="bulletin.employe_id.mode_payment == 'cheque'">C</t>
+                                                    <t t-elif="bulletin.employe_id.mode_payment == 'esp'">E</t>
+                                                    <t t-else="">V</t>
+                                                </span> 
+                                                <strong>Salaire Base</strong> 
+                                                <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="'{:.2f}'.format(bulletin.employe_id.taux_horaire)"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <strong>Adresse</strong> <span style="border-bottom: 1px dotted #000; padding-bottom: 2px; margin-left: 10px;"><t t-esc="bulletin.employe_id.rue"/></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Salary Table -->
+                            <div style="margin-bottom: 15px;">
+                                <table style="width: 100%; border-collapse: collapse; border: 2px solid #333;">
+                                    <!-- Table Header -->
+                                    <thead>
+                                        <tr style="background: #3b82f6; color: white; border: 2px solid #333;">
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Code</th>
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Libelle</th>
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Base</th>
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Taux</th>
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Gain</th>
+                                            <th style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold;">Retenue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Base Salary -->
+                                        <tr style="border: 2px solid #333;">
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">10</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Salaire de Base</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:.2f}'.format(bulletin.pointagem_id.nbr_h)"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:.2f}'.format(bulletin.employe_id.taux_horaire)"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-set="salaire_base_calc" t-value="bulletin.pointagem_id.nbr_h * bulletin.employe_id.taux_horaire"/>
+                                                <t t-esc="'{:,.2f}'.format(salaire_base_calc).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                        </tr>
+
+                                        <!-- Overtime 25% (if exists) -->
+                                        <t t-if="bulletin.pointagem_id.h_25 > 0">
+                                            <tr style="border: 2px solid #333;">
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">35</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Heures Sup a 25 %</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.pointagem_id.h_25)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.employe_id.taux_horaire * 1.25)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-set="gain_25" t-value="bulletin.pointagem_id.h_25 * bulletin.employe_id.taux_horaire * 1.25"/>
+                                                    <t t-esc="'{:,.2f}'.format(gain_25).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            </tr>
+                                        </t>
+
+                                        <!-- Overtime 50% (if exists) -->
+                                        <t t-if="bulletin.pointagem_id.h_50 > 0">
+                                            <tr style="border: 2px solid #333;">
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">40</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Heures Sup a 50 %</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.pointagem_id.h_50)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.employe_id.taux_horaire * 1.50)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-set="gain_50" t-value="bulletin.pointagem_id.h_50 * bulletin.employe_id.taux_horaire * 1.50"/>
+                                                    <t t-esc="'{:,.2f}'.format(gain_50).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            </tr>
+                                        </t>
+
+                                        <!-- Overtime 100% (if exists) -->
+                                        <t t-if="bulletin.pointagem_id.h_100 > 0">
+                                            <tr style="border: 2px solid #333;">
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">45</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Heures Sup a 100 %</td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.pointagem_id.h_100)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-esc="'{:.2f}'.format(bulletin.employe_id.taux_horaire * 2.00)"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                    <t t-set="gain_100" t-value="bulletin.pointagem_id.h_100 * bulletin.employe_id.taux_horaire * 2.00"/>
+                                                    <t t-esc="'{:,.2f}'.format(gain_100).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            </tr>
+                                        </t>
+
+                                        <!-- Dynamic Indemnites (Gains) -->
+                                        <t t-if="bulletin.pointagem_id.ind_point_ids">
+                                            <t t-foreach="bulletin.pointagem_id.ind_point_ids.filtered(lambda x: x.indemnite_id.type_ind == 'gain')" t-as="ind_line">
+                                                <tr style="border: 2px solid #333;">
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">
+                                                        <t t-esc="ind_line.indemnite_id.code"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">
+                                                        <t t-esc="ind_line.indemnite_id.des_indem"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-if="ind_line.indemnite_id.j">
+                                                            <t t-esc="bulletin.pointagem_id.nbr_j + bulletin.pointagem_id.nbr_j_conge"/>
+                                                        </t>
+                                                        <t t-else="">1</t>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-esc="'{:.2f}'.format(ind_line.montant)"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-set="ind_total" t-value="ind_line.montant * ((bulletin.pointagem_id.nbr_j + bulletin.pointagem_id.nbr_j_conge) if ind_line.indemnite_id.j else 1)"/>
+                                                        <t t-esc="'{:,.2f}'.format(ind_total).replace(',', ' ')"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                                </tr>
+                                            </t>
+                                        </t>
+
+                                        <!-- Gross Taxable Salary -->
+                                        <tr style="border: 2px solid #333;">
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">205</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Salaire Brut Imposable</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.salaire_brut_imp).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                        </tr>
+
+                                        <!-- Cotisations Section Header -->
+                                        <tr style="background: #e0e0e0; border: 2px solid #333;">
+                                            <td colspan="6" style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center; font-weight: bold; color: #2c3e50;">
+                                                === COTISATIONS SOCIALES ===
+                                            </td>
+                                        </tr>
+
+                                        <!-- Dynamic Cotisations -->
+                                        <t t-if="bulletin.employe_id.affiliation_ids">
+                                            <t t-foreach="bulletin.employe_id.affiliation_ids" t-as="affiliation">
+                                                <t t-set="cotis_base" t-value="bulletin.salaire_brut_imp"/>
+                                                <t t-if="affiliation.aff_type_id.plafond > 0 and cotis_base > affiliation.aff_type_id.plafond">
+                                                    <t t-set="cotis_base" t-value="affiliation.aff_type_id.plafond"/>
+                                                </t>
+                                                <t t-set="cotis_montant" t-value="cotis_base * affiliation.aff_type_id.taux / 100"/>
+                                                <tr style="border: 2px solid #333;">
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">
+                                                        <t t-if="affiliation.aff_type_id.type_aff == 'cnss'">210</t>
+                                                        <t t-elif="affiliation.aff_type_id.type_aff == 'amo'">219</t>
+                                                        <t t-elif="affiliation.aff_type_id.type_aff == 'cipe'">213</t>
+                                                        <t t-elif="'cimr' in affiliation.aff_type_id.type_aff">215</t>
+                                                        <t t-else="">220</t>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">
+                                                        <t t-esc="affiliation.aff_type_id.name"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-esc="'{:,.2f}'.format(cotis_base).replace(',', ' ')"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-esc="'{:.2f}'.format(affiliation.aff_type_id.taux)"/>%
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-esc="'{:,.2f}'.format(cotis_montant).replace(',', ' ')"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+
+                                        <!-- Professional Expenses -->
+                                        <tr style="border: 2px solid #333;">
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">230</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Frais Professionnels</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.salaire_brut_imp).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:.2f}'.format(bulletin.taux_fp)"/>%
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.frais_pro).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                        </tr>
+
+                                        <!-- Income Tax -->
+                                        <tr style="border: 2px solid #333;">
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">225</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">Impot Sur le Revenu</td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.salaire_net_imp).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:.2f}'.format(bulletin.taux_ir)"/>%
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                            <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.ir).replace(',', ' ')"/>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Dynamic Indemnites (Retenues) -->
+                                        <t t-if="bulletin.pointagem_id.ind_point_ids">
+                                            <t t-foreach="bulletin.pointagem_id.ind_point_ids.filtered(lambda x: x.indemnite_id.type_ind == 'retenu')" t-as="ind_line">
+                                                <tr style="border: 2px solid #333;">
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;">
+                                                        <t t-esc="ind_line.indemnite_id.code"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;">
+                                                        <t t-esc="ind_line.indemnite_id.des_indem"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-if="ind_line.indemnite_id.j">
+                                                            <t t-esc="bulletin.pointagem_id.nbr_j + bulletin.pointagem_id.nbr_j_conge"/>
+                                                        </t>
+                                                        <t t-else="">1</t>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-esc="'{:.2f}'.format(ind_line.montant)"/>
+                                                    </td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px;"></td>
+                                                    <td style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: right;">
+                                                        <t t-set="ret_total" t-value="ind_line.montant * ((bulletin.pointagem_id.nbr_j + bulletin.pointagem_id.nbr_j_conge) if ind_line.indemnite_id.j else 1)"/>
+                                                        <t t-esc="'{:,.2f}'.format(ret_total).replace(',', ' ')"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+
+                                        <!-- Separator Line -->
+                                        <tr style="border: 2px solid #333;">
+                                            <td colspan="6" style="border: 2px solid #333; padding: 6px; text-align: center; font-size: 10px;">----------------------------</td>
+                                        </tr>
+
+                                        <!-- Total Row with dynamic calculations -->
+                                        <tr style="background: #3b82f6; color: white; font-weight: bold; border: 2px solid #333;">
+                                            <td style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: center;" colspan="2">Total</td>
+                                            <td style="border: 2px solid #333; padding: 8px; font-size: 11px;"></td>
+                                            <td style="border: 2px solid #333; padding: 8px; font-size: 11px;"></td>
+                                            <td style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: right;">
+                                                <t t-esc="'{:,.2f}'.format(bulletin.salaire_brut).replace(',', ' ')"/>
+                                            </td>
+                                            <td style="border: 2px solid #333; padding: 8px; font-size: 11px; text-align: right;">
+                                                <t t-set="total_retenues" t-value="bulletin.total_cotisation + bulletin.ir"/>
+                                                <t t-esc="'{:,.2f}'.format(total_retenues).replace(',', ' ')"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Bottom Section -->
+                            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                                <!-- Cumulative Summary -->
+                                <div style="flex: 1;">
+                                    <table style="width: 100%; border-collapse: collapse; border: 2px solid #333;">
+                                        <thead>
+                                            <tr style="background: #f0f0f0; border: 2px solid #333;">
+                                                <th style="border: 2px solid #333; padding: 6px; font-size: 10px; text-align: center;" rowspan="2">Cumul</th>
+                                                <th style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">Nb Jours</th>
+                                                <th style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">Brut</th>
+                                                <th style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">Prev Soc</th>
+                                                <th style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">SNI</th>
+                                                <th style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">I.R</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="border: 2px solid #333;">
+                                                <td style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">
+                                                    <t t-esc="bulletin.pointagem_id.nbr_j"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(bulletin.salaire_brut).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(bulletin.total_cotisation).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(bulletin.salaire_net_imp).replace(',', ' ')"/>
+                                                </td>
+                                                <td style="border: 2px solid #333; padding: 4px; font-size: 9px; text-align: center;">
+                                                    <t t-esc="'{:,.2f}'.format(bulletin.ir).replace(',', ' ')"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Net Pay -->
+                                <div style="width: 200px;">
+                                    <div style="background: #3b82f6; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 12px; border: 2px solid #333;">
+                                        NET PAYE
+                                    </div>
+                                    <div style="border: 2px solid #3b82f6; padding: 20px; text-align: center; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                                        <div style="font-size: 18px; font-weight: bold;">
+                                            <t t-esc="'{:,.2f}'.format(bulletin.salaire_net_payer).replace(',', ' ')"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employee Signature Section -->
+                            <div style="margin-bottom: 20px;">
+                                <div style="background: #3b82f6; color: white; text-align: center; padding: 8px; font-weight: bold; font-size: 12px; width: 200px; margin: 0 auto; border: 2px solid #333;">
+                                    Emargement salarie
+                                </div>
+                                <div style="border: 2px dashed #3b82f6; height: 60px; width: 200px; margin: 0 auto;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Company Information - Always at bottom -->
+                        <div style="margin-top:20em; text-align: center; font-size: 8px; color: #666; border-top: 2px solid #333; padding-top: 15px;">
+                            <div style="margin-bottom: 5px;">
+                                <strong>
+                                    R.C <t t-esc="bulletin.societe_id.rc if bulletin.societe_id else '583517'"/> - 
+                                    Taxe Prof <t t-esc="bulletin.societe_id.patente if bulletin.societe_id else '30301697'"/> - 
+                                    I.F <t t-esc="bulletin.societe_id.i_fiscale if bulletin.societe_id else '53774669'"/> - 
+                                    ICE <t t-esc="bulletin.societe_id.ice if bulletin.societe_id else '000284704000092'"/>
+                                </strong>
+                            </div>
+                            <div>
+                                <t t-esc="bulletin.societe_id.address if bulletin.societe_id else '16,ETAGE 4,IMM A2 RES BASMA,AIN SEBAA CASABLANCA MAROC - CASABLANCA'"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Page break for multiple bulletins -->
+                    <div style="page-break-after: always;" t-if="not bulletin_last"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,173 @@
+<odoo>
+  <!-- Search View -->
+  <record id="view_softy_langue_search" model="ir.ui.view">
+    <field name="name">softy.langue.search</field>
+    <field name="model">softy.langue</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="lang"/>
+        <field name="employe_id"/>
+        <field name="degre_maitrise"/>
+        <field name="type_con"/>
+        <filter string="Français" name="filter_francais" domain="[('lang', '=', 'fr')]"/>
+        <filter string="Anglais" name="filter_anglais" domain="[('lang', '=', 'ang')]"/>
+        <filter string="Arabe" name="filter_arabe" domain="[('lang', '=', 'ar')]"/>
+        <filter string="Espagnol" name="filter_espagnol" domain="[('lang', '=', 'esp')]"/>
+        <separator/>
+        <filter string="Excellence" name="filter_excellent" domain="[('degre_maitrise', '=', 'excellente')]"/>
+        <filter string="Professionnel" name="filter_professionnel" domain="[('type_con', '=', 'prof')]"/>
+        <filter string="Avec Formation" name="filter_formation" domain="[('formation', '=', True)]"/>
+        <separator/>
+        <filter string="Lu, Écrit et Parlé" name="filter_complet" domain="[('nic_conn', '=', 'luecritparle')]"/>
+        <group string="Grouper par">
+          <filter string="Langue" name="group_langue" context="{'group_by': 'lang'}"/>
+          <filter string="Degré de Maîtrise" name="group_maitrise" context="{'group_by': 'degre_maitrise'}"/>
+          <filter string="Type de Connaissance" name="group_type" context="{'group_by': 'type_con'}"/>
+          <filter string="Employé" name="group_employe" context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Kanban View -->
+  <record id="view_softy_langue_kanban" model="ir.ui.view">
+    <field name="name">softy.langue.kanban</field>
+    <field name="model">softy.langue</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="lang">
+        <field name="lang"/>
+        <field name="employe_id"/>
+        <field name="nic_conn"/>
+        <field name="type_con"/>
+        <field name="degre_maitrise"/>
+        <field name="formation"/>
+        <field name="type_formation"/>
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_card">
+              <div class="oe_kanban_content">
+                <div class="mb-2">
+                  <strong class="fs-5"><field name="lang"/></strong>
+                  <span class="badge float-end" 
+                        t-attf-class="#{
+                          record.degre_maitrise.raw_value == 'excellente' ? 'badge-success' :
+                          record.degre_maitrise.raw_value == 'bonne' ? 'badge-primary' :
+                          record.degre_maitrise.raw_value == 'moyenne' ? 'badge-warning' :
+                          record.degre_maitrise.raw_value == 'insuffisante' ? 'badge-danger' :
+                          'badge-secondary'
+                        }">
+                    <field name="degre_maitrise"/>
+                  </span>
+                </div>
+                
+                <div class="text-muted small mb-2">
+                  <field name="employe_id"/>
+                </div>
+                
+                <div class="mb-2">
+                  <span class="badge" 
+                        t-attf-class="#{
+                          record.type_con.raw_value == 'prof' ? 'badge-success' :
+                          record.type_con.raw_value == 'pratique' ? 'badge-primary' :
+                          'badge-info'
+                        }">
+                    <field name="type_con"/>
+                  </span>
+                </div>
+                
+                <div class="mb-2">
+                  <small class="text-muted d-block">Compétences</small>
+                  <field name="nic_conn"/>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span t-if="record.formation.raw_value" class="badge badge-info">
+                      Formation
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="mt-2" t-if="record.formation.raw_value and record.type_formation.value">
+                  <small class="text-muted d-block">Type de formation</small>
+                  <small><field name="type_formation"/></small>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_langue_list" model="ir.ui.view">
+    <field name="name">softy.langue.list</field>
+    <field name="model">softy.langue</field>
+    <field name="arch" type="xml">
+      <list sample="1" multi_edit="1"
+            decoration-success="degre_maitrise == 'excellente'"
+            decoration-primary="degre_maitrise == 'bonne'"
+            decoration-warning="degre_maitrise == 'moyenne'"
+            decoration-danger="degre_maitrise == 'insuffisante'"
+            decoration-info="type_con == 'prof'">
+        <field name="employe_id"/>
+        <field name="lang"/>
+        <field name="nic_conn" string="Compétences"/>
+        <field name="type_con" string="Type" widget="badge"/>
+        <field name="degre_maitrise" string="Maîtrise" widget="badge"/>
+        <field name="formation" widget="boolean_toggle"/>
+        <field name="type_formation" string="Formation" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form View -->
+  <record id="view_softy_langue_form" model="ir.ui.view">
+    <field name="name">softy.langue.form</field>
+    <field name="model">softy.langue</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="lang" placeholder="Sélectionner une langue..."/>
+            </h1>
+            <h3>
+              <field name="employe_id" placeholder="Employé..."/>
+            </h3>
+          </div>
+
+          <group>
+            <group string="Compétences Linguistiques">
+              <field name="nic_conn"/>
+              <field name="type_con"/>
+              <field name="degre_maitrise"/>
+            </group>
+            
+            <group string="Formation">
+              <field name="formation"/>
+            </group>
+          </group>
+
+          <group string="Détails Formation" invisible="not formation">
+            <group>
+              <field name="type_formation" required="formation"/>
+              <field name="date_debut_formation" required="formation"/>
+              <field name="date_fin_formation" required="formation"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_langue" model="ir.actions.act_window">
+    <field name="name">Langues</field>
+    <field name="res_model">softy.langue</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{'search_default_group_langue': 1}</field>
+  </record>
+
+</odoo>

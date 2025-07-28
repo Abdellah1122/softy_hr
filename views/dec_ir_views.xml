@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View -->
+    <record id="view_declaration_ir_search" model="ir.ui.view">
+        <field name="name">declarationir.search</field>
+        <field name="model">softy.declarationir</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Déclarations IR">
+                <field name="matricule"/>
+                <field name="nom_complet"/>
+                <field name="cin"/>
+                <field name="annee_fiscale"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                
+                <searchpanel>
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#17a2b8"
+                           select="multi"/>
+                    
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                    
+                    <field name="situation_familiale" 
+                           string="Situation Familiale" 
+                           icon="fa-home"
+                           color="#28a745"
+                           select="multi"/>
+                </searchpanel>
+                
+                <filter string="Janvier" name="mois_01" domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="mois_02" domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="mois_03" domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="mois_04" domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="mois_05" domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="mois_06" domain="[('mois', '=', '6')]"/>
+                <filter string="Juillet" name="mois_07" domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="mois_08" domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="mois_09" domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="mois_10" domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="mois_11" domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="mois_12" domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <filter string="Célibataire" name="celibataire" domain="[('situation_familiale', '=', 'celibataire')]"/>
+                <filter string="Marié(e)" name="marie" domain="[('situation_familiale', '=', 'marie')]"/>
+                <filter string="Divorcé(e)" name="divorce" domain="[('situation_familiale', '=', 'divorce')]"/>
+                <filter string="Veuf/Veuve" name="veuf" domain="[('situation_familiale', '=', 'veuf')]"/>
+                
+                <separator/>
+                
+                <filter string="Année 2025" name="year_2025" domain="[('annee_fiscale', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" domain="[('annee_fiscale', '=', 2024)]"/>
+                <filter string="Année 2023" name="year_2023" domain="[('annee_fiscale', '=', 2023)]"/>
+                
+                <separator/>
+                
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
+                    <filter string="Situation Familiale" name="group_situation" context="{'group_by': 'situation_familiale'}"/>
+                    <filter string="Mois" name="group_mois" context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" context="{'group_by': 'annee_fiscale'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View with Green Export Button -->
+    <record id="view_declaration_ir_list" model="ir.ui.view">
+        <field name="name">declarationir.list</field>
+        <field name="model">softy.declarationir</field>
+        <field name="arch" type="xml">
+            <list string="Déclarations IR" create="false" multi_edit="1">
+                <!-- Green Export Button in Header -->
+                <header>
+                    <button name="export_selected_to_morocco_edi_xml" 
+                            type="object" 
+                            string="Exporter État 9421" 
+                            class="btn-success"
+                            icon="fa-download"
+                            help="Exporter la sélection vers le format EDI XML 9421"/>
+                </header>
+                
+                <field name="numero_ligne"/>
+                <field name="employe_id"/>
+                <field name="matricule"/>
+                <field name="nom"/>
+                <field name="prenom"/>
+                <field name="cin"/>
+                <field name="situation_familiale"/>
+                <field name="nbr_j_travaille"/>
+                <field name="revenu_brut_annuel" sum="Total Brut"/>
+                <field name="total_deductions" sum="Total Déductions"/>
+                <field name="revenu_net_imposable" sum="Total Net Imposable"/>
+                <field name="montant_ir_retenu" sum="Total IR"/>
+                
+                <!-- Dynamic Indemnities as JSON -->
+                <field name="indemnites_imposables_detail" widget="json" string="Indemnités Imposables" optional="show"/>
+                
+                <field name="mois"/>
+                <field name="annee_fiscale"/>
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Remove the Server Action from binding since we're using direct button -->
+    <!-- Keep the server action but remove binding_model_id to prevent it from showing in Actions -->
+    <record id="action_declaration_ir_export_selected_server" model="ir.actions.server">
+        <field name="name">Exporter Sélection EDI XML 9421</field>
+        <field name="model_id" ref="model_softy_declarationir"/>
+        <!-- Removed binding_model_id and binding_view_types -->
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    try:
+        action = records.export_selected_to_morocco_edi_xml()
+    except Exception as e:
+        action = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Erreur',
+                'message': f'Erreur lors de l\'export: {str(e)}',
+                'type': 'danger',
+                'sticky': True,
+            }
+        }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Attention',
+            'message': 'Veuillez sélectionner au moins une déclaration à exporter.',
+            'type': 'warning',
+            'sticky': True,
+        }
+    }
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_declaration_ir_form" model="ir.ui.view">
+        <field name="name">declarationir.form</field>
+        <field name="model">softy.declarationir</field>
+        <field name="arch" type="xml">
+            <form string="Déclaration IR" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Informations Employé">
+                            <field name="numero_ligne"/>
+                            <field name="employe_id"/>
+                            <field name="matricule"/>
+                            <field name="nom"/>
+                            <field name="prenom"/>
+                            <field name="cin"/>
+                            <field name="situation_familiale"/>
+                        </group>
+                        
+                        <group string="Période">
+                            <field name="annee_fiscale"/>
+                            <field name="mois"/>
+                            <field name="nbr_j_travaille"/>
+                            <field name="bulletin_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Informations Financières">
+                            <field name="revenu_brut_annuel"/>
+                            <field name="total_deductions"/>
+                            <field name="revenu_net_imposable"/>
+                            <field name="montant_ir_retenu"/>
+                        </group>
+                        
+                        <group string="Indemnités Imposables">
+                            <field name="indemnites_imposables_detail" widget="json"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group string="Affectation">
+                            <field name="societe_id"/>
+                            <field name="departement_id"/>
+                            <field name="service_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Server Action for Export EDI -->
+    <record id="action_declaration_ir_export_edi_server" model="ir.actions.server">
+        <field name="name">Exporter EDI XML 9421</field>
+        <field name="model_id" ref="model_softy_declarationir"/>
+        <field name="state">code</field>
+        <field name="code">
+current_year = 2025
+try:
+    action = env['softy.declarationir'].export_to_morocco_edi_xml(current_year)
+except Exception as e:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Erreur',
+            'message': f'Erreur lors de l\'export: {str(e)}',
+            'type': 'danger',
+            'sticky': True,
+        }
+    }
+        </field>
+    </record>
+
+    <!-- Server Action for Generation -->
+    <record id="action_declaration_ir_generate_server" model="ir.actions.server">
+        <field name="name">Générer Déclarations IR</field>
+        <field name="model_id" ref="model_softy_declarationir"/>
+        <field name="state">code</field>
+        <field name="code">
+current_year = 2025
+declarations = env['softy.declarationir'].generate_declarations_for_period(current_year)
+if declarations:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Succès',
+            'message': f'{len(declarations)} déclaration(s) IR générée(s).',
+            'type': 'success',
+            'sticky': False,
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Information',
+            'message': 'Aucune nouvelle déclaration IR à générer.',
+            'type': 'info',
+            'sticky': False,
+        }
+    }
+        </field>
+    </record>
+
+    <!-- Main Action -->
+    <record id="action_declaration_ir" model="ir.actions.act_window">
+        <field name="name">Déclarations IR</field>
+        <field name="res_model">softy.declarationir</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_declaration_ir_list"/>
+        <field name="search_view_id" ref="view_declaration_ir_search"/>
+        <field name="context">{'search_default_year_2025': 1}</field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_declaration_ir_softy"
+              name="Déclaration IR"
+              parent="menu_declarations_softy"
+              sequence="20"/>
+
+    <menuitem id="menu_declaration_ir_list"
+              name="Liste des Déclarations"
+              parent="menu_declaration_ir_softy"
+              action="action_declaration_ir"
+              sequence="10"/>
+
+    <menuitem id="menu_declaration_ir_generate"
+              name="Générer les Déclarations"
+              parent="menu_declaration_ir_softy"
+              action="action_declaration_ir_generate_server"
+              sequence="20"/>
+
+</odoo>

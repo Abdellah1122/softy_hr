@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Custom Paper Format MUST be defined FIRST -->
+        <record id="bulletin_paie_paperformat" model="report.paperformat">
+            <field name="name">Bulletin de Paie - A4 Full Page</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            
+            <!-- Minimal Margins for Full-Page Effect -->
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            
+            <!-- Header and Footer Settings -->
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            
+            <!-- DPI and Quality Settings -->
+            <field name="dpi">90</field>
+            
+            <!-- Page Break Settings -->
+            <field name="disable_shrinking" eval="True"/>
+        </record>
+
+        <!-- Simple PDF Report Definition for Bulletin de Paie -->
+        <record id="bulletin_paie_report" model="ir.actions.report">
+            <field name="name">Bulletin de Paie</field>
+            <field name="model">softy.bulletin</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">softy_hr.bulletin_paie_template</field>
+            <field name="report_file">softy_hr.bulletin_paie_template</field>
+            <field name="binding_model_id" ref="softy_hr.model_softy_bulletin"/>
+            <field name="binding_type">report</field>
+            
+            <!-- PDF Configuration for Full-Page Layout -->
+            <field name="paperformat_id" ref="bulletin_paie_paperformat"/>
+            
+            <!-- Additional Options -->
+            <field name="print_report_name">'Bulletin_Paie_' + object.employe_id.name.replace(' ', '_') + '_' + str(object.mois) + '_' + str(object.annee)</field>
+            <field name="attachment_use" eval="False"/>
+            <field name="multi" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

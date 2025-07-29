@@ -248,6 +248,8 @@ class Bulletin(models.Model):
         'pointagem_id.nbr_j_conge',
         'pointagem_id.ind_point_ids.montant',
         'pointagem_id.ind_point_ids.indemnite_id.j',
+        'employe_id.app_ids.montant',
+        'employe_id.app_ids.indemnite_id.j',
     )
     def _compute_salaire_brut(self):
         for rec in self:
@@ -268,18 +270,28 @@ class Bulletin(models.Model):
                 (rec.pointagem_id.h_100 * 2.00)
             ) * taux_horaire
 
-            # Partie 2: total des indemnités via ind_point_ids
-            total_indemnites = 0.0
+            # Partie 2: total des indemnités via ind_point_ids (from pointage)
+            total_indemnites_pointage = 0.0
             nbr_j = rec.pointagem_id.nbr_j or 0
             nbr_j_conge = rec.pointagem_id.nbr_j_conge or 0
             for line in rec.pointagem_id.ind_point_ids:
                 # journalière? multiplier par nbr_j, sinon montant plat
                 if line.indemnite_id.j:
-                    total_indemnites += line.montant * (nbr_j + nbr_j_conge)
+                    total_indemnites_pointage += line.montant * (nbr_j + nbr_j_conge)
                 else:
-                    total_indemnites += line.montant
+                    total_indemnites_pointage += line.montant
 
-            rec.salaire_brut = salaire_base + heures_sup + total_indemnites
+            # NEW: Partie 3: Indemnités from employee appointments (app_ids)
+            total_indemnites_appointments = 0.0
+            if rec.employe_id and rec.employe_id.app_ids:
+                for appointment in rec.employe_id.app_ids:
+                    # journalière? multiplier par nbr_j + nbr_j_conge, sinon montant plat
+                    if appointment.indemnite_id.j:
+                        total_indemnites_appointments += appointment.montant * (nbr_j + nbr_j_conge)
+                    else:
+                        total_indemnites_appointments += appointment.montant
+
+            rec.salaire_brut = salaire_base + heures_sup + total_indemnites_pointage + total_indemnites_appointments
 
     @api.depends(
         'pointagem_id.nbr_j',
@@ -287,6 +299,9 @@ class Bulletin(models.Model):
         'pointagem_id.ind_point_ids.montant',
         'pointagem_id.ind_point_ids.indemnite_id.j',
         'pointagem_id.ind_point_ids.indemnite_id.imposable',
+        'employe_id.app_ids.montant',
+        'employe_id.app_ids.indemnite_id.j',
+        'employe_id.app_ids.indemnite_id.imposable',
     )
     def _compute_indemnites_detail(self):
         for rec in self:
@@ -297,7 +312,8 @@ class Bulletin(models.Model):
                 
             total_imp = 0.0
             total_non = 0.0
-            # guard if no pointage yet
+            
+            # Part 1: Indemnités from pointage (existing logic)
             lines = rec.pointagem_id.ind_point_ids or ()
             for line in lines:
                 # if journalière, multiply by nbr_j + nbr_j_conge; otherwise flat montant
@@ -307,6 +323,18 @@ class Bulletin(models.Model):
                     total_imp += amt
                 else:
                     total_non += amt
+
+            # NEW: Part 2: Indemnités from employee appointments
+            if rec.employe_id and rec.employe_id.app_ids:
+                for appointment in rec.employe_id.app_ids:
+                    # if journalière, multiply by nbr_j + nbr_j_conge; otherwise flat montant
+                    mult = (rec.pointagem_id.nbr_j + rec.pointagem_id.nbr_j_conge) if appointment.indemnite_id.j else 1
+                    amt = appointment.montant * mult
+                    if appointment.indemnite_id.imposable:
+                        total_imp += amt
+                    else:
+                        total_non += amt
+            
             rec.indemnites_imposables     = total_imp
             rec.indemnites_non_imposables = total_non
 

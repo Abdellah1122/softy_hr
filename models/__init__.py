@@ -24,7 +24,6 @@ from . import conge
 from . import indemnite
 from . import ind_poitage
 from . import pointagemensuel
-from . import poitagejournalier
 from . import bulletin
 from . import aff_type
 from . import enregistrement_simt

@@ -24,7 +24,6 @@ access_softy_pret,access_softy_pret,model_softy_pret,base.group_user,1,1,1,1
 access_softy_conge,access_softy_conge,model_softy_conge,base.group_user,1,1,1,1
 access_softy_indemnite,access_softy_indemnite,model_softy_indemnite,base.group_user,1,1,1,1
 access_softy_pointagem,access_softy_pointagem,softy_hr.model_softy_pointagem,base.group_user,1,1,1,1
-access_softy_pointagej,access_softy_pointagej,softy_hr.model_softy_pointagej,base.group_user,1,1,1,1
 access_softy_bulletin,access_softy_bulletin,softy_hr.model_softy_bulletin,base.group_user,1,1,1,1
 access_softy_aff_type,access_softy_aff_type,model_softy_aff_type,base.group_user,1,1,1,1
 access_softy_ind_point,access_softy_ind_point,model_softy_ind_point,base.group_user,1,1,1,1
@@ -34,3 +33,4 @@ access_softy_declarationcnss,access_softy_declarationcnss,model_softy_declaratio
 access_softy_declarationir,access_softy_declarationir,model_softy_declarationir,base.group_user,1,1,1,1
 access_softy_mad,access_softy_mad,model_softy_mad,base.group_user,1,1,1,1
 access_softy_pespece,access_softy_pespece,model_softy_pespece,base.group_user,1,1,1,1
+access_softy_app_emp,access_softy_app_emp,model_softy_app_emp,base.group_user,1,1,1,1

@@ -1,8 +1,3 @@
-try:
-    from importlib.metadata import entry_points
-except ImportError:
-    from importlib_metadata import entry_points
-    
 from odoo import api, models, fields
 from odoo.exceptions import ValidationError
 
@@ -13,7 +8,7 @@ class Societe(models.Model):
 
     code = fields.Char(string='Code', required=True)
     rs = fields.Char(string='Raison Sociale', required=True)
-    logo=fields.Binary(string="Image")
+    logo = fields.Binary(string="Image")
     prefixe = fields.Char(string='Préfixe')
     libelle = fields.Char(string='Libellé Complet')
     address = fields.Char(string='Adresse', required=True)
@@ -28,7 +23,7 @@ class Societe(models.Model):
     tel = fields.Char(string='Téléphone 1', required=True)
     tel2 = fields.Char(string='Téléphone 2')
     email = fields.Char(string='Email', required=True)
-    siteweb = fields.Char(string="Site web",required=True)
+    siteweb = fields.Char(string="Site web", required=True)
 
     nbr_heures_mois = fields.Integer(string='Nombre Heures/Mois', required=True, default=191)
     nbr_jours_mois = fields.Integer(string='Nombre Jours/Mois', required=True, default=26)
@@ -48,12 +43,12 @@ class Societe(models.Model):
         store=True,
         readonly=True
     )
-    ###################
 
-    #relations
+    # Relations
     banque_id = fields.Many2one(
         comodel_name='softy.banque',
         string='Banque',
+        required=True,  # Make it required if every société must have a bank
     )
     ville_id = fields.Many2one(
         comodel_name='softy.ville',
@@ -66,25 +61,24 @@ class Societe(models.Model):
         help='Tous les départements rattachés à cette société'
     )
     service_ids = fields.Many2many(
-            comodel_name='softy.service',
-            string='Services',
-            compute='_compute_service_ids',
-            store=False,
-            readonly=True,
-        )
+        comodel_name='softy.service',
+        string='Services',
+        compute='_compute_service_ids',
+        store=False,
+        readonly=True,
+    )
+
+    _sql_constraints = [
+        ("code_uniq", "unique(code)", "Le code de la société doit être unique."),
+        ("ice_uniq", "unique(ice)", "L'ICE doit être unique."),
+        ("banque_uniq", "unique(banque_id)", "Chaque banque ne peut être associée qu'à une seule société."),
+    ]
 
     @api.depends('departement_ids.service_ids')
     def _compute_service_ids(self):
         for soc in self:
-            # gather all services of all linked départements
+            # Gather all services of all linked départements
             soc.service_ids = soc.departement_ids.mapped('service_ids')
-                
-    _sql_constraints = [
-        ('code_uniq', 'unique(code)', 'Le code de la société doit être unique.'),
-        ('ice_uniq', 'unique(ice)', 'L’ICE doit être unique.')
-    ]
-
-    
 
     @api.depends('salaire_min_h', 'nbr_heures_jour', 'nbr_jours_mois')
     def _compute_salaire_min_m(self):
@@ -103,3 +97,39 @@ class Societe(models.Model):
                 raise ValidationError(
                     "Le salaire minimum horaire ne peut être supérieur au salaire maximum horaire."
                 )
+
+    @api.constrains('email')
+    def _check_email(self):
+        for rec in self:
+            if rec.email and '@' not in rec.email:
+                raise ValidationError("Veuillez saisir un email valide.")
+
+    @api.constrains('capital')
+    def _check_capital(self):
+        for rec in self:
+            if rec.capital <= 0:
+                raise ValidationError("Le capital doit être supérieur à zéro.")
+
+    @api.constrains('nbr_heures_mois', 'nbr_jours_mois', 'nbr_heures_jour')
+    def _check_work_time(self):
+        for rec in self:
+            if rec.nbr_heures_mois <= 0:
+                raise ValidationError("Le nombre d'heures par mois doit être supérieur à zéro.")
+            if rec.nbr_jours_mois <= 0:
+                raise ValidationError("Le nombre de jours par mois doit être supérieur à zéro.")
+            if rec.nbr_heures_jour <= 0:
+                raise ValidationError("Le nombre d'heures par jour doit être supérieur à zéro.")
+
+    @api.constrains('banque_id')
+    def _check_unique_banque(self):
+        for rec in self:
+            if rec.banque_id:
+                # Check if another société is already using this bank
+                existing = self.search([
+                    ('banque_id', '=', rec.banque_id.id),
+                    ('id', '!=', rec.id)
+                ])
+                if existing:
+                    raise ValidationError(
+                        "Cette banque est déjà utilisée par une autre société: %s" % existing.rs
+                    )

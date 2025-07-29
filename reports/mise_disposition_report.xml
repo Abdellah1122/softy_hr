@@ -19,7 +19,7 @@
 
     <!-- Report Declaration -->
     <record id="report_mad_document" model="ir.actions.report">
-        <field name="name">Mise à Disposition</field>
+        <field name="name">Mise a Disposition</field>
         <field name="model">softy.mad</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">softy_hr.report_mad_template</field>
@@ -84,12 +84,12 @@
                             
                             <!-- Object Line -->
                             <div style="margin-bottom: 15px;">
-                                <strong>Objet : MISE A DISPOSITION N° <span t-field="mad.ref"/></strong>
+                                <strong>Objet : MISE A DISPOSITION N <span t-field="mad.ref"/></strong>
                             </div>
                             
                             <!-- Account Line -->
                             <div style="margin-bottom: 20px;">
-                                <strong>Compte N° : <span t-field="mad.societe_id.banque_id.n_compte"/></strong>
+                                <strong>Compte N : <span t-field="mad.societe_id.banque_id.n_compte"/></strong>
                             </div>
 
                             <!-- Clear float -->
@@ -97,7 +97,7 @@
 
                             <!-- Main Request Text -->
                             <div style="margin-bottom: 15px;">
-                                Nous vous prions de bien vouloir mettre à la disposition de :
+                                Nous vous prions de bien vouloir mettre a la disposition de :
                             </div>
 
                             <!-- Employee Name -->
@@ -107,7 +107,7 @@
 
                             <!-- CIN -->
                             <div style="margin-bottom: 15px;">
-                                CIN N° : <strong><span t-field="mad.employe_id.cin"/></strong>
+                                CIN N : <strong><span t-field="mad.employe_id.cin"/></strong>
                             </div>
 
                             <!-- Amount -->
@@ -122,16 +122,16 @@
 
                             <!-- Debit Account -->
                             <div style="margin-bottom: 20px;">
-                                Par le débit de notre compte N° <strong><span t-field="mad.societe_id.banque_id.n_compte"/></strong>
+                                Par le debit de notre compte N <strong><span t-field="mad.societe_id.banque_id.n_compte"/></strong>
                             </div>
 
                             <!-- Closing Text -->
                             <div style="margin-bottom: 15px;">
-                                Nous vous souhaitons bonne réception.
+                                Nous vous souhaitons bonne reception.
                             </div>
 
                             <div style="margin-bottom: 25px;">
-                                Veuillez agréer, Messieurs, l'assurance de notre parfaite considération et nos salutations distinguées.
+                                Veuillez agreer, Messieurs, l'assurance de notre parfaite consideration et nos salutations distinguées.
                             </div>
 
                         </div>
@@ -149,14 +149,14 @@
                     </div>
 
                     <!-- FOOTER SECTION -->
-                    <div style="margin-top: 20em;">
+                    <div style="margin-top: 20em; margin-bottom:5em;">
                         <!-- Dashed separator line -->
                         <div style="border-top: 2px dashed #000; margin-bottom: 10px;"></div>
                         
                         <!-- Company Information -->
                         <div style="text-align: center; font-size: 9pt; line-height: 1.2;">
                             <div style="margin-bottom: 3px;">
-                                <strong>I.F N° <span t-field="mad.societe_id.i_fiscale"/> - R.C. <span t-field="mad.societe_id.rc"/> - Patente : <span t-field="mad.societe_id.patente"/> - C.N.S.S <span t-field="mad.societe_id.n_cnss"/></strong>
+                                <strong>I.F N <span t-field="mad.societe_id.i_fiscale"/> - R.C. <span t-field="mad.societe_id.rc"/> - Patente : <span t-field="mad.societe_id.patente"/> - C.N.S.S <span t-field="mad.societe_id.n_cnss"/></strong>
                             </div>
                             <div>
                                 <strong><span t-field="mad.societe_id.address"/> - <span t-field="mad.societe_id.ville_id.name"/></strong>

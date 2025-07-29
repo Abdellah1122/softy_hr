@@ -166,7 +166,7 @@ action = env['softy.mad'].generate_mad_from_bulletins()
               sequence="10"/>
 
     <menuitem id="menu_mad_generate"
-              name="Générer MAD"
+              name="Générer MADs"
               parent="menu_mise_disposition"
               action="action_mad_generate_server"
               sequence="20"/>

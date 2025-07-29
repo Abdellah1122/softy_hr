@@ -142,7 +142,6 @@
         <field name="email" string="Email" widget="email" optional="show"/>
         <field name="tel" string="Téléphone" optional="show"/>
         <field name="capital" string="Capital" widget="monetary" optional="hide"/>
-        <field name="indice_pret" string="Indice Prêt" optional="hide"/>
         <field name="societe_id" string="Société" optional="hide"/>
       </list>
     </field>
@@ -229,18 +228,6 @@
                 <div>
                   <div style="color: #6c757d; font-size: 13px;">Capital Social</div>
                   <div style="font-weight: 600; color: #1a1a1a;"><field name="capital" widget="monetary" readonly="1"/></div>
-                </div>
-              </div>
-            </div>
-            
-            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                <div style="width: 40px; height: 40px; background: #fce4ec; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                  <i class="fa fa-calculator" style="color: #c2185b;" title="Indice Prêt"/>
-                </div>
-                <div>
-                  <div style="color: #6c757d; font-size: 13px;">Indice Prêt</div>
-                  <div style="font-weight: 600; color: #1a1a1a;"><field name="indice_pret" readonly="1"/></div>
                 </div>
               </div>
             </div>
@@ -361,11 +348,6 @@
                         <field name="capital" widget="monetary" placeholder="0.00 MAD" 
                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
                       </div>
-                      <div>
-                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Indice des Prêts</div>
-                        <field name="indice_pret" placeholder="Indice de calcul des prêts" 
-                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -468,7 +450,6 @@
         <field name="agent" string="Agent"/>
         <field name="email" string="Email"/>
         <field name="societe_id" string="Société"/>
-        <field name="indice_pret" string="Indice Prêt"/>
         
         <separator/>
         
@@ -476,8 +457,6 @@
                 domain="[('capital', '>', 0)]"/>
         <filter string="Avec Site Web" name="filter_with_website" 
                 domain="[('siteweb', '!=', False)]"/>
-        <filter string="Avec Indice Prêt" name="filter_with_indice_pret" 
-                domain="[('indice_pret', '!=', False)]"/>
         
         <separator/>
         

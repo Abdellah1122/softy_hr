@@ -17,26 +17,24 @@ class Departement(models.Model):
     tel = fields.Char(string='Téléphone 1', required=True)
     tel2 = fields.Char(string='Téléphone 2')
     email = fields.Char(string='Email', required=True)
-    siteweb = fields.Char(string="Site web",required=True)
+    siteweb = fields.Char(string="Site web")
 
-    rc = fields.Char(string='R.C.', required=True)
-    patente = fields.Char(string='Patente', required=True)
-    i_fiscale = fields.Char(string='Identifiant Fiscale', required=True)
-    ice = fields.Char(string='ICE', required=True)
+    rc = fields.Char(string='R.C.')
+    patente = fields.Char(string='Patente')
+    i_fiscale = fields.Char(string='Identifiant Fiscale')
+    ice = fields.Char(string='ICE')
 
-    n_cnss = fields.Char(string='N° CNSS', required=True)
-    n_cimr = fields.Char(string='N° CIMR', required=True)
+    n_cnss = fields.Char(string='N° CNSS')
+    n_cimr = fields.Char(string='N° CIMR')
     
-    capital = fields.Float(string='Capital', required=True, default=0.0)
+    capital = fields.Float(string='Capital', default=0.0)
 
-    nbr_heures_mois = fields.Integer(string='Nombre Heures/Mois', required=True, default=160)
-    nbr_jours_mois = fields.Integer(string='Nombre Jours/Mois', required=True, default=22)
+    nbr_heures_mois = fields.Integer(string='Nombre Heures/Mois', default=191)
+    nbr_jours_mois = fields.Integer(string='Nombre Jours/Mois', default=26)
 
     conge_1er_contrat=fields.Boolean(string="Congé à partir de la 1er Contrat ", default="False")
     conge_15=fields.Boolean(string="Congé 1.5", default="False")
 
-    indice_pret=fields.Char(string="Indice des préts")
-    ###################
 
     #relations
     

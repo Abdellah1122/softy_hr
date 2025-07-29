@@ -598,7 +598,23 @@
                 </field>
               </div>
             </page>
-            
+            <page string="Appointments">
+              <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa fa-calendar-check-o" style="color: #7b1fa2;" title="Appointments"/>
+                  Appointments &amp; Indemnités
+                </h3>
+                <field name="app_ids" nolabel="1">
+                  <list editable="bottom">
+                    <field name="indemnite_id" string="Type d'Indemnité"/>
+                    <field name="montant" string="Montant (MAD)" widget="monetary"/>
+                    <field name="plafond" string="Plafond" widget="monetary" readonly="1"/>
+                    <field name="imposable" string="Imposable" widget="boolean_toggle"/>
+                    <field name="j" string="Journalier" widget="boolean_toggle"/>
+                  </list>
+                </field>
+              </div>
+            </page>
             <page string="Documents">
               <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
                 <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">

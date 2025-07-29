@@ -35,7 +35,6 @@
         'views/softy_conge_views.xml',
         'views/softy_indemnite_views.xml',
         'views/softy_pointagem_views.xml',
-        'views/softy_pointagej_views.xml',
         'views/softy_bulletin_views.xml',
         'views/softy_aff_type_views.xml',
         'views/softy_qualification_views.xml',

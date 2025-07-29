@@ -237,7 +237,7 @@ action = env['softy.simt'].generate_simt_from_bulletins()
               sequence="10"/>
 
     <menuitem id="menu_virement_generate"
-              name="Générer SIMT"
+              name="Générer liste des virements"
               parent="menu_virement"
               action="action_simt_generate_server"
               sequence="20"/>

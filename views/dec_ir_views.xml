@@ -6,9 +6,10 @@
         <field name="model">softy.declarationir</field>
         <field name="arch" type="xml">
             <search string="Recherche Déclarations IR">
-                <field name="matricule"/>
-                <field name="nom_complet"/>
-                <field name="cin"/>
+                <field name="numero_matricule"/>
+                <field name="nom_employe"/>
+                <field name="prenom_employe"/>
+                <field name="num_cni"/>
                 <field name="annee_fiscale"/>
                 <field name="departement_id"/>
                 <field name="service_id"/>
@@ -31,12 +32,6 @@
                            icon="fa-users"
                            color="#fd7e14"
                            select="multi"/>
-                    
-                    <field name="situation_familiale" 
-                           string="Situation Familiale" 
-                           icon="fa-home"
-                           color="#28a745"
-                           select="multi"/>
                 </searchpanel>
                 
                 <filter string="Janvier" name="mois_01" domain="[('mois', '=', '1')]"/>
@@ -54,10 +49,10 @@
                 
                 <separator/>
                 
-                <filter string="Célibataire" name="celibataire" domain="[('situation_familiale', '=', 'celibataire')]"/>
-                <filter string="Marié(e)" name="marie" domain="[('situation_familiale', '=', 'marie')]"/>
-                <filter string="Divorcé(e)" name="divorce" domain="[('situation_familiale', '=', 'divorce')]"/>
-                <filter string="Veuf/Veuve" name="veuf" domain="[('situation_familiale', '=', 'veuf')]"/>
+                <filter string="Célibataire" name="celibataire" domain="[('ref_situation_familiale_code', '=', 'C')]"/>
+                <filter string="Marié(e)" name="marie" domain="[('ref_situation_familiale_code', '=', 'M')]"/>
+                <filter string="Divorcé(e)" name="divorce" domain="[('ref_situation_familiale_code', '=', 'D')]"/>
+                <filter string="Veuf/Veuve" name="veuf" domain="[('ref_situation_familiale_code', '=', 'V')]"/>
                 
                 <separator/>
                 
@@ -71,7 +66,7 @@
                     <filter string="Société" name="group_societe" context="{'group_by': 'societe_id'}"/>
                     <filter string="Département" name="group_departement" context="{'group_by': 'departement_id'}"/>
                     <filter string="Service" name="group_service" context="{'group_by': 'service_id'}"/>
-                    <filter string="Situation Familiale" name="group_situation" context="{'group_by': 'situation_familiale'}"/>
+                    <filter string="Situation Familiale" name="group_situation" context="{'group_by': 'ref_situation_familiale_code'}"/>
                     <filter string="Mois" name="group_mois" context="{'group_by': 'mois'}"/>
                     <filter string="Année" name="group_annee" context="{'group_by': 'annee_fiscale'}"/>
                 </group>
@@ -97,19 +92,19 @@
                 
                 <field name="numero_ligne"/>
                 <field name="employe_id"/>
-                <field name="matricule"/>
-                <field name="nom"/>
-                <field name="prenom"/>
-                <field name="cin"/>
-                <field name="situation_familiale"/>
-                <field name="nbr_j_travaille"/>
-                <field name="revenu_brut_annuel" sum="Total Brut"/>
-                <field name="total_deductions" sum="Total Déductions"/>
-                <field name="revenu_net_imposable" sum="Total Net Imposable"/>
-                <field name="montant_ir_retenu" sum="Total IR"/>
+                <field name="numero_matricule"/>
+                <field name="nom_employe"/>
+                <field name="prenom_employe"/>
+                <field name="num_cni"/>
+                <field name="ref_situation_familiale_code" string="Situation"/>
+                <field name="periode_jours"/>
+                <field name="mt_revenu_brut_imposable" sum="Total Brut"/>
+                <field name="mt_total_deductions" sum="Total Déductions"/>
+                <field name="mt_revenu_net_imposable" sum="Total Net Imposable"/>
+                <field name="ir_preleve" sum="Total IR"/>
                 
-                <!-- Dynamic Indemnities as JSON -->
-                <field name="indemnites_imposables_detail" widget="json" string="Indemnités Imposables" optional="show"/>
+                <!-- Exempted Elements as JSON -->
+                <field name="elements_exoneres_detail" widget="json" string="Éléments Exonérés" optional="show"/>
                 
                 <field name="mois"/>
                 <field name="annee_fiscale"/>
@@ -120,48 +115,30 @@
         </field>
     </record>
 
-    <!-- Remove the Server Action from binding since we're using direct button -->
-    <!-- Keep the server action but remove binding_model_id to prevent it from showing in Actions -->
-    <record id="action_declaration_ir_export_selected_server" model="ir.actions.server">
-        <field name="name">Exporter Sélection EDI XML 9421</field>
-        <field name="model_id" ref="model_softy_declarationir"/>
-        <!-- Removed binding_model_id and binding_view_types -->
-        <field name="state">code</field>
-        <field name="code">
-if records:
-    try:
-        action = records.export_selected_to_morocco_edi_xml()
-    except Exception as e:
-        action = {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Erreur',
-                'message': f'Erreur lors de l\'export: {str(e)}',
-                'type': 'danger',
-                'sticky': True,
-            }
-        }
-else:
-    action = {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-            'title': 'Attention',
-            'message': 'Veuillez sélectionner au moins une déclaration à exporter.',
-            'type': 'warning',
-            'sticky': True,
-        }
-    }
-        </field>
-    </record>
-
     <!-- Form View -->
     <record id="view_declaration_ir_form" model="ir.ui.view">
         <field name="name">declarationir.form</field>
         <field name="model">softy.declarationir</field>
         <field name="arch" type="xml">
             <form string="Déclaration IR" create="false" edit="false">
+                <header>
+                    <button name="export_selected_to_morocco_edi_xml" 
+                            type="object" 
+                            string="Exporter EDI XML" 
+                            class="btn-success"
+                            icon="fa-download"/>
+                    <button name="action_view_bulletin" 
+                            type="object" 
+                            string="Voir Bulletin" 
+                            class="btn-primary"
+                            icon="fa-file-text-o"/>
+                    <button name="action_view_employe" 
+                            type="object" 
+                            string="Voir Employé" 
+                            class="btn-info"
+                            icon="fa-user"/>
+                </header>
+
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -169,36 +146,83 @@ else:
                         </h1>
                     </div>
                     
-                    <group>
-                        <group string="Informations Employé">
-                            <field name="numero_ligne"/>
-                            <field name="employe_id"/>
-                            <field name="matricule"/>
-                            <field name="nom"/>
-                            <field name="prenom"/>
-                            <field name="cin"/>
-                            <field name="situation_familiale"/>
+                    <!-- Company Information Section -->
+                    <group string="Informations Entreprise">
+                        <group>
+                            <field name="identifiant_fiscal"/>
+                            <field name="raison_sociale"/>
+                            <field name="numero_cnss_entreprise"/>
+                            <field name="numero_rc"/>
+                            <field name="commune_code"/>
                         </group>
-                        
-                        <group string="Période">
-                            <field name="annee_fiscale"/>
-                            <field name="mois"/>
-                            <field name="nbr_j_travaille"/>
-                            <field name="bulletin_id"/>
+                        <group>
+                            <field name="adresse_siege_social"/>
+                            <field name="numero_telephone"/>
+                            <field name="email_entreprise"/>
+                            <field name="identifiant_tp"/>
                         </group>
                     </group>
                     
                     <group>
-                        <group string="Informations Financières">
-                            <field name="revenu_brut_annuel"/>
-                            <field name="total_deductions"/>
-                            <field name="revenu_net_imposable"/>
-                            <field name="montant_ir_retenu"/>
+                        <group string="Informations Employé">
+                            <field name="numero_ligne"/>
+                            <field name="employe_id"/>
+                            <field name="numero_matricule"/>
+                            <field name="nom_employe"/>
+                            <field name="prenom_employe"/>
+                            <field name="num_cni"/>
+                            <field name="ref_situation_familiale_code" string="Situation Familiale"/>
+                            <field name="adresse_personnelle"/>
+                            <field name="ifu_employe"/>
                         </group>
                         
-                        <group string="Indemnités Imposables">
-                            <field name="indemnites_imposables_detail" widget="json"/>
+                        <group string="Période et Travail">
+                            <field name="annee_fiscale"/>
+                            <field name="exercice_fiscal_du"/>
+                            <field name="exercice_fiscal_au"/>
+                            <field name="mois"/>
+                            <field name="periode_jours"/>
+                            <field name="nbr_reductions"/>
+                            <field name="bulletin_id"/>
                         </group>
+                    </group>
+                    
+                    <group string="Informations Financières">
+                        <group string="Revenus et Salaires">
+                            <field name="salaire_base_annuel"/>
+                            <field name="mt_brut_traitement_salaire"/>
+                            <field name="mt_revenu_brut_imposable"/>
+                            <field name="mt_indemnites"/>
+                            <field name="mt_avantages"/>
+                            <field name="mt_exonere"/>
+                        </group>
+                        
+                        <group string="Déductions et IR">
+                            <field name="mt_frais_professionnels"/>
+                            <field name="mt_cotisations_assurance"/>
+                            <field name="mt_autres_retenues"/>
+                            <field name="mt_echeances"/>
+                            <field name="mt_total_deductions"/>
+                            <field name="mt_revenu_net_imposable"/>
+                            <field name="ir_preleve"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Codes de Référence">
+                        <group>
+                            <field name="ref_situation_familiale_code"/>
+                            <field name="ref_taux_frais_professionnels_code"/>
+                            <field name="ref_moyen_paiement_code"/>
+                        </group>
+                        <group>
+                            <field name="cas_sportif"/>
+                            <field name="date_permis"/>
+                            <field name="date_autorisation"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Éléments Exonérés">
+                        <field name="elements_exoneres_detail" widget="json"/>
                     </group>
                     
                     <group>
@@ -228,7 +252,7 @@ except Exception as e:
         'tag': 'display_notification',
         'params': {
             'title': 'Erreur',
-            'message': f'Erreur lors de l\'export: {str(e)}',
+            'message': 'Erreur lors de l\'export: %s' % str(e),
             'type': 'danger',
             'sticky': True,
         }
@@ -243,27 +267,39 @@ except Exception as e:
         <field name="state">code</field>
         <field name="code">
 current_year = 2025
-declarations = env['softy.declarationir'].generate_declarations_for_period(current_year)
-if declarations:
-    action = {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-            'title': 'Succès',
-            'message': f'{len(declarations)} déclaration(s) IR générée(s).',
-            'type': 'success',
-            'sticky': False,
+try:
+    declarations = env['softy.declarationir'].generate_declarations_for_period(current_year)
+    if declarations:
+        action = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Succès',
+                'message': '%s déclaration(s) IR générée(s) avec succès.' % len(declarations),
+                'type': 'success',
+                'sticky': True,
+            }
         }
-    }
-else:
+    else:
+        action = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Information',
+                'message': 'Aucune nouvelle déclaration IR à générer. Toutes les déclarations existent déjà.',
+                'type': 'info',
+                'sticky': False,
+            }
+        }
+except Exception as e:
     action = {
         'type': 'ir.actions.client',
         'tag': 'display_notification',
         'params': {
-            'title': 'Information',
-            'message': 'Aucune nouvelle déclaration IR à générer.',
-            'type': 'info',
-            'sticky': False,
+            'title': 'Erreur',
+            'message': 'Erreur lors de la génération: %s' % str(e),
+            'type': 'danger',
+            'sticky': True,
         }
     }
         </field>
@@ -277,6 +313,51 @@ else:
         <field name="view_id" ref="view_declaration_ir_list"/>
         <field name="search_view_id" ref="view_declaration_ir_search"/>
         <field name="context">{'search_default_year_2025': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre première déclaration IR !
+            </p>
+            <p>
+                Les déclarations IR sont générées automatiquement à partir des bulletins de paie.
+                Utilisez le bouton "Générer les Déclarations" pour créer les déclarations manquantes.
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard Action for Quick Export -->
+    <record id="action_declaration_ir_export_current_year" model="ir.actions.server">
+        <field name="name">Export État 9421 - Année Courante</field>
+        <field name="model_id" ref="model_softy_declarationir"/>
+        <field name="state">code</field>
+        <field name="code">
+current_year = 2025
+try:
+    declarations = env['softy.declarationir'].search([('annee_fiscale', '=', current_year)])
+    if declarations:
+        action = declarations.export_selected_to_morocco_edi_xml()
+    else:
+        action = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Attention',
+                'message': 'Aucune déclaration IR trouvée pour l\'année %s.' % current_year,
+                'type': 'warning',
+                'sticky': True,
+            }
+        }
+except Exception as e:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Erreur',
+            'message': 'Erreur lors de l\'export: %s' % str(e),
+            'type': 'danger',
+            'sticky': True,
+        }
+    }
+        </field>
     </record>
 
     <!-- Menu Structure -->
@@ -296,5 +377,4 @@ else:
               parent="menu_declaration_ir_softy"
               action="action_declaration_ir_generate_server"
               sequence="20"/>
-
 </odoo>

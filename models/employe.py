@@ -103,7 +103,9 @@ class Employe(models.Model):
     # ==================== AFFILIATIONS (One-to-Many) ====================
     affiliation_ids = fields.One2many('softy.affiliation', 'employe_id', string='Affiliations')
 
-    #apps_ids = fields.One2many('softy.affiliation', 'employe_id', string='Affiliations')
+    # ==================== APPOINTMENTS (One-to-Many) ====================
+    app_ids = fields.One2many('softy.app_emp', 'employe_id', string='Appointments/Indemnités')
+
     # ==================== CONTRACT (One-to-One) ====================
     contrat_id = fields.Many2one('softy.contrat', string='Contrat', ondelete='cascade')
     ref_contrat = fields.Char(related='contrat_id.ref', string='Réf. Contrat', readonly=True)
@@ -147,6 +149,7 @@ class Employe(models.Model):
     experience_count = fields.Integer(string='Nombre d\'Expériences', compute='_compute_counts')
     formation_count = fields.Integer(string='Nombre de Formations', compute='_compute_counts')
     competence_count = fields.Integer(string='Nombre de Compétences', compute='_compute_counts')
+    appointment_count = fields.Integer(string='Nombre d\'Appointments', compute='_compute_counts')
 
     # ==================== AFFECTATION COUNT ====================
     affectation_info = fields.Char(
@@ -270,7 +273,7 @@ class Employe(models.Model):
                 employee.n_compte_banque = False
                 employee.banque_name = False
 
-    @api.depends('document_ids', 'famille_ids', 'diplome_ids', 'experience_ids', 'formation_ids', 'competence_ids')
+    @api.depends('document_ids', 'famille_ids', 'diplome_ids', 'experience_ids', 'formation_ids', 'competence_ids', 'app_ids')
     def _compute_counts(self):
         for employee in self:
             employee.document_count = len(employee.document_ids)
@@ -279,6 +282,7 @@ class Employe(models.Model):
             employee.experience_count = len(employee.experience_ids)
             employee.formation_count = len(employee.formation_ids)
             employee.competence_count = len(employee.competence_ids)
+            employee.appointment_count = len(employee.app_ids)
 
     # Computed fields for rates
     taux_horaire = fields.Float(
@@ -440,6 +444,17 @@ class Employe(models.Model):
             'name': 'Compétences',
             'type': 'ir.actions.act_window',
             'res_model': 'softy.competence',
+            'view_mode': 'list,form',
+            'domain': [('employe_id', '=', self.id)],
+            'context': {'default_employe_id': self.id},
+        }
+
+    def action_view_appointments(self):
+        """Action to view employee appointments/indemnities"""
+        return {
+            'name': 'Appointments/Indemnités',
+            'type': 'ir.actions.act_window',
+            'res_model': 'softy.app_emp',
             'view_mode': 'list,form',
             'domain': [('employe_id', '=', self.id)],
             'context': {'default_employe_id': self.id},

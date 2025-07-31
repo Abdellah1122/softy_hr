@@ -34,3 +34,5 @@ access_softy_declarationir,access_softy_declarationir,model_softy_declarationir,
 access_softy_mad,access_softy_mad,model_softy_mad,base.group_user,1,1,1,1
 access_softy_pespece,access_softy_pespece,model_softy_pespece,base.group_user,1,1,1,1
 access_softy_app_emp,access_softy_app_emp,model_softy_app_emp,base.group_user,1,1,1,1
+access_softy_jornal,access_softy_jornal,model_softy_jornal,base.group_user,1,1,1,1
+

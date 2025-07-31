@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Search View with Sidebar Panel like Bulletin -->
+    <record id="view_journal_paie_search" model="ir.ui.view">
+        <field name="name">jornal.search</field>
+        <field name="model">softy.jornal</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Journal de Paie">
+                <!-- Quick Search Fields -->
+                <field name="matricule" string="Matricule" 
+                       filter_domain="[('matricule', 'ilike', self)]"/>
+                <field name="nom_prenom" string="Employé" 
+                       filter_domain="[('nom_prenom', 'ilike', self)]"/>
+                <field name="mois" string="Mois"/>
+                <field name="annee" string="Année"/>
+                
+                <!-- PERMANENT SIDEBAR PANEL -->
+                <searchpanel>
+                    <!-- Societes Section -->
+                    <field name="societe_id" 
+                           string="Sociétés" 
+                           icon="fa-building"
+                           color="#007bff"
+                           select="multi"/>
+                    
+                    <!-- Departements Section -->
+                    <field name="departement_id" 
+                           string="Départements" 
+                           icon="fa-sitemap"
+                           color="#28a745"
+                           select="multi"/>
+                    
+                    <!-- Services Section -->
+                    <field name="service_id" 
+                           string="Services" 
+                           icon="fa-users"
+                           color="#fd7e14"
+                           select="multi"/>
+                </searchpanel>
+                
+                <!-- Period Filters -->
+                <filter string="Janvier" name="month_01" 
+                        domain="[('mois', '=', '1')]"/>
+                <filter string="Février" name="month_02" 
+                        domain="[('mois', '=', '2')]"/>
+                <filter string="Mars" name="month_03" 
+                        domain="[('mois', '=', '3')]"/>
+                <filter string="Avril" name="month_04" 
+                        domain="[('mois', '=', '4')]"/>
+                <filter string="Mai" name="month_05" 
+                        domain="[('mois', '=', '5')]"/>
+                <filter string="Juin" name="month_06" 
+                        domain="[('mois', '=', '6')]"/>
+                
+                <separator/>
+                
+                <filter string="Juillet" name="month_07" 
+                        domain="[('mois', '=', '7')]"/>
+                <filter string="Août" name="month_08" 
+                        domain="[('mois', '=', '8')]"/>
+                <filter string="Septembre" name="month_09" 
+                        domain="[('mois', '=', '9')]"/>
+                <filter string="Octobre" name="month_10" 
+                        domain="[('mois', '=', '10')]"/>
+                <filter string="Novembre" name="month_11" 
+                        domain="[('mois', '=', '11')]"/>
+                <filter string="Décembre" name="month_12" 
+                        domain="[('mois', '=', '12')]"/>
+                
+                <separator/>
+                
+                <!-- Year Filters -->
+                <filter string="Année 2025" name="year_2025" 
+                        domain="[('annee', '=', 2025)]"/>
+                <filter string="Année 2024" name="year_2024" 
+                        domain="[('annee', '=', 2024)]"/>
+                <filter string="Année 2023" name="year_2023" 
+                        domain="[('annee', '=', 2023)]"/>
+                
+                <separator/>
+                
+                <!-- Amount Filters -->
+                <filter string="Net à Payer &gt; 10 000 DH" name="high_net" 
+                        domain="[('net_a_payer', '&gt;', 10000)]"/>
+                <filter string="Net à Payer 5 000-10 000 DH" name="medium_net" 
+                        domain="[('net_a_payer', '&gt;=', 5000), ('net_a_payer', '&lt;=', 10000)]"/>
+                <filter string="Net à Payer &lt; 5 000 DH" name="low_net" 
+                        domain="[('net_a_payer', '&lt;', 5000)]"/>
+                
+                <separator/>
+                
+                <!-- Group By Options -->
+                <group expand="0" string="Grouper par">
+                    <filter string="Société" name="group_societe" 
+                            context="{'group_by': 'societe_id'}"/>
+                    <filter string="Département" name="group_departement" 
+                            context="{'group_by': 'departement_id'}"/>
+                    <filter string="Service" name="group_service" 
+                            context="{'group_by': 'service_id'}"/>
+                    <filter string="Mois" name="group_mois" 
+                            context="{'group_by': 'mois'}"/>
+                    <filter string="Année" name="group_annee" 
+                            context="{'group_by': 'annee'}"/>
+                    <filter string="Catégorie" name="group_categorie" 
+                            context="{'group_by': 'categorie'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_journal_paie_list" model="ir.ui.view">
+        <field name="name">jornal.list</field>
+        <field name="model">softy.jornal</field>
+        <field name="arch" type="xml">
+            <list string="Journal de Paie" create="false">
+                <header>
+                    <button name="action_print_journal_report" type="object" 
+                            string="Imprimer Journal de Paie (Liste Actuelle)" 
+                            class="btn-primary" 
+                            icon="fa-print"
+                            help="Imprime le journal de paie avec seulement les enregistrements actuellement affichés (après filtres)"/>
+                </header>
+                <!-- Employee Info -->
+                <field name="matricule"/>
+                <field name="nom_prenom"/>
+                
+                <!-- Organization -->
+                <field name="societe_id"/>
+                <field name="departement_id"/>
+                <field name="service_id"/>
+                
+                <!-- Period -->
+                <field name="mois"/>
+                <field name="annee"/>
+                
+                <!-- Work Info -->
+                <field name="categorie"/>
+                <field name="n_aff_cnss"/>
+                
+                <!-- Salary Components -->
+                <field name="salaire_base" sum="Total"/>
+                <field name="jours_normaux" sum="Total"/>
+                <field name="jours_conge" sum="Total"/>
+                <field name="indemnites_imposables" sum="Total"/>
+                <field name="indemnites_non_imposables" sum="Total"/>
+                
+                <!-- Cotisations -->
+                <field name="cnss_salarie" sum="Total"/>
+                <field name="amo_salarie" sum="Total"/>
+                <field name="frais_professionnels" sum="Total"/>
+                <field name="impot_revenu" sum="Total"/>
+                
+                <!-- Final Amount -->
+                <field name="net_a_payer" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Server Action for Generation -->
+    <record id="action_journal_generate_server" model="ir.actions.server">
+        <field name="name">Générer Journal de Paie</field>
+        <field name="model_id" ref="model_softy_jornal"/>
+        <field name="state">code</field>
+        <field name="code">
+action = env['softy.jornal'].generate_journal_from_bulletins()
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_journal_paie" model="ir.actions.act_window">
+        <field name="name">Journal de Paie</field>
+        <field name="res_model">softy.jornal</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_journal_paie_list"/>
+        <field name="search_view_id" ref="view_journal_paie_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Utilisez le menu "Générer Journal de Paie" pour créer les journaux depuis les bulletins
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Structure -->
+    <menuitem id="menu_editions_softy"
+              name="Editions"
+              parent="menu_softy_hr_root"
+              sequence="90"/>
+    <!-- Menu Structure -->
+    <menuitem id="menu_journal_paie_softy"
+              name="Journal de Paie"
+              parent="menu_editions_softy"
+              sequence="10"/>
+
+    <menuitem id="menu_journal_paie_list"
+              name="Liste des Journaux"
+              parent="menu_journal_paie_softy"
+              action="action_journal_paie"
+              sequence="10"/>
+
+    <menuitem id="menu_journal_paie_generate"
+              name="Générer Journal de Paie"
+              parent="menu_journal_paie_softy"
+              action="action_journal_generate_server"
+              sequence="20"/>
+</odoo>

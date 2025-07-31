@@ -7,6 +7,7 @@ class Indemnite(models.Model):
     _rec_name = 'des_indem'
 
     code        = fields.Char(string="Code", required=True)
+    codeir        = fields.Char(string="Code IR")
     des_indem   = fields.Char(string="Libellé", required=True)
     imposable   = fields.Boolean(string="Imposable", default=False)
     plafond     = fields.Float(string="Plafond", default=0.0)

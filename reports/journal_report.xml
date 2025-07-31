@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Paper Format - Landscape for Journal -->
+    <record id="paperformat_journal_paie" model="report.paperformat">
+        <field name="name">Journal de Paie Landscape</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Report Declaration -->
+    <record id="report_journal_paie_document" model="ir.actions.report">
+        <field name="name">Journal de Paie</field>
+        <field name="model">softy.jornal</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softy_hr.report_journal_paie_template</field>
+        <field name="report_file">softy_hr.report_journal_paie_template</field>
+        <field name="binding_model_id" ref="model_softy_jornal"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_journal_paie"/>
+    </record>
+
+    <!-- Journal de Paie Report Template -->
+    <template id="report_journal_paie_template">
+        <t t-call="web.html_container">
+            <div class="page" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1f2937; margin: 0; padding: 24px; background: #ffffff; line-height: 1.5; font-weight: 500;">
+
+                <!-- HEADER -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid #000000;">
+                    
+                    <!-- Company Info with Logo -->
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <t t-if="docs and docs[0].societe_id and docs[0].societe_id.logo">
+                            <img t-att-src="'data:image/png;base64,%s' % docs[0].societe_id.logo.decode('utf-8')" 
+                                 style="height: 48px; width: auto; object-fit: contain; border-radius: 4px;"/>
+                        </t>
+                        <div>
+                            <h1 style="margin: 0; font-size: 20px; font-weight: 700; color: #111827; letter-spacing: -0.025em;">
+                                <t t-if="docs and docs[0].societe_id">
+                                    <span t-field="docs[0].societe_id.rs"/>
+                                </t>
+                                <t t-else="">MGS TRANSMISSION</t>
+                            </h1>
+                            <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280; font-weight: 400;">
+                                <t t-if="docs and docs[0].societe_id">
+                                    <span t-field="docs[0].societe_id.address"/>
+                                </t>
+                                <t t-else="">92 RUE HAY ARSAL AIN BORIA, CASABLANCA</t>
+                            </p>
+                            <div style="margin-top: 4px; font-size: 11px; color: #9ca3af;">
+                                <t t-if="docs and docs[0].societe_id">
+                                    <span t-if="docs[0].societe_id.i_fiscale" style="margin-right: 16px;">
+                                        ID Fiscal: <span t-field="docs[0].societe_id.i_fiscale"/>
+                                    </span>
+                                    <span t-if="docs[0].societe_id.n_cnss">
+                                        N° CNSS: <span t-field="docs[0].societe_id.n_cnss"/>
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <span style="margin-right: 16px;">ID Fiscal: 1027397</span>
+                                    <span>N° CNSS: 7179303</span>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Title & Period -->
+                    <div style="text-align: right;">
+                        <h2 style="margin: 0; font-size: 24px; font-weight: 800; color: #111827; letter-spacing: -0.025em;">JOURNAL DE PAIE</h2>
+                        <p style="margin: 6px 0 0 0; font-size: 14px; color: #4b5563; font-weight: 600;">
+                            <t t-if="docs and docs[0].mois and docs[0].annee">
+                                <t t-set="mois_names" t-value="['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']"/>
+                                <span t-esc="mois_names[int(docs[0].mois)]"/> <span t-field="docs[0].annee"/>
+                            </t>
+                            <t t-else="">Juin 2025</t>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border: 2px solid #000000; border-radius: 8px; overflow: hidden;">
+                        
+                        <!-- Header -->
+                        <thead>
+                            <tr style="background: #f9fafb; border-bottom: 2px solid #000000;">
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Mat.</th>
+                                <th style="padding: 16px 16px; text-align: left; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000; min-width: 150px;" colspan="5">Nom et Prénom</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Date Emb.</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Sal. Base</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">JN</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">JCON</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">HS</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Ind I.</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">CNSS S.</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">AMO S.</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Ctrtr</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">IPE</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151; border-right: 1px solid #000000;">Avance</th>
+                                <th style="padding: 16px 12px; text-align: center; font-weight: 700; font-size: 10px; color: #374151;">Net à Payer</th>
+                            </tr>
+                            
+                            <!-- Sub header -->
+                            <tr style="background: #f3f4f6; border-bottom: 2px solid #000000; font-size: 8px; color: #4b5563;">
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Per.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Sit Fam</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Service</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Nb enf.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Nb déd</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Class</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Catégorie</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Sal. Brut</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Anc</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">JCP</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">IGR</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Ind N.I.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">CNSS P.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">AMO P.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Frais Pro</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600; border-right: 1px solid #000000;">Autre Ret.</th>
+                                <th style="padding: 12px 12px; text-align: center; font-weight: 600;">Contrib.</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <!-- Initialize totals -->
+                            <t t-set="total_salaire_base" t-value="0"/>
+                            <t t-set="total_jn" t-value="0"/>
+                            <t t-set="total_jcon" t-value="0"/>
+                            <t t-set="total_hs" t-value="0"/>
+                            <t t-set="total_ind_i" t-value="0"/>
+                            <t t-set="total_cnss_s" t-value="0"/>
+                            <t t-set="total_amo_s" t-value="0"/>
+                            <t t-set="total_amc_s" t-value="0"/>
+                            <t t-set="total_cnss_p" t-value="0"/>
+                            <t t-set="total_amo_p" t-value="0"/>
+                            <t t-set="total_amc_p" t-value="0"/>
+                            <t t-set="total_salaire_brut" t-value="0"/>
+                            <t t-set="total_frais_pro" t-value="0"/>
+                            <t t-set="total_autres_retenues" t-value="0"/>
+                            <t t-set="total_contributions" t-value="0"/>
+                            <t t-set="total_indemnites_non_imposables" t-value="0"/>
+                            <t t-set="total_ipe" t-value="0"/>
+                            <t t-set="total_avances" t-value="0"/>
+                            <t t-set="total_net" t-value="0"/>
+                            
+                            <!-- Data rows -->
+                            <t t-foreach="docs" t-as="journal">
+                                <!-- Update totals -->
+                                <t t-set="total_salaire_base" t-value="total_salaire_base + (journal.salaire_base or 0)"/>
+                                <t t-set="total_jn" t-value="total_jn + (journal.jours_normaux or 0)"/>
+                                <t t-set="total_jcon" t-value="total_jcon + (journal.jours_conge or 0)"/>
+                                <t t-set="total_hs" t-value="total_hs + (journal.heures_sup or 0)"/>
+                                <t t-set="total_ind_i" t-value="total_ind_i + (journal.indemnites_imposables or 0)"/>
+                                <t t-set="total_cnss_s" t-value="total_cnss_s + (journal.cnss_salarie or 0)"/>
+                                <t t-set="total_amo_s" t-value="total_amo_s + (journal.amo_salarie or 0)"/>
+                                <t t-set="total_amc_s" t-value="total_amc_s + (journal.amc_salarie or 0)"/>
+                                <t t-set="total_cnss_p" t-value="total_cnss_p + (journal.cnss_patronale or 0)"/>
+                                <t t-set="total_amo_p" t-value="total_amo_p + (journal.amo_patronale or 0)"/>
+                                <t t-set="total_amc_p" t-value="total_amc_p + (journal.amc_patronale or 0)"/>
+                                <t t-set="total_salaire_brut" t-value="total_salaire_brut + (journal.salaire_base or 0) + (journal.indemnites_imposables or 0) + (journal.indemnites_non_imposables or 0)"/>
+                                <t t-set="total_frais_pro" t-value="total_frais_pro + (journal.frais_professionnels or 0)"/>
+                                <t t-set="total_autres_retenues" t-value="total_autres_retenues + (journal.autres_retenues or 0)"/>
+                                <t t-set="total_contributions" t-value="total_contributions + (journal.contributions or 0)"/>
+                                <t t-set="total_indemnites_non_imposables" t-value="total_indemnites_non_imposables + (journal.indemnites_non_imposables or 0)"/>
+                                <t t-set="total_ipe" t-value="total_ipe + (journal.impot_revenu or 0)"/>
+                                <t t-set="total_avances" t-value="total_avances + (journal.avances or 0)"/>
+                                <t t-set="total_net" t-value="total_net + (journal.net_a_payer or 0)"/>
+                                
+                                <!-- Main data row -->
+                                <tr style="border-bottom: 1px solid #000000;">
+                                    <td style="padding: 14px 12px; text-align: center; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.matricule"/>
+                                    </td>
+                                    <td style="padding: 14px 16px; text-align: left; font-size: 10px; font-weight: 600; color: #111827; border-right: 1px solid #000000;" colspan="5">
+                                        <span t-field="journal.nom_prenom"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: center; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.date_embauche" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #111827; font-weight: 600; border-right: 1px solid #000000;">
+                                        <span t-field="journal.salaire_base" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: center; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.jours_normaux"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: center; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.jours_conge"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: center; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.heures_sup" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.indemnites_imposables" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.cnss_salarie" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.amo_salarie" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #111827; font-weight: 600; border-right: 1px solid #000000;">
+                                        <span t-esc="'{:.2f}'.format((journal.cnss_salarie or 0) + (journal.amo_salarie or 0) + (journal.amc_salarie or 0))"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.impot_revenu" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 9px; color: #374151; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.avances" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 14px 12px; text-align: right; font-size: 10px; font-weight: 700; color: #111827; background: #f9fafb; border-right: 1px solid #000000;">
+                                        <span t-field="journal.net_a_payer" t-options="{'widget': 'float', 'precision': 0}"/>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Additional info row -->
+                                <tr style="background: #fafbfc; border-bottom: 1px solid #000000; font-size: 8px; color: #6b7280;">
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <t t-set="mois_names" t-value="['', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']"/>
+                                        <span t-esc="mois_names[int(journal.mois)] if journal.mois else ''"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <t t-if="journal.situation_familiale == 'celibataire'">C</t>
+                                        <t t-elif="journal.situation_familiale == 'marie'">M</t>
+                                        <t t-elif="journal.situation_familiale == 'divorce'">D</t>
+                                        <t t-else=""><span t-field="journal.situation_familiale"/></t>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: left; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.service_id.name"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.nbr_enfant"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.nbr_ded"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.n_aff_cnss"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.categorie"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-esc="'{:.2f}'.format((journal.salaire_base or 0) + (journal.indemnites_imposables or 0) + (journal.indemnites_non_imposables or 0))"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">0.00</td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">0.00</td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">0.00</td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.indemnites_non_imposables" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.cnss_patronale" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.amo_patronale" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.frais_professionnels" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500; border-right: 1px solid #000000;">
+                                        <span t-field="journal.autres_retenues" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                    <td style="padding: 10px 12px; text-align: right; font-weight: 500;">
+                                        <span t-field="journal.contributions" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            
+                            <!-- Totals row 1 -->
+                            <tr style="background: #f3f4f6; color: #111827; font-weight: 800; border-top: 2px solid #000000;">
+                                <td style="padding: 16px 16px; text-align: center; font-size: 11px; font-weight: 800;" colspan="7" rowspan="2">
+                                    TOTAUX
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.0f}'.format(total_salaire_base)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: center; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="int(total_jn)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: center; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="int(total_jcon)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: center; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:.0f}'.format(total_hs)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.0f}'.format(total_ind_i)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_cnss_s)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_amo_s)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_cnss_s + total_amo_s + total_amc_s)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_ipe)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_avances)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 11px; font-weight: 800; background: #e5e7eb; border: 1px solid #000000;" rowspan="2">
+                                    <span t-esc="'{:,.0f}'.format(total_net)"/>
+                                </td>
+                            </tr>
+                            
+                            <!-- Totals row 2 -->
+                            <tr style="background: #f9fafb; color: #374151; font-weight: 700; border-bottom: 2px solid #000000;">
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_salaire_brut)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">0.00</td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">0.00</td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">0.00</td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_indemnites_non_imposables)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_cnss_p)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_amo_p)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_frais_pro)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700; border-right: 1px solid #000000;">
+                                    <span t-esc="'{:,.2f}'.format(total_autres_retenues)"/>
+                                </td>
+                                <td style="padding: 16px 12px; text-align: right; font-size: 10px; font-weight: 700;">
+                                    <span t-esc="'{:,.2f}'.format(total_contributions)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </t>
+    </template>
+</odoo>

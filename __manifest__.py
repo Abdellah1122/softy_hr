@@ -44,13 +44,15 @@
         'views/dec_ir_views.xml',
         'views/mad_views.xml',
         'views/pay_es_views.xml',
+        'views/journal_views.xml',
 
 
         # ADD THESE TWO LINES:
         'reports/bulletin_report.xml',
         'reports/bulletin_template.xml',
         'reports/mise_disposition_report.xml',
-        'reports/payment_espece_reports.xml'
+        'reports/payment_espece_reports.xml',
+        'reports/journal_report.xml'
         
     ],
     'installable': True,

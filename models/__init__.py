@@ -5,6 +5,7 @@ from . import departement
 from . import service
 from . import banque
 from . import membre_famille
+from . import avocat
 from . import qualification
 from . import contrat
 from . import document

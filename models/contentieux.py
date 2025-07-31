@@ -29,6 +29,10 @@ class Contentieux(models.Model):
     duree_jours = fields.Integer(
         string="Durée (jours)", compute="_compute_duree", store=True
     )
+    avocat_id=fields.Many2one(comodel_name="softy.avocat",string="Avocat")
+    montant_avocat=fields.Float(string="Montant Payée a l'avocat")
+    montant_total=fields.Float(string="Montant Total Payée")
+
 
     _sql_constraints = [
         ('ref_dossier_unique', 'unique(ref_dossier)', "Réf. Dossier must be unique."),

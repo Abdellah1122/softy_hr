@@ -14,6 +14,7 @@
         'views/softy_pays_views.xml',
         'views/softy_ville_views.xml',
         'views/softy_societe_views.xml',
+        'views/softy_avocat_views.xml',
         'views/softy_departement_views.xml',
         'views/softy_service_views.xml',
         'views/softy_banque_views.xml',

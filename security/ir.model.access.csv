@@ -2,6 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_softy_pays,access_softy_pays,model_softy_pays,,1,1,1,1
 access_softy_ville,access_softy_ville,model_softy_ville,,1,1,1,1
 access_softy_societe,access_softy_societe,model_softy_societe,,1,1,1,1
+access_softy_avocat_user,access.softy.avocat.user,model_softy_avocat,base.group_user,1,1,1,1
 access_softy_departement,access_softy_departement,model_softy_departement,,1,1,1,1
 access_softy_service,access_softy_service,model_softy_service,,1,1,1,1
 access_softy_banque,access_softy_banque,model_softy_banque,,1,1,1,1

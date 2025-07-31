@@ -10,6 +10,7 @@
       <search>
         <field name="employe_id"/>
         <field name="ref_dossier" string="Réf. Dossier"/>
+        <field name="avocat_id" string="Avocat"/>
         <filter string="En Cours" name="filter_encours"
                 domain="[('statut_contentieux','=','encours')]"/>
         <filter string="Clôturé" name="filter_cloture"
@@ -35,6 +36,9 @@
         <field name="statut_contentieux"/>
         <field name="type_contentieux"/>
         <field name="duree_jours"/>
+        <field name="avocat_id"/>
+        <field name="montant_avocat"/>
+        <field name="montant_total"/>
         <templates>
           <t t-name="card">
             <div class="o_kanban_card">
@@ -58,6 +62,15 @@
               <div class="mt-1 small text-muted">
                 Durée : <field name="duree_jours"/> j
               </div>
+              <div class="mt-1">
+                <field name="avocat_id" widget="many2one"/>
+              </div>
+              <div class="mt-1">
+                <field name="montant_avocat"/>
+              </div>
+              <div class="mt-1">
+                <field name="montant_total"/>
+              </div>
             </div>
           </t>
         </templates>
@@ -80,6 +93,9 @@
         <field name="type_contentieux"/>
         <field name="statut_contentieux" widget="badge"/>
         <field name="duree_jours"/>
+        <field name="avocat_id"/>
+        <field name="montant_avocat"/>
+        <field name="montant_total"/>
       </list>
     </field>
   </record>
@@ -105,6 +121,11 @@
           <group>
             <field name="type_contentieux" widget="selection"/>
             <field name="statut_contentieux" widget="selection"/>
+          </group>
+          <group>
+            <field name="avocat_id"/>
+            <field name="montant_avocat"/>
+            <field name="montant_total"/>
           </group>
         </sheet>
       </form>

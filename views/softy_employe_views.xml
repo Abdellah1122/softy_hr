@@ -424,6 +424,9 @@
                       </div>
                       <div>
                         <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Qualification</div>
+                        <field name="qualification_id" 
+                               options="{'no_create': True, 'no_create_edit': True}"
+                               style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
                       </div>
                     </div>
                   </div>

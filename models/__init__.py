@@ -35,3 +35,5 @@ from . import mise_disposition
 from . import pay_esp
 from . import app_emp
 from . import journalpaie
+from . import accident_travaille
+from . import dossier_maladie

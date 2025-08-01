@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- Action Window -->
+  <record id="action_softy_dossier" model="ir.actions.act_window">
+    <field name="name">Dossiers Maladie</field>
+    <field name="res_model">softy.dossier</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Créez votre premier dossier de maladie
+      </p>
+    </field>
+  </record>
+
+<record id="view_softy_dossier_list" model="ir.ui.view">
+  <field name="name">softy.dossier.list</field>
+  <field name="model">softy.dossier</field>
+  <field name="type">list</field>
+  <field name="arch" type="xml">
+    <list string="Dossiers de Maladie">
+      <field name="ref"/>
+      <field name="employe_id"/>
+      <field name="date_dossier"/>
+      <field name="date_ouverture"/>
+      <field name="days_open"/>
+      <field name="nature_maladie"/>
+      <field name="statu" widget="badge"/>
+    </list>
+  </field>
+</record>
+
+
+ <record id="view_softy_dossier_form" model="ir.ui.view">
+  <field name="name">softy.dossier.form.pages</field>
+  <field name="model">softy.dossier</field>
+  <field name="arch" type="xml">
+    <form string="Dossier de Maladie">
+      <sheet>
+        <notebook>
+
+          <!-- Page 1: Informations Dossier -->
+          <page string="Informations Dossier">
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+
+                <!-- Détails du Dossier -->
+                <div>
+                  <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-folder-open" style="color: #1976d2;" title="Dossier"/>
+                    Détails du Dossier
+                  </h3>
+                  <div style="display: grid; gap: 16px;">
+                    
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Référence
+                      </div>
+                      <field name="ref" style="width:100%; border:1px solid #e0e0e0; border-radius:8px; padding:12px;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Employé
+                      </div>
+                      <field name="employe_id" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Date Dossier
+                      </div>
+                      <field name="date_dossier" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Date Ouverture
+                      </div>
+                      <field name="date_ouverture" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Durée (jours)
+                      </div>
+                      <field name="days_open" readonly="1" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Nature Maladie
+                      </div>
+                      <field name="nature_maladie" style="width:100%;"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Complément d'Info -->
+                <div>
+                  <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-clipboard" style="color: #1a237e;" title="Complément"/>
+                    Complément d'Info
+                  </h3>
+                  <div style="display: grid; gap: 16px;">
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        N° Envoi
+                      </div>
+                      <field name="n_envoie" style="width:100%; border:1px solid #e0e0e0; border-radius:8px; padding:12px;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Présent ?
+                      </div>
+                      <field name="complement_info" style="transform: scale(1.2);"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Date Complément
+                      </div>
+                      <field name="date_comp" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Détail
+                      </div>
+                      <field name="complement" nolabel="1" style="width:100%; border:1px solid #e0e0e0; border-radius:8px; padding:12px; min-height: 80px;"/>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </page>
+
+          <!-- Page 2: Contre-Visite & Remboursement -->
+          <page string="Contre-Visite &amp; Remboursement">
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+
+                <!-- Contre-Visite -->
+                <div>
+                  <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-calendar-check-o" style="color: #388e3c;" title="Visite"/>
+                    Contre-Visite
+                  </h3>
+                  <div style="display: grid; gap: 16px;">
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Date Contre-Visite
+                      </div>
+                      <field name="date_contre_visite" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Lieu
+                      </div>
+                      <field name="lieu" style="width:100%;"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Remboursement -->
+                <div>
+                  <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-credit-card" style="color: #d32f2f;" title="Remboursement"/>
+                    Remboursement
+                  </h3>
+                  <div style="display: grid; gap: 16px;">
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Date Remboursement
+                      </div>
+                      <field name="date_rem" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Montant
+                      </div>
+                      <field name="montant" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Mode de Règlement
+                      </div>
+                      <field name="mode_reg" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        N° Pièce
+                      </div>
+                      <field name="n_piece" style="width:100%;"/>
+                    </div>
+
+                    <div>
+                      <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px;">
+                        Statut
+                      </div>
+                      <field name="statu" style="width:100%;"/>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </page>
+
+        </notebook>
+      </sheet>
+    </form>
+  </field>
+</record>
+
+  <!-- Menu under “Gestion Personnelle” -->
+  <menuitem
+    id="menu_softy_dossier"
+    name="Dossiers Maladie"
+    parent="menu_softy_gestion_personnelle"
+    action="action_softy_dossier"
+    sequence="10"/>
+  
+</odoo>

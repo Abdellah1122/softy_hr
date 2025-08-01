@@ -1,12 +1,10 @@
-# In your __manifest__.py file, ADD these two lines to your 'data' list:
-
 {
     'name': 'Softy HR',
     'version': '1.0',
     'category': 'Human Resources',
     'summary': 'Pays, Ville, Société, Département, Service, Banque',
     'description': 'Custom HR module for managing Pays, Ville, Société, Département, Service, and Banque.',
-    'depends': ['base'],
+    'depends': ['base', 'web'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -46,16 +44,26 @@
         'views/mad_views.xml',
         'views/pay_es_views.xml',
         'views/journal_views.xml',
+        'views/softy_accident_views.xml',
+        'views/softy_dossier_maladie_views.xml',
 
-
-        # ADD THESE TWO LINES:
+        # Reports
         'reports/bulletin_report.xml',
         'reports/bulletin_template.xml',
         'reports/mise_disposition_report.xml',
         'reports/payment_espece_reports.xml',
-        'reports/journal_report.xml'
-        
+        'reports/journal_report.xml',
     ],
+
+    # Modern Odoo 18 assets approach
+    'assets': {
+        'web.assets_backend': [
+            'softy_hr/static/src/js/accident_annotation.js',
+            'softy_hr/static/src/css/accident_annotation.css',
+        ],
+    },
+
     'installable': True,
     'application': True,
+    'license': 'LGPL-3',
 }

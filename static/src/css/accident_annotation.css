@@ -1,0 +1,132 @@
+/* 
+ * Accident Diagram Annotation System Styles
+ * File: static/src/css/accident_annotation.css
+ */
+
+.o_accident_illustration_container {
+    margin: 0;
+}
+
+#diagram_container {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#diagram_container:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#diagram_canvas {
+    transition: all 0.2s ease;
+}
+
+#diagram_canvas.annotation-mode {
+    cursor: crosshair !important;
+    border: 2px solid #1976d2;
+}
+
+/* Button styling improvements */
+.o_accident_illustration_container .btn {
+    transition: all 0.2s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.o_accident_illustration_container .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.o_accident_illustration_container .btn:active {
+    transform: translateY(0);
+}
+
+/* Status indicator animation */
+#annotation_status {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .o_accident_illustration_container .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    #diagram_container {
+        max-width: 100%;
+    }
+    
+    .o_accident_illustration_container h3 {
+        font-size: 16px;
+    }
+}
+
+/* Loading state */
+.diagram-loading {
+    position: relative;
+}
+
+.diagram-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1976d2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Annotation dots styling (for reference) */
+.annotation-dot {
+    fill: #d32f2f;
+    stroke: #ffffff;
+    stroke-width: 2;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Custom notification styling */
+.accident-notification {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-weight: 500;
+}
+
+.accident-notification.alert-success {
+    background: #e8f5e8;
+    color: #2e7d2e;
+    border-left: 4px solid #4caf50;
+}
+
+.accident-notification.alert-danger {
+    background: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #f44336;
+}
+
+.accident-notification.alert-info {
+    background: #e3f2fd;
+    color: #1565c0;
+    border-left: 4px solid #2196f3;
+}

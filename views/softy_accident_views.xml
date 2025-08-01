@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- ========================================
+       COMPLETE FORM VIEW WITH 4 PAGES INCLUDING INTERACTIVE ILLUSTRATION
+       ======================================== -->
+  <record id="view_softy_accident_form" model="ir.ui.view">
+    <field name="name">softy.accident.form</field>
+    <field name="model">softy.accident</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Accident de Travail">
+        <sheet style="background: #fafafa;">
+            
+            <!-- Header Section -->
+            <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: flex-start; gap: 24px;">
+                
+                <!-- Accident Info -->
+                <div style="flex: 1; min-width: 0;">
+                <div style="margin-bottom: 16px;">
+                    <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">N° du Dossier</div>
+                    <field name="n_dossier" placeholder="Numéro unique du dossier" 
+                        style="font-size: 18px; font-weight: 600; color: #d32f2f; border: 2px solid #ffebee; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; background: #fafafa;"/>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Employé Concerné</div>
+                    <field name="employe_id" placeholder="Sélectionner l'employé" 
+                        style="font-size: 16px; font-weight: 600; color: #1a1a1a; border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;"/>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Matricule</div>
+                    <div style="font-size: 14px; font-weight: 500; color: #1976d2; padding: 8px 0;">
+                        <field name="matricule_employe" readonly="1"/>
+                    </div>
+                    </div>
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">CIN</div>
+                    <div style="font-size: 14px; font-weight: 500; color: #1976d2; padding: 8px 0;">
+                        <field name="cin_employe" readonly="1"/>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Quick Stats Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #ffebee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa fa-clock-o" style="color: #d32f2f;" title="Date Accident"/>
+                </div>
+                <div>
+                    <div style="color: #6c757d; font-size: 13px;">Date/Heure Accident</div>
+                    <div style="font-weight: 600; color: #1a1a1a;"><field name="heure_accident" readonly="1"/></div>
+                </div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #fff3e0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa fa-exclamation-triangle" style="color: #f57c00;" title="Nature"/>
+                </div>
+                <div>
+                    <div style="color: #6c757d; font-size: 13px;">Nature</div>
+                    <div style="font-weight: 600; color: #1a1a1a;"><field name="nature" readonly="1"/></div>
+                </div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #e8f5e8; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa fa-heartbeat" style="color: #388e3c;" title="Gravité"/>
+                </div>
+                <div>
+                    <div style="color: #6c757d; font-size: 13px;">Degré de Gravité</div>
+                    <div style="font-weight: 600; color: #1a1a1a;"><field name="degre_gravite" readonly="1"/></div>
+                </div>
+                </div>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <div style="width: 40px; height: 40px; background: #f3e5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa fa-calendar-times-o" style="color: #7b1fa2;" title="Arrêt"/>
+                </div>
+                <div>
+                    <div style="color: #6c757d; font-size: 13px;">Jours d'Arrêt</div>
+                    <div style="font-weight: 600; color: #1a1a1a;"><field name="nbr_j_arret" readonly="1"/> jours</div>
+                </div>
+                </div>
+            </div>
+            </div>
+            <notebook>
+            <!-- Page 1: Basic Accident Information -->
+            <page string=" Informations Accident">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                    
+                    <!-- Basic Accident Info -->
+                    <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-exclamation-circle" style="color: #d32f2f;" title="Accident"/>
+                        Détails de l'Accident
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date et Heure de l'Accident</div>
+                        <field name="heure_accident" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nature de l'Accident</div>
+                        <field name="nature" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Degré de Gravité</div>
+                        <field name="degre_gravite" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Cause de l'Accident</div>
+                        <field name="cause" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <!-- Administrative Info -->
+                    <div>
+                    <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-file-text" style="color: #1976d2;" title="Administratif"/>
+                        Informations Administratives
+                    </h3>
+                    <div style="display: grid; gap: 16px;">
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Nombre de Jours d'Arrêt</div>
+                        <field name="nbr_j_arret" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Date de Déclaration Préfecture</div>
+                        <field name="date_dec_prefecture" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                        <div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Référence Préfecture</div>
+                        <field name="ref_prefecture" placeholder="Référence officielle" 
+                                style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;"/>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </page>   
+            <!-- Page 2: Circumstances -->
+            <page string=" Circonstances">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-file-text-o" style="color: #f57c00;" title="Circonstances"/>
+                    Description des Circonstances
+                </h3>
+                
+                <div style="display: grid; gap: 24px;">
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block;">Circonstances de l'Accident</div>
+                    <field name="circonstances" placeholder="Décrivez en détail les circonstances de l'accident..."
+                            style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; min-height: 120px; font-family: inherit;"/>
+                    </div>
+                    
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block;">Avis de l'Entreprise</div>
+                    <field name="avis" placeholder="Avis officiel de l'entreprise concernant l'accident..."
+                            style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; min-height: 120px; font-family: inherit;"/>
+                    </div>
+                    
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block;">Témoignage</div>
+                    <field name="tem" placeholder="Témoignages de témoins ou autres personnes présentes..."
+                            style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; min-height: 120px; font-family: inherit;"/>
+                    </div>
+                </div>
+                </div>
+            </page>
+            <!-- Page 3: Documents -->
+            <page string=" Documents">
+                <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-folder-open" style="color: #388e3c;" title="Documents"/>
+                    Documents et Pièces Jointes
+                </h3>
+                
+                <div style="display: grid; gap: 24px;">
+                    <div>
+                    <div class="o_form_label" style="color: #6c757d; font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block;">Liste des Documents</div>
+                    <field name="documents" placeholder="Listez tous les documents relatifs à cet accident..."
+                            style="width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; min-height: 100px; font-family: inherit;"/>
+                    </div>
+                    
+                    <!-- Document Upload Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+                    <div style="background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.3s ease;">
+                        <div style="margin-bottom: 12px;">
+                        <i class="fa fa-file-pdf-o" style="font-size: 32px; color: #dc3545;" title="Document 1"/>
+                        </div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Document 1</div>
+                        <field name="doc1" widget="binary" filename="doc1_name"/>
+                        <field name="doc1_name" invisible="1"/>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.3s ease;">
+                        <div style="margin-bottom: 12px;">
+                        <i class="fa fa-file-image-o" style="font-size: 32px; color: #28a745;" title="Document 2"/>
+                        </div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Document 2</div>
+                        <field name="doc2" widget="binary" filename="doc2_name"/>
+                        <field name="doc2_name" invisible="1"/>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border: 2px dashed #dee2e6; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.3s ease;">
+                        <div style="margin-bottom: 12px;">
+                        <i class="fa fa-file-text-o" style="font-size: 32px; color: #007bff;" title="Document 3"/>
+                        </div>
+                        <div class="o_form_label" style="color: #6c757d; font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block;">Document 3</div>
+                        <field name="doc3" widget="binary" filename="doc3_name"/>
+                        <field name="doc3_name" invisible="1"/>
+                    </div>
+                    </div>
+                    
+                    <!-- Document Guidelines -->
+                    <div style="background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px; padding: 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <i class="fa fa-info-circle" style="color: #1976d2;" title="Information"/>
+                        <strong style="color: #1976d2;">Types de documents recommandés :</strong>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+                        <ul style="color: #1976d2; margin: 0; padding-left: 20px; line-height: 1.5;">
+                        <li>Certificat médical initial</li>
+                        <li>Rapport de police</li>
+                        <li>Photos des lieux</li>
+                        </ul>
+                        <ul style="color: #1976d2; margin: 0; padding-left: 20px; line-height: 1.5;">
+                        <li>Déclaration d'accident</li>
+                        <li>Témoignages écrits</li>
+                        <li>Rapports d'expertise</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </page>
+            <!-- Page 4: Interactive Illustration -->
+<page string="🎯 Illustration">
+                <div class="o_accident_illustration_container">
+                    <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                        
+                        <!-- Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="color: #1a1a1a; font-size: 18px; font-weight: 600; margin: 0;">
+                                <i class="fa fa-pencil-square-o" style="color: #d32f2f;" title="Schéma"/> Schéma de l'accident
+                            </h3>
+                            
+                            <!-- WORKING buttons -->
+                            <div style="display: flex; gap: 12px;">
+                                <button type="object" name="add_sample_annotation" class="btn btn-success btn-sm"
+                                        style="border-radius: 6px; font-size: 13px;">
+                                    <i class="fa fa-plus" title="Ajouter"/> Ajouter Point
+                                </button>
+                                <button type="object" name="update_image_with_dots" class="btn btn-primary btn-sm"
+                                        style="border-radius: 6px; font-size: 13px;">
+                                    <i class="fa fa-refresh" title="Mettre à jour"/> Mettre à jour Image
+                                </button>
+                                <button type="object" name="clear_annotations" class="btn btn-warning btn-sm"
+                                        style="border-radius: 6px; font-size: 13px;">
+                                    <i class="fa fa-eraser" title="Effacer"/> Effacer
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px; border-left: 4px solid #007bff;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div><strong>Mode Annotation:</strong> <field name="annotation_mode" widget="boolean_toggle" readonly="1"/></div>
+                                <div><strong>Points:</strong> <span style="color: #28a745; font-weight: bold;">Voir JSON ci-dessous</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image -->
+                        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                            <div style="border: 2px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                <field name="diagram_image" widget="image" style="max-width: 800px; height: auto;"/>
+                            </div>
+                        </div>
+                        
+                        <!-- Annotations Data -->
+                        <group string="📍 Points d'Annotation" col="1">
+                            <field name="diagram_annotations" widget="text" 
+                                   placeholder="Les coordonnées des points d'annotation"/>
+                        </group>
+                        
+                        <field name="diagram_original_image" invisible="1"/>
+                        
+                        <!-- Instructions -->
+                        <div style="background: #fff3e0; border: 1px solid #ffcc02; border-radius: 8px; padding: 16px; margin-top: 20px;">
+                            <h4 style="color: #ef6c00; margin: 0 0 12px 0;">
+                                <i class="fa fa-lightbulb-o" title="Instructions"/> Mode d'emploi:
+                            </h4>
+                            <div style="color: #ef6c00; line-height: 1.6;">
+                                <ol style="margin: 8px 0; padding-left: 20px;">
+                                    <li><strong>"Ajouter Point"</strong> - Ajoute un point d'exemple dans les données JSON</li>
+                                    <li><strong>"Mettre à jour Image"</strong> - 🎯 <strong>DESSINE LES POINTS ROUGES SUR L'IMAGE</strong></li>
+                                    <li><strong>"Effacer"</strong> - Supprime tous les points et restaure l'image originale</li>
+                                </ol>
+                                <div style="background: rgba(239, 108, 0, 0.1); padding: 12px; border-radius: 6px; margin-top: 12px;">
+                                    <strong>⚠️ Important:</strong> Installez <code>pip install Pillow</code> sur votre serveur Odoo pour que les points rouges apparaissent sur l'image.
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </page>
+            </notebook>
+        </sheet>
+        </form>
+    </field>
+  </record>
+
+  <!-- List View -->
+  <record id="view_softy_accident_list" model="ir.ui.view">
+    <field name="name">softy.accident.list</field>
+    <field name="model">softy.accident</field>
+    <field name="type">list</field>
+    <field name="arch" type="xml">
+      <list sample="1">
+        <field name="n_dossier" string="N° Dossier"/>
+        <field name="employe_id" string="Employé"/>
+        <field name="matricule_employe" string="Matricule"/>
+        <field name="cin_employe" string="CIN"/>
+        <field name="heure_accident" string="Date/Heure Accident"/>
+        <field name="nature" string="Nature" widget="badge" 
+               decoration-danger="nature == 'accidentdetravail'"
+               decoration-warning="nature == 'maladiepro'"
+               decoration-info="nature == 'trajet'"/>
+        <field name="degre_gravite" string="Gravité" widget="badge"
+               decoration-danger="degre_gravite in ('grave', 'tresgrave', 'mortel')"
+               decoration-warning="degre_gravite == 'moyen'"
+               decoration-success="degre_gravite == 'faible'"/>
+        <field name="nbr_j_arret" string="Jours d'arrêt"/>
+        <field name="date_dec_prefecture" string="Date Décl. Préfecture" optional="show"/>
+        <field name="ref_prefecture" string="Réf. Préfecture" optional="hide"/>
+        <field name="cause" string="Cause" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Search View -->
+  <record id="view_softy_accident_search" model="ir.ui.view">
+    <field name="name">softy.accident.search</field>
+    <field name="model">softy.accident</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="n_dossier" string="N° Dossier"/>
+        <field name="employe_id" string="Employé"/>
+        <field name="matricule_employe" string="Matricule"/>
+        <field name="cin_employe" string="CIN"/>
+        <field name="nature" string="Nature"/>
+        <field name="degre_gravite" string="Gravité"/>
+        <field name="cause" string="Cause"/>
+        <field name="ref_prefecture" string="Réf. Préfecture"/>
+        
+        <separator/>
+        
+        <filter string="Accident de Travail" name="filter_accident_travail" 
+                domain="[('nature', '=', 'accidentdetravail')]"/>
+        <filter string="Maladie Professionnelle" name="filter_maladie_pro" 
+                domain="[('nature', '=', 'maladiepro')]"/>
+        <filter string="Trajet de Travail" name="filter_trajet" 
+                domain="[('nature', '=', 'trajet')]"/>
+        
+        <separator/>
+        
+        <filter string="Gravité Faible" name="filter_faible" 
+                domain="[('degre_gravite', '=', 'faible')]"/>
+        <filter string="Gravité Moyenne" name="filter_moyen" 
+                domain="[('degre_gravite', '=', 'moyen')]"/>
+        <filter string="Gravité Grave" name="filter_grave" 
+                domain="[('degre_gravite', 'in', ['grave', 'tresgrave'])]"/>
+        <filter string="Accidents Mortels" name="filter_mortel" 
+                domain="[('degre_gravite', '=', 'mortel')]"/>
+        
+        <separator/>
+        
+        <group expand="0" string="Grouper par">
+          <filter string="Nature" name="group_nature" 
+                  context="{'group_by': 'nature'}"/>
+          <filter string="Degré de Gravité" name="group_gravite" 
+                  context="{'group_by': 'degre_gravite'}"/>
+          <filter string="Cause" name="group_cause" 
+                  context="{'group_by': 'cause'}"/>
+          <filter string="Employé" name="group_employe" 
+                  context="{'group_by': 'employe_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="action_softy_accident" model="ir.actions.act_window">
+    <field name="name">Accidents de Travail</field>
+    <field name="res_model">softy.accident</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <div style="text-align: center; padding: 60px 40px;">
+        <div style="margin-bottom: 24px;">
+          <i class="fa fa-exclamation-triangle fa-4x" style="color: #d32f2f;"/>
+        </div>
+        <h2 style="color: #1a1a1a; font-weight: 700; margin-bottom: 16px; font-size: 28px;">
+          Gestion des Accidents de Travail
+        </h2>
+        <p style="color: #6c757d; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto; font-size: 16px; line-height: 1.6;">
+          Enregistrez et suivez tous les accidents avec notre système d'annotation interactive sur diagramme anatomique.
+        </p>
+        <div style="background: #e3f2fd; border-radius: 8px; padding: 20px; display: inline-block;">
+          <div style="color: #1976d2; font-weight: 600; margin-bottom: 8px;">
+            ✨ Fonctionnalités incluses :
+          </div>
+          <div style="color: #1976d2; font-size: 14px;">
+            🎯 Annotation interactive • 📊 Rapports détaillés • 🔍 Recherche avancée
+          </div>
+        </div>
+      </div>
+    </field>
+  </record>
+
+  <!-- Menu -->
+  <menuitem id="menu_softy_accident" 
+            name="Accidents de Travail" 
+            parent="menu_softy_gestion_personnelle"
+            action="action_softy_accident" 
+            sequence="10"/>
+
+</odoo>

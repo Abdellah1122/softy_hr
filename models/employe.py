@@ -44,8 +44,6 @@ class Employe(models.Model):
         ("cheque","Cheque"),
         ("esp","Espece"),
         ("Mise a Disposition","mise a disposition"),
-        ("telepai","Tele Paiment"),
-        ("ca","Cash Entreprise"),
     ])
     # Computed age field
     age = fields.Integer(string="Âge", compute='_compute_age', store=True)

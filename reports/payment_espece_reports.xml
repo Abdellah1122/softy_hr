@@ -90,19 +90,25 @@
                     <table style="width: 100%; border-collapse: collapse; margin: 20px 0 40px 0; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
                         <thead>
                             <tr>
-                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 110px;">
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 90px;">
                                     MATRICULE
                                 </th>
-                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px;">
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 150px;">
                                     NOM ET PRENOM
                                 </th>
-                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 100px;">
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 90px;">
+                                    CIN
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 120px;">
+                                    QUALIFICATION
+                                </th>
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 80px;">
                                     MONTANT
                                 </th>
-                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 220px;">
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 170px;">
                                     MONTANT EN LETTRES
                                 </th>
-                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 140px;">
+                                <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 120px;">
                                     SIGNATURE
                                 </th>
                             </tr>
@@ -114,6 +120,12 @@
                                 </td>
                                 <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
                                     <span t-field="espece.employe_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.cin"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.qualification_id.qualification"/>
                                 </td>
                                 <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
                                     <span t-field="espece.montant" t-options="{'widget': 'float', 'precision': 2}"/>
@@ -173,19 +185,25 @@
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0 40px 0; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
                     <thead>
                         <tr>
-                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 110px;">
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 90px;">
                                 MATRICULE
                             </th>
-                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px;">
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 150px;">
                                 NOM ET PRENOM
                             </th>
-                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 100px;">
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 90px;">
+                                CIN
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 120px;">
+                                QUALIFICATION
+                            </th>
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 80px;">
                                 MONTANT
                             </th>
-                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 220px;">
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 170px;">
                                 MONTANT EN LETTRES
                             </th>
-                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 140px;">
+                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #d1d5db; padding: 16px 12px; text-align: center; font-weight: 600; font-size: 10pt; color: #374151; text-transform: uppercase; letter-spacing: 0.3px; width: 120px;">
                                 SIGNATURE
                             </th>
                         </tr>
@@ -199,6 +217,12 @@
                                 </td>
                                 <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
                                     <span t-field="espece.employe_id.name"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.cin"/>
+                                </td>
+                                <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff;">
+                                    <span t-field="espece.employe_id.qualification_id.qualification"/>
                                 </td>
                                 <td style="border: 1px solid #e5e7eb; padding: 18px 12px; text-align: center; height: 45px; vertical-align: middle; background: #ffffff; font-weight: 500;">
                                     <span t-field="espece.montant" t-options="{'widget': 'float', 'precision': 2}"/>

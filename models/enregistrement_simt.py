@@ -21,6 +21,20 @@ class Simt(models.Model):
         store=True,
         readonly=True
     )
+    
+    # FIXED: Convert from related to stored fields
+    cin = fields.Char(
+        string="CIN de l'employé",
+        store=True,
+        readonly=True
+    )
+    
+    qualification = fields.Many2one(
+        comodel_name="softy.qualification",
+        string="Qualification",
+        store=True,
+        readonly=True
+    )
 
     matricule = fields.Char(
         string="Matricule de l'employé",
@@ -117,6 +131,8 @@ class Simt(models.Model):
                 # Populate all the fields from bulletin at creation time
                 vals.update({
                     'employe_id': bulletin.employe_id.id if bulletin.employe_id else False,
+                    'cin': bulletin.employe_id.cin if bulletin.employe_id else False,
+                    'qualification': bulletin.employe_id.qualification_id.id if bulletin.employe_id and bulletin.employe_id.qualification_id else False,
                     'matricule': bulletin.employe_id.matricule if bulletin.employe_id else False,
                     'nom_complet': bulletin.employe_id.name if bulletin.employe_id else False,
                     'n_acc_salarie': bulletin.employe_id.n_compte_banque if bulletin.employe_id else False,
@@ -140,6 +156,8 @@ class Simt(models.Model):
                     # Update all the fields from new bulletin
                     vals.update({
                         'employe_id': bulletin.employe_id.id if bulletin.employe_id else False,
+                        'cin': bulletin.employe_id.cin if bulletin.employe_id else False,
+                        'qualification': bulletin.employe_id.qualification_id.id if bulletin.employe_id and bulletin.employe_id.qualification_id else False,
                         'matricule': bulletin.employe_id.matricule if bulletin.employe_id else False,
                         'nom_complet': bulletin.employe_id.name if bulletin.employe_id else False,
                         'n_acc_salarie': bulletin.employe_id.n_compte_banque if bulletin.employe_id else False,

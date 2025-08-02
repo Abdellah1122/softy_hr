@@ -108,7 +108,7 @@
         </field>
     </record>
 
-    <!-- List View -->
+    <!-- Updated List View with Final Buttons -->
     <record id="view_journal_paie_list" model="ir.ui.view">
         <field name="name">jornal.list</field>
         <field name="model">softy.jornal</field>
@@ -116,11 +116,18 @@
             <list string="Journal de Paie" create="false">
                 <header>
                     <button name="action_print_journal_report" type="object" 
-                            string="Imprimer Journal de Paie (Liste Actuelle)" 
+                            string="Imprimer Journal de Paie (Détaillé)" 
                             class="btn-primary" 
                             icon="fa-print"
-                            help="Imprime le journal de paie avec seulement les enregistrements actuellement affichés (après filtres)"/>
+                            help="Imprime le journal de paie détaillé avec tous les employés"/>
+                    
+                    <button name="action_generate_journal_recap" type="object" 
+                            string="Générer Récapitulatif" 
+                            class="btn-secondary" 
+                            icon="fa-list-alt"
+                            help="Génère un récapitulatif par codes de rubriques (gains/retenues)"/>
                 </header>
+                
                 <!-- Employee Info -->
                 <field name="matricule"/>
                 <field name="nom_prenom"/>
@@ -157,13 +164,23 @@
         </field>
     </record>
 
-    <!-- Server Action for Generation -->
+    <!-- Server Action for Journal Generation (Missing from your file) -->
     <record id="action_journal_generate_server" model="ir.actions.server">
         <field name="name">Générer Journal de Paie</field>
         <field name="model_id" ref="model_softy_jornal"/>
         <field name="state">code</field>
         <field name="code">
-action = env['softy.jornal'].generate_journal_from_bulletins()
+action = env['softy.jornal'].action_generate_journal_from_bulletins()
+        </field>
+    </record>
+
+    <!-- Server Action for Recap Generation -->
+    <record id="action_journal_recap_server" model="ir.actions.server">
+        <field name="name">Générer Récapitulatif Journal</field>
+        <field name="model_id" ref="model_softy_jornal"/>
+        <field name="state">code</field>
+        <field name="code">
+action = env['softy.jornal'].action_generate_journal_recap()
         </field>
     </record>
 
@@ -186,7 +203,7 @@ action = env['softy.jornal'].generate_journal_from_bulletins()
               name="Editions"
               parent="menu_softy_hr_root"
               sequence="90"/>
-    <!-- Menu Structure -->
+
     <menuitem id="menu_journal_paie_softy"
               name="Journal de Paie"
               parent="menu_editions_softy"
@@ -203,4 +220,5 @@ action = env['softy.jornal'].generate_journal_from_bulletins()
               parent="menu_journal_paie_softy"
               action="action_journal_generate_server"
               sequence="20"/>
+              
 </odoo>

@@ -672,3 +672,356 @@ class JournalPaie(models.Model):
     def action_print_journal_report(self):
         """Action to print journal de paie report for selected records"""
         return self.env.ref('softy_hr.report_journal_paie_document').report_action(self)
+
+    @api.model
+    def generate_journal_recap(self, journal_ids=None, periode=None, mois=None, annee=None):
+        """
+        Generate a summary/recap of journal entries by rubrique codes
+        :param journal_ids: List of journal IDs to process. If None, use domain filters
+        :param periode: 'current' or 'previous'
+        :param mois: specific month (1-12)
+        :param annee: specific year
+        :return: Dictionary with recap data
+        """
+        # Determine which journals to process
+        if journal_ids:
+            journals = self.browse(journal_ids)
+        else:
+            # Build domain based on filters
+            domain = []
+            if periode:
+                # Get all journals for the specified period
+                bulletins = self.env['softy.bulletin'].search([('periode', '=', periode)])
+                journal_bulletin_ids = bulletins.mapped('id')
+                domain.append(('bulletin_id', 'in', journal_bulletin_ids))
+            if mois:
+                domain.append(('mois', '=', str(mois)))
+            if annee:
+                domain.append(('annee', '=', annee))
+            
+            journals = self.search(domain)
+        
+        if not journals:
+            return {
+                'success': False,
+                'message': "Aucun journal trouvé pour générer le récapitulatif.",
+                'data': {}
+            }
+        
+        # Initialize recap data structure
+        recap_data = {
+            'company_info': {},
+            'period_info': {},
+            'gains': [],
+            'retenues': [],
+            'totals': {
+                'total_gains': 0.0,
+                'total_retenues': 0.0,
+                'net_a_payer': 0.0,
+                'effectif': 0
+            }
+        }
+        
+        # Get company info from first journal
+        first_journal = journals[0]
+        if first_journal.societe_id:
+            recap_data['company_info'] = {
+                'name': first_journal.societe_id.rs or 'Société',
+                'address': first_journal.societe_id.address or '',
+                'i_fiscale': first_journal.societe_id.i_fiscale or '',
+                'n_cnss': first_journal.societe_id.n_cnss or '',
+                'logo': first_journal.societe_id.logo
+            }
+        
+        # Get period info
+        if first_journal.mois and first_journal.annee:
+            month_names = ['', 'JANVIER', 'FÉVRIER', 'MARS', 'AVRIL', 'MAI', 'JUIN',
+                          'JUILLET', 'AOÛT', 'SEPTEMBRE', 'OCTOBRE', 'NOVEMBRE', 'DÉCEMBRE']
+            recap_data['period_info'] = {
+                'mois': month_names[int(first_journal.mois)] if int(first_journal.mois) <= 12 else 'INCONNU',
+                'annee': first_journal.annee
+            }
+        
+        # Calculate effectif
+        recap_data['totals']['effectif'] = len(journals.mapped('employe_id'))
+        
+        # Prepare gains mapping - both from salary components and indemnities
+        gains_mapping = {}
+        
+        # Standard salary components (hardcoded)
+        if sum(journals.mapped('salaire_base')):
+            gains_mapping['10'] = {
+                'code': '10',
+                'designation': 'SALAIRE DE BASE',
+                'montant': sum(journals.mapped('salaire_base'))
+            }
+        
+        # Process indemnities from employee appointments and pointage
+        indemnites_gains = {}
+        
+        for journal in journals:
+            # From employee appointments (app_ids)
+            if journal.employe_id and journal.employe_id.app_ids:
+                for appointment in journal.employe_id.app_ids:
+                    if appointment.indemnite_id.type_ind == 'gain':
+                        code = appointment.indemnite_id.code or appointment.indemnite_id.codeir
+                        if code:
+                            if code not in indemnites_gains:
+                                indemnites_gains[code] = {
+                                    'code': code,
+                                    'designation': appointment.indemnite_id.des_indem.upper(),
+                                    'montant': 0.0
+                                }
+                            
+                            # Calculate amount (same logic as in bulletin)
+                            nbr_j = journal.jours_normaux or 0
+                            nbr_j_conge = journal.jours_conge or 0
+                            mult = (nbr_j + nbr_j_conge) if appointment.indemnite_id.j else 1
+                            amount = appointment.montant * mult
+                            indemnites_gains[code]['montant'] += amount
+            
+            # From pointage indemnities (if bulletin exists and has pointage)
+            if journal.bulletin_id and journal.bulletin_id.pointagem_id:
+                pointage = journal.bulletin_id.pointagem_id
+                for ind_point in pointage.ind_point_ids:
+                    if ind_point.indemnite_id.type_ind == 'gain':
+                        code = ind_point.indemnite_id.code or ind_point.indemnite_id.codeir
+                        if code:
+                            if code not in indemnites_gains:
+                                indemnites_gains[code] = {
+                                    'code': code,
+                                    'designation': ind_point.indemnite_id.des_indem.upper(),
+                                    'montant': 0.0
+                                }
+                            
+                            # Calculate amount
+                            nbr_j = journal.jours_normaux or 0
+                            nbr_j_conge = journal.jours_conge or 0
+                            mult = (nbr_j + nbr_j_conge) if ind_point.indemnite_id.j else 1
+                            amount = ind_point.montant * mult
+                            indemnites_gains[code]['montant'] += amount
+        
+        # Add indemnities to gains mapping
+        gains_mapping.update(indemnites_gains)
+        
+        # Add special calculated items
+        total_salaire_base = sum(journals.mapped('salaire_base'))
+        total_indemnites = sum([item['montant'] for item in indemnites_gains.values()])
+        
+        if total_salaire_base + total_indemnites:
+            gains_mapping['205'] = {
+                'code': '205',
+                'designation': 'SALAIRE BRUT',
+                'montant': total_salaire_base + total_indemnites
+            }
+        
+        # Process retenues (deductions)
+        retenues_mapping = {}
+        
+        # Standard deductions with codes
+        deductions = [
+            ('210', 'COTISATION CNSS', 'cnss_salarie'),
+            ('213', "Cotisation à l'indemnité pour perte d'emploi", None),  # Not in current model
+            ('219', 'ASSURANCE MALADIE OBLIGATOIRE', 'amo_salarie'),
+            ('225', 'IMPOT SUR LE REVENU', 'impot_revenu'),
+        ]
+        
+        for code, designation, field_name in deductions:
+            if field_name:
+                total_amount = sum(journals.mapped(field_name))
+                if total_amount:
+                    retenues_mapping[code] = {
+                        'code': code,
+                        'designation': designation,
+                        'montant': total_amount
+                    }
+        
+        # Process other retenues from indemnities
+        indemnites_retenues = {}
+        
+        for journal in journals:
+            # From employee appointments
+            if journal.employe_id and journal.employe_id.app_ids:
+                for appointment in journal.employe_id.app_ids:
+                    if appointment.indemnite_id.type_ind == 'retenu':
+                        code = appointment.indemnite_id.code or appointment.indemnite_id.codeir
+                        if code:
+                            if code not in indemnites_retenues:
+                                indemnites_retenues[code] = {
+                                    'code': code,
+                                    'designation': appointment.indemnite_id.des_indem.upper(),
+                                    'montant': 0.0
+                                }
+                            
+                            # Calculate amount
+                            nbr_j = journal.jours_normaux or 0
+                            nbr_j_conge = journal.jours_conge or 0
+                            mult = (nbr_j + nbr_j_conge) if appointment.indemnite_id.j else 1
+                            amount = appointment.montant * mult
+                            indemnites_retenues[code]['montant'] += amount
+            
+            # From pointage indemnities
+            if journal.bulletin_id and journal.bulletin_id.pointagem_id:
+                pointage = journal.bulletin_id.pointagem_id
+                for ind_point in pointage.ind_point_ids:
+                    if ind_point.indemnite_id.type_ind == 'retenu':
+                        code = ind_point.indemnite_id.code or ind_point.indemnite_id.codeir
+                        if code:
+                            if code not in indemnites_retenues:
+                                indemnites_retenues[code] = {
+                                    'code': code,
+                                    'designation': ind_point.indemnite_id.des_indem.upper(),
+                                    'montant': 0.0
+                                }
+                            
+                            # Calculate amount
+                            nbr_j = journal.jours_normaux or 0
+                            nbr_j_conge = journal.jours_conge or 0
+                            mult = (nbr_j + nbr_j_conge) if ind_point.indemnite_id.j else 1
+                            amount = ind_point.montant * mult
+                            indemnites_retenues[code]['montant'] += amount
+        
+        # Add indemnities retenues to retenues mapping
+        retenues_mapping.update(indemnites_retenues)
+        
+        # Sort and prepare final lists
+        recap_data['gains'] = sorted(gains_mapping.values(), key=lambda x: x['code'])
+        recap_data['retenues'] = sorted(retenues_mapping.values(), key=lambda x: x['code'])
+        
+        # Calculate totals
+        recap_data['totals']['total_gains'] = sum([item['montant'] for item in recap_data['gains']])
+        recap_data['totals']['total_retenues'] = sum([item['montant'] for item in recap_data['retenues']])
+        recap_data['totals']['net_a_payer'] = sum(journals.mapped('net_a_payer'))
+        
+        return {
+            'success': True,
+            'message': f"Récapitulatif généré avec succès pour {len(journals)} journal(aux)",
+            'data': recap_data
+        }
+
+    def action_generate_journal_recap(self):
+        """Action method to generate and display journal recap"""
+        # Use self.ids if called from list view, otherwise use context
+        journal_ids = self.ids if self else self.env.context.get('active_ids', [])
+        
+        if not journal_ids:
+            # If no specific journals selected, get all current journals
+            journals = self.search([])
+            journal_ids = journals.ids
+        
+        if not journal_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Aucun Journal',
+                    'message': 'Aucun journal trouvé pour générer le récapitulatif.',
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+        
+        # Generate recap data and store it in context
+        result = self.generate_journal_recap(journal_ids=journal_ids)
+        
+        if not result['success']:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Erreur de Génération',
+                    'message': result['message'],
+                    'type': 'warning',
+                    'sticky': True,
+                }
+            }
+        
+        # Try to find the report action
+        try:
+            report_action = self.env.ref('softy_hr.report_journal_recap_document')
+            return report_action.with_context(recap_data=result['data']).report_action(self.browse(journal_ids))
+        except ValueError:
+            # If report not found, show error message
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Erreur de Rapport',
+                    'message': 'Le rapport de récapitulatif n\'est pas configuré correctement. Vérifiez que le fichier XML est bien chargé.',
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
+    def test_recap_data(self):
+        """Simple test method to check if recap generation works"""
+        journal_ids = self.ids if self else []
+        if not journal_ids:
+            journals = self.search([], limit=5)  # Get first 5 journals for testing
+            journal_ids = journals.ids
+            
+        result = self.generate_journal_recap(journal_ids=journal_ids)
+        
+        # Show the data structure for debugging
+        gains_count = len(result.get('data', {}).get('gains', []))
+        retenues_count = len(result.get('data', {}).get('retenues', []))
+        effectif = result.get('data', {}).get('totals', {}).get('effectif', 0)
+        
+        message = f"""
+Test Récapitulatif:
+- Succès: {result['success']}
+- Message: {result['message']}
+- Gains trouvés: {gains_count}
+- Retenues trouvées: {retenues_count}
+- Effectif: {effectif}
+        """
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Test Récapitulatif',
+                'message': message,
+                'type': 'success' if result['success'] else 'warning',
+                'sticky': True,
+            }
+        }
+
+    def debug_show_recap_data(self):
+        """Debug method to show raw recap data"""
+        journal_ids = self.ids if self else []
+        if not journal_ids:
+            journals = self.search([], limit=3)
+            journal_ids = journals.ids
+            
+        result = self.generate_journal_recap(journal_ids=journal_ids)
+        
+        if result['success']:
+            data = result['data']
+            import json
+            
+            # Format the data for display
+            debug_info = {
+                'effectif': data.get('totals', {}).get('effectif', 0),
+                'total_gains': data.get('totals', {}).get('total_gains', 0),
+                'total_retenues': data.get('totals', {}).get('total_retenues', 0),
+                'gains_items': len(data.get('gains', [])),
+                'retenues_items': len(data.get('retenues', [])),
+                'company_name': data.get('company_info', {}).get('name', 'N/A'),
+                'period': f"{data.get('period_info', {}).get('mois', 'N/A')} {data.get('period_info', {}).get('annee', 'N/A')}"
+            }
+            
+            message = f"Debug Info:\n{json.dumps(debug_info, indent=2)}"
+        else:
+            message = f"Erreur: {result['message']}"
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Debug Récapitulatif',
+                'message': message,
+                'type': 'info',
+                'sticky': True,
+            }
+        }    
+    

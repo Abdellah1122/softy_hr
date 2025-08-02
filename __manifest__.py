@@ -51,6 +51,7 @@
         'views/softy_attestation_cess_views.xml',
         'views/softy_attestation_salaire_views.xml',
         'views/softy_accident_point_wizard_views.xml',
+        
         # Reports
         'reports/bulletin_report.xml',
         'reports/bulletin_template.xml',
@@ -61,6 +62,7 @@
         'reports/attestation_travail_report.xml',
         'reports/attestation_cess_report.xml',
         'reports/attestation_salaire_report.xml',
+        'reports/recap_report.xml',
     ],
 
 

@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Simple Report Declaration -->
+    <record id="report_journal_recap_document" model="ir.actions.report">
+        <field name="name">Récapitulatif Journal de Paie</field>
+        <field name="model">softy.jornal</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softy_hr.report_journal_recap_template</field>
+        <field name="report_file">softy_hr.report_journal_recap_template</field>
+    </record>
+
+    <!-- Professional Clean Report Template -->
+    <template id="report_journal_recap_template">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page" style="margin: 0; padding: 0;">
+                    
+                    <!-- Get recap data from context or generate it -->
+                    <t t-set="recap_data" t-value="env.context.get('recap_data')"/>
+                    
+                    <!-- If no recap_data in context, generate it from docs -->
+                    <t t-if="not recap_data and docs">
+                        <t t-set="recap_result" t-value="docs[0].generate_journal_recap(journal_ids=docs.ids)"/>
+                        <t t-set="recap_data" t-value="recap_result.get('data', {}) if recap_result.get('success') else {}"/>
+                    </t>
+                    
+                    <!-- Fallback empty data structure -->
+                    <t t-if="not recap_data">
+                        <t t-set="recap_data" t-value="{'company_info': {}, 'period_info': {}, 'gains': [], 'retenues': [], 'totals': {'total_gains': 0, 'total_retenues': 0, 'net_a_payer': 0, 'effectif': 0}}"/>
+                    </t>
+                    
+                    <t t-set="company_info" t-value="recap_data.get('company_info', {})"/>
+                    <t t-set="period_info" t-value="recap_data.get('period_info', {})"/>
+                    <t t-set="gains" t-value="recap_data.get('gains', [])"/>
+                    <t t-set="retenues" t-value="recap_data.get('retenues', [])"/>
+                    <t t-set="totals" t-value="recap_data.get('totals', {})"/>
+
+                    <style>
+                        @page {
+                            margin: 20mm 15mm 20mm 15mm;
+                            size: A4;
+                        }
+                        
+                        body {
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+                            margin: 0;
+                            padding: 0;
+                            line-height: 1.6;
+                            color: #1f2937;
+                            background: white;
+                            font-size: 11px;
+                            font-weight: 400;
+                        }
+                        
+                        .document-container {
+                            width: 100%;
+                            background: white;
+                            min-height: 100vh;
+                        }
+                        
+                        /* Clean Professional Header */
+                        .header-section {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-start;
+                            margin-bottom: 40px;
+                            padding-bottom: 25px;
+                            border-bottom: 2px solid #e5e7eb;
+                            gap: 40px;
+                        }
+                        
+                        .header-left {
+                            flex: 1;
+                            display: flex;
+                            align-items: flex-start;
+                            gap: 20px;
+                        }
+                        
+                        .company-logo {
+                            width: 70px;
+                            height: 70px;
+                            object-fit: contain;
+                            border: 1px solid #d1d5db;
+                            background: white;
+                            border-radius: 6px;
+                            padding: 8px;
+                        }
+                        
+                        .company-logo-placeholder {
+                            width: 70px;
+                            height: 70px;
+                            background: #374151;
+                            border-radius: 6px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: 600;
+                            font-size: 16px;
+                            color: white;
+                            letter-spacing: 1px;
+                        }
+                        
+                        .company-info {
+                            flex: 1;
+                            padding-top: 8px;
+                        }
+                        
+                        .company-name {
+                            font-size: 24px;
+                            font-weight: 700;
+                            margin: 0 0 8px 0;
+                            color: #111827;
+                            letter-spacing: -0.025em;
+                        }
+                        
+                        .company-address {
+                            font-size: 13px;
+                            color: #6b7280;
+                            margin: 0 0 6px 0;
+                            line-height: 1.5;
+                        }
+                        
+                        .company-details {
+                            font-size: 12px;
+                            color: #9ca3af;
+                            margin: 0;
+                            font-weight: 500;
+                        }
+                        
+                        .header-right {
+                            text-align: right;
+                            flex-shrink: 0;
+                            min-width: 220px;
+                            padding-top: 8px;
+                        }
+                        
+                        .gis-title {
+                            font-size: 14px;
+                            font-weight: 600;
+                            margin: 0 0 12px 0;
+                            color: #374151;
+                            letter-spacing: 3px;
+                            text-transform: uppercase;
+                        }
+                        
+                        .report-title {
+                            font-size: 18px;
+                            font-weight: 700;
+                            margin: 0 0 16px 0;
+                            color: #111827;
+                            line-height: 1.3;
+                        }
+                        
+                        .period-info {
+                            font-size: 13px;
+                            margin: 0 0 6px 0;
+                            color: #374151;
+                            font-weight: 600;
+                        }
+                        
+                        .period-date {
+                            font-size: 11px;
+                            color: #6b7280;
+                            margin: 0 0 3px 0;
+                        }
+                        
+                        /* Clean Professional Table */
+                        .recap-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 30px;
+                            background: white;
+                            border: 1px solid #d1d5db;
+                        }
+                        
+                        .recap-table th {
+                            background: #f9fafb;
+                            color: #374151;
+                            padding: 16px 14px;
+                            font-weight: 600;
+                            text-align: center;
+                            font-size: 12px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 2px solid #d1d5db;
+                            border-right: 1px solid #e5e7eb;
+                        }
+                        
+                        .recap-table th:last-child {
+                            border-right: none;
+                        }
+                        
+                        .recap-table td {
+                            padding: 14px;
+                            border-bottom: 1px solid #f3f4f6;
+                            border-right: 1px solid #f3f4f6;
+                            font-size: 11px;
+                            background: white;
+                            color: #374151;
+                        }
+                        
+                        .recap-table td:last-child {
+                            border-right: none;
+                        }
+                        
+                        .recap-table tbody tr:nth-child(even) {
+                            background: #fafafa;
+                        }
+                        
+                        .recap-table tbody tr:hover {
+                            background: #f8fafc;
+                        }
+                        
+                        .code-col {
+                            width: 12%;
+                            text-align: center;
+                            font-weight: 600;
+                            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+                            color: #1f2937;
+                            font-size: 11px;
+                        }
+                        
+                        .designation-col {
+                            width: 58%;
+                            text-align: left;
+                            font-weight: 500;
+                        }
+                        
+                        .amount-col {
+                            width: 15%;
+                            text-align: right;
+                            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+                            font-weight: 600;
+                            color: #1f2937;
+                        }
+                        
+                        /* Clean Section Headers */
+                        .section-header {
+                            background: #f3f4f6 !important;
+                            font-weight: 700;
+                            text-align: center;
+                            font-size: 13px;
+                            color: #374151 !important;
+                            text-transform: uppercase;
+                            letter-spacing: 1px;
+                        }
+                        
+                        .section-header td {
+                            padding: 16px 14px !important;
+                            border-bottom: 2px solid #d1d5db !important;
+                            border-top: 2px solid #d1d5db !important;
+                        }
+                        
+                        /* Professional Totals */
+                        .totals-row {
+                            background: #f8fafc !important;
+                            font-weight: 700;
+                            border-top: 2px solid #d1d5db !important;
+                        }
+                        
+                        .totals-row td {
+                            padding: 16px 14px !important;
+                            font-size: 12px !important;
+                            color: #1f2937 !important;
+                            border-bottom: 2px solid #d1d5db !important;
+                        }
+                        
+                        /* Company Totals - Professional */
+                        .company-totals {
+                            background: #e5e7eb !important;
+                            color: #1f2937 !important;
+                            font-weight: 700;
+                            text-align: center;
+                            font-size: 13px;
+                        }
+                        
+                        .company-totals td {
+                            padding: 18px 14px !important;
+                            color: #1f2937 !important;
+                            border-bottom: 2px solid #d1d5db !important;
+                        }
+                        
+                        /* Net Payer - Clean and Professional */
+                        .net-payer {
+                            background: #374151 !important;
+                            color: white !important;
+                            font-weight: 700;
+                            text-align: center;
+                        }
+                        
+                        .net-payer td {
+                            padding: 20px 14px !important;
+                            font-size: 15px !important;
+                            color: white !important;
+                            border: none !important;
+                        }
+                        
+                        .net-amount {
+                            font-size: 18px !important;
+                            font-weight: 700;
+                            margin-left: 20px;
+                        }
+                        
+                        /* Professional Number Formatting */
+                        .formatted-number {
+                            font-variant-numeric: tabular-nums;
+                            text-align: right;
+                            font-weight: 600;
+                        }
+                        
+                        /* Clean gains and retenues styling */
+                        .gain-amount {
+                            color: #059669;
+                            font-weight: 600;
+                        }
+                        
+                        .retenue-amount {
+                            color: #dc2626;
+                            font-weight: 600;
+                        }
+                        
+                        /* Print optimizations */
+                        @media print {
+                            .recap-table tbody tr:hover {
+                                background-color: inherit !important;
+                            }
+                            
+                            .recap-table tbody tr:nth-child(even) {
+                                background: #fafafa !important;
+                            }
+                        }
+                        
+                        /* Clean spacing */
+                        .section-header + tr td {
+                            border-top: none;
+                        }
+                        
+                        /* Professional finishing touches */
+                        .totals-row + .section-header td {
+                            border-top: 3px solid #d1d5db !important;
+                        }
+                    </style>
+
+                    <div class="document-container">
+                        <!-- PROFESSIONAL HEADER -->
+                        <div class="header-section">
+                            <div class="header-left">
+                                <!-- Company Logo -->
+                                <t t-if="company_info.get('logo')">
+                                    <img class="company-logo" t-att-src="'data:image/png;base64,' + company_info['logo']" 
+                                         alt="Logo"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="company-logo-placeholder">
+                                      <!-- <span t-esc="company_info.get('rs', 'GIS')[:3].upper()"/> --> 
+                                    </div>
+                                </t>
+                                
+                                <div class="company-info">
+                                    <h1 class="company-name">
+                                        <span t-esc="company_info.get('rs', 'MGS TRANSMISSION')"/>
+                                    </h1>
+                                    <p class="company-address">
+                                        <span t-esc="company_info.get('address', '92 RUE HAY ARSAL AIN BORIA, CASABLANCA')"/>
+                                    </p>
+                                    <p class="company-details">
+                                        <span t-if="company_info.get('i_fiscale')">
+                                            ID Fiscal: <span t-esc="company_info['i_fiscale']"/>
+                                        </span>
+                                        <span t-if="company_info.get('i_fiscale') and company_info.get('n_cnss')"> | </span>
+                                        <span t-if="company_info.get('n_cnss')">
+                                            N° CNSS: <span t-esc="company_info['n_cnss']"/>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="header-right">
+                                <h1 class="report-title">État Récapitulatif du Journal de Paie</h1>
+                                <p class="period-info">
+                                    Période : <span t-esc="period_info.get('mois', 'JUIN')"/> <span t-esc="period_info.get('annee', '2025')"/>
+                                </p>
+                                <p class="period-date">
+                                    Généré le <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y à %H:%M')"/>
+                                </p>
+                                <p class="period-date">Page 1 sur 1</p>
+                            </div>
+                        </div>
+
+                        <!-- PROFESSIONAL SUMMARY TABLE -->
+                        <table class="recap-table">
+                            <!-- Clean Header -->
+                            <thead>
+                                <tr>
+                                    <th class="code-col">Code Rubrique</th>
+                                    <th class="designation-col">Désignation</th>
+                                    <th class="amount-col">Gains</th>
+                                    <th class="amount-col">Retenues</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- RETENUES SECTION -->
+                                <t t-if="retenues">
+                                    <tr class="section-header">
+                                        <td colspan="4">Retenues</td>
+                                    </tr>
+                                    
+                                    <t t-foreach="retenues" t-as="retenue">
+                                        <tr>
+                                            <td class="code-col"><span t-esc="retenue['code']"/></td>
+                                            <td class="designation-col"><span t-esc="retenue['designation']"/></td>
+                                            <td class="amount-col">—</td>
+                                            <td class="amount-col formatted-number retenue-amount">
+                                                <span t-esc="'{:,.2f}'.format(retenue['montant'])"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    
+                                    <!-- Total Retenues -->
+                                    <tr class="totals-row">
+                                        <td colspan="3" style="text-align: right; padding-right: 20px;">
+                                            <strong>Total Retenues</strong>
+                                        </td>
+                                        <td class="amount-col formatted-number retenue-amount">
+                                            <strong><span t-esc="'{:,.2f}'.format(totals.get('total_retenues', 0))"/></strong>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- GAINS SECTION -->
+                                <t t-if="gains">
+                                    <tr class="section-header">
+                                        <td colspan="4">Gains</td>
+                                    </tr>
+                                    
+                                    <t t-foreach="gains" t-as="gain">
+                                        <tr>
+                                            <td class="code-col"><span t-esc="gain['code']"/></td>
+                                            <td class="designation-col"><span t-esc="gain['designation']"/></td>
+                                            <td class="amount-col formatted-number gain-amount">
+                                                <span t-esc="'{:,.2f}'.format(gain['montant'])"/>
+                                            </td>
+                                            <td class="amount-col">—</td>
+                                        </tr>
+                                    </t>
+                                    
+                                    <!-- Total Gains -->
+                                    <tr class="totals-row">
+                                        <td colspan="2" style="text-align: right; padding-right: 20px;">
+                                            <strong>Total Gains</strong>
+                                        </td>
+                                        <td class="amount-col formatted-number gain-amount">
+                                            <strong><span t-esc="'{:,.2f}'.format(totals.get('total_gains', 0))"/></strong>
+                                        </td>
+                                        <td class="amount-col formatted-number retenue-amount">
+                                            <strong><span t-esc="'{:,.2f}'.format(totals.get('total_retenues', 0))"/></strong>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- COMPANY TOTALS -->
+                                <tr class="company-totals">
+                                    <td colspan="4">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span><strong>Total <span t-esc="company_info.get('rs', 'SOCIÉTÉ')"/></strong> • Effectif : <strong><span t-esc="totals.get('effectif', 0)"/></strong> employé(s)</span>
+                                            <div style="display: flex; gap: 60px;">
+                                                <span class="formatted-number">
+                                                    <strong><span t-esc="'{:,.2f}'.format(totals.get('total_gains', 0))"/></strong>
+                                                </span>
+                                                <span class="formatted-number">
+                                                    <strong><span t-esc="'{:,.2f}'.format(totals.get('total_retenues', 0))"/></strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- NET A PAYER -->
+                                <tr class="net-payer">
+                                    <td colspan="4">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span><strong>Net à payer</strong></span>
+                                            <span class="net-amount formatted-number">
+                                                <!--<strong><span t-esc="'{:,.2f}'.format(totals.get('net_a_payer', 0))"/> MAD</strong> -->
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+    
+</odoo>

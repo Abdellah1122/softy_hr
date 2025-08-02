@@ -675,14 +675,6 @@ class JournalPaie(models.Model):
 
     @api.model
     def generate_journal_recap(self, journal_ids=None, periode=None, mois=None, annee=None):
-        """
-        Generate a summary/recap of journal entries by rubrique codes
-        :param journal_ids: List of journal IDs to process. If None, use domain filters
-        :param periode: 'current' or 'previous'
-        :param mois: specific month (1-12)
-        :param annee: specific year
-        :return: Dictionary with recap data
-        """
         # Determine which journals to process
         if journal_ids:
             journals = self.browse(journal_ids)
@@ -952,76 +944,7 @@ class JournalPaie(models.Model):
                     'sticky': True,
                 }
             }
-    def test_recap_data(self):
-        """Simple test method to check if recap generation works"""
-        journal_ids = self.ids if self else []
-        if not journal_ids:
-            journals = self.search([], limit=5)  # Get first 5 journals for testing
-            journal_ids = journals.ids
-            
-        result = self.generate_journal_recap(journal_ids=journal_ids)
-        
-        # Show the data structure for debugging
-        gains_count = len(result.get('data', {}).get('gains', []))
-        retenues_count = len(result.get('data', {}).get('retenues', []))
-        effectif = result.get('data', {}).get('totals', {}).get('effectif', 0)
-        
-        message = f"""
-Test Récapitulatif:
-- Succès: {result['success']}
-- Message: {result['message']}
-- Gains trouvés: {gains_count}
-- Retenues trouvées: {retenues_count}
-- Effectif: {effectif}
-        """
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Test Récapitulatif',
-                'message': message,
-                'type': 'success' if result['success'] else 'warning',
-                'sticky': True,
-            }
-        }
 
-    def debug_show_recap_data(self):
-        """Debug method to show raw recap data"""
-        journal_ids = self.ids if self else []
-        if not journal_ids:
-            journals = self.search([], limit=3)
-            journal_ids = journals.ids
-            
-        result = self.generate_journal_recap(journal_ids=journal_ids)
-        
-        if result['success']:
-            data = result['data']
-            import json
-            
-            # Format the data for display
-            debug_info = {
-                'effectif': data.get('totals', {}).get('effectif', 0),
-                'total_gains': data.get('totals', {}).get('total_gains', 0),
-                'total_retenues': data.get('totals', {}).get('total_retenues', 0),
-                'gains_items': len(data.get('gains', [])),
-                'retenues_items': len(data.get('retenues', [])),
-                'company_name': data.get('company_info', {}).get('name', 'N/A'),
-                'period': f"{data.get('period_info', {}).get('mois', 'N/A')} {data.get('period_info', {}).get('annee', 'N/A')}"
-            }
-            
-            message = f"Debug Info:\n{json.dumps(debug_info, indent=2)}"
-        else:
-            message = f"Erreur: {result['message']}"
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Debug Récapitulatif',
-                'message': message,
-                'type': 'info',
-                'sticky': True,
-            }
-        }    
+
+   
     

@@ -38,3 +38,10 @@ access_softy_app_emp,access_softy_app_emp,model_softy_app_emp,base.group_user,1,
 access_softy_jornal,access_softy_jornal,model_softy_jornal,base.group_user,1,1,1,1
 access_softy_accident,access_softy_accident,model_softy_accident,base.group_user,1,1,1,1
 access_softy_dossier,softy.dossier,model_softy_dossier,base.group_user,1,1,1,1
+access_softy_certificat,softy.certificat,model_softy_certificat,base.group_user,1,1,1,1
+access_softy_attestationt,softy.attestationt,model_softy_attestationt,base.group_user,1,1,1,1
+access_softy_attestations,softy.attestations,model_softy_attestations,base.group_user,1,1,1,1
+access_softy_attestationsalaire,softy.attestationsalaire,model_softy_attestationsalaire,base.group_user,1,1,1,1
+access_softy_accident_point_wizard,softy.accident.point.wizard,model_softy_accident_point_wizard,base.group_user,1,1,1,1
+
+

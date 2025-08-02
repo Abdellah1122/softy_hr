@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Point Wizard Form View -->
+    <record id="view_accident_point_wizard_form" model="ir.ui.view">
+        <field name="name">softy.accident.point.wizard.form</field>
+        <field name="model">softy.accident.point.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Placer des Points sur le Diagramme">
+                <sheet style="background: #f8f9fa;">
+                    
+                    <!-- Header -->
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h3 style="color: #d32f2f; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa fa-crosshairs" style="color: #d32f2f;"/>
+                            Placer un Point sur le Diagramme
+                        </h3>
+                        <p style="color: #666; margin: 8px 0 0 0; font-size: 14px;">
+                            Sélectionnez la partie du corps et le type de blessure
+                        </p>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        
+                        <!-- Left Side - Image Display -->
+                        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <h4 style="color: #333; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa fa-image" style="color: #1976d2;"/>
+                                Diagramme Anatomique
+                            </h4>
+                            <div style="text-align: center; border: 2px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                <field name="diagram_image" widget="image" 
+                                       style="max-width: 100%; height: auto; max-height: 400px;"/>
+                            </div>
+                            <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-top: 12px;">
+                                <small style="color: #1976d2;">
+                                    <i class="fa fa-info-circle"/> 
+                                    <strong>Système de positionnement intelligent:</strong><br/>
+                                    • <strong>Vue de Face:</strong> Poitrine, abdomen, membres avant<br/>
+                                    • <strong>Profil Gauche/Droit:</strong> Côtés spécifiques visibles uniquement<br/>
+                                    • <strong>Vue de Dos:</strong> Colonne, omoplates, fesses, arrière membres<br/>
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Right Side - Point Selection -->
+                        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <h4 style="color: #333; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa fa-plus-circle" style="color: #388e3c;"/>
+                                Détails du Point
+                            </h4>
+                            
+                            <div style="display: grid; gap: 16px;">
+                                
+                                <!-- Body View Selection -->
+                                <div>
+                                    <div class="o_form_label" style="color: #666; font-weight: 500; display: block; margin-bottom: 6px;">
+                                        Vue du Corps
+                                    </div>
+                                    <field name="body_view" required="1"
+                                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;"/>
+                                </div>
+                                
+                                <!-- Body Part Selection -->
+                                <div>
+                                    <div class="o_form_label" style="color: #666; font-weight: 500; display: block; margin-bottom: 6px;">
+                                        Partie du Corps
+                                        <span style="color: #d32f2f; font-size: 11px;">(Sélectionnez d'abord une vue)</span>
+                                    </div>
+                                    <field name="body_part" required="1"
+                                           modifiers='{"readonly":[["body_view","=",false]]}'
+                                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;"/>
+                                </div>
+
+                                <!-- Injury Type -->
+                                <div>
+                                    <div class="o_form_label" style="color: #666; font-weight: 500; display: block; margin-bottom: 6px;">
+                                        Type de Blessure
+                                    </div>
+                                    <field name="injury_type" required="1"
+                                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;"/>
+                                </div>
+
+                                <!-- Description -->
+                                <div>
+                                    <div class="o_form_label" style="color: #666; font-weight: 500; display: block; margin-bottom: 6px;">
+                                        Description (optionnel)
+                                    </div>
+                                    <field name="description" placeholder="Décrivez la blessure..."
+                                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;"/>
+                                </div>
+
+                                <!-- Add Point Button -->
+                                <div style="margin-top: 16px;">
+                                    <button name="add_point" type="object" 
+                                            class="btn btn-success"
+                                            style="width: 100%; padding: 12px; border-radius: 6px; font-weight: 500;">
+                                        <i class="fa fa-plus"/> Ajouter ce Point
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden field -->
+                    <field name="accident_id" modifiers='{"invisible":true}'/>
+
+                </sheet>
+                
+                <!-- Footer with action buttons -->
+                <footer>
+                    <button name="save_and_close" type="object" 
+                            class="btn btn-primary" 
+                            style="margin-right: 8px;">
+                        <i class="fa fa-check"/> Terminer
+                    </button>
+                    <button string="Annuler" special="cancel" 
+                            class="btn btn-secondary">
+                        <i class="fa fa-times"/> Annuler
+                    </button>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

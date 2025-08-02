@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Paper Format - Minimal Margins -->
+    <record id="paperformat_certificat_minimal" model="report.paperformat">
+        <field name="name">Certificat Minimal Margins</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- Report Declaration -->
+    <record id="report_certificat_document" model="ir.actions.report">
+        <field name="name">Certificat de Travail</field>
+        <field name="model">softy.certificat</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">softy_hr.report_certificat_template</field>
+        <field name="report_file">softy_hr.report_certificat_template</field>
+        <field name="binding_model_id" ref="model_softy_certificat"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_certificat_minimal"/>
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_certificat_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="certificat">
+                <div class="page" style="font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.6; margin: 0; padding: 20px;">
+
+                    <!-- HEADER SECTION -->
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <!-- Company Logo (if available) -->
+                        <t t-if="certificat.societe_id.logo">
+                            <img t-att-src="image_data_uri(certificat.societe_id.logo)" 
+                                 style="max-width: 150px; max-height: 80px; object-fit: contain; margin-bottom: 20px;"/>
+                        </t>
+                        
+                        <!-- Company Name and Address -->
+                        <div style="font-weight: bold; font-size: 14pt; margin-bottom: 10px;">
+                            <span t-field="certificat.societe_name" style="text-transform: uppercase;"/>
+                        </div>
+                        <div style="font-size: 11pt; margin-bottom: 20px;">
+                            <span t-field="certificat.societe_address"/> - <span t-field="certificat.societe_ville_nom"/>
+                        </div>
+                        
+                        <!-- Document Title -->
+                        <h1 style="text-decoration: underline; margin: 30px 0; font-weight: bold; font-size: 18pt; letter-spacing: 2px;">
+                            CERTIFICAT DE TRAVAIL
+                        </h1>
+                    </div>
+
+                    <!-- MAIN CONTENT SECTION -->
+                    <div style="text-align: justify; line-height: 2.0; font-size: 12pt; margin: 40px 0;">
+                        
+                        <!-- Opening Statement -->
+                        <p style="margin-bottom: 20px;">
+                            Nous soussignes, <strong><span t-field="certificat.societe_name" style="text-transform: uppercase;"/></strong>, 
+                            sise a <strong><span t-field="certificat.societe_ville_nom" style="text-transform: uppercase;"/></strong>, 
+                            <span t-field="certificat.societe_address"/>, certifions par la presente que :
+                        </p>
+
+                        <!-- Employee Information -->
+                        <div style="margin: 30px 0; padding-left: 20px;">
+                            <p style="margin-bottom: 15px;">
+                                <strong>Monsieur/Madame :</strong> <span t-field="certificat.name" style="font-weight: bold; text-transform: uppercase;"/>
+                            </p>
+                            
+                            <p style="margin-bottom: 15px;">
+                                <strong>Titulaire de la CIN No :</strong> <span t-field="certificat.cin"/>
+                            </p>
+                            
+                            <t t-if="certificat.n_aff">
+                                <p style="margin-bottom: 15px;">
+                                    <strong>Immatriculee a la CNSS sous le No :</strong> <span t-field="certificat.n_aff"/>
+                                </p>
+                            </t>
+                        </div>
+
+                        <!-- Employment Details -->
+                        <p style="margin: 30px 0;">
+                            a ete employee au sein de notre societe en qualite de: 
+                            <strong><span t-field="certificat.qualification" style="text-transform: uppercase;"/></strong>, 
+                            <t t-if="certificat.type_contrat">
+                                sous contrat <span t-field="certificat.type_contrat"/>,
+                            </t>
+                            <t t-if="certificat.service">
+                                affectee au niveau de <strong><span t-field="certificat.service"/></strong>
+                                <t t-if="certificat.departement">
+                                    - <strong><span t-field="certificat.departement"/></strong>
+                                </t>.
+                            </t>
+                        </p>
+
+                        <!-- Certificate Purpose -->
+                        <p style="margin: 30px 0;">
+                            Le present certificat est delivre a la demande de l'interesse(e) pour servir et valoir ce que de droit.
+                        </p>
+                    </div>
+
+                    <!-- FOOTER SECTION -->
+                    <div style="margin-top: 60px;">
+                        <!-- Date and Signature -->
+                        <div style="text-align: right; margin-bottom: 40px;">
+                            <p style="font-weight: bold;">
+                                Fait a <span t-field="certificat.societe_ville_nom"/> le <span t-field="certificat.date_creation" t-options="{'widget': 'date', 'format': 'd/MM/yyyy'}"/>
+                            </p>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px;">
+                            <p style="font-weight: bold; font-size: 13pt;">
+                                Direction des Ressources Humaines
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

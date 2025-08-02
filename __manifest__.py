@@ -46,22 +46,23 @@
         'views/journal_views.xml',
         'views/softy_accident_views.xml',
         'views/softy_dossier_maladie_views.xml',
-
+        'views/softy_certificat_travaille_views.xml',
+        'views/softy_attestation_travail_views.xml',
+        'views/softy_attestation_cess_views.xml',
+        'views/softy_attestation_salaire_views.xml',
+        'views/softy_accident_point_wizard_views.xml',
         # Reports
         'reports/bulletin_report.xml',
         'reports/bulletin_template.xml',
         'reports/mise_disposition_report.xml',
         'reports/payment_espece_reports.xml',
         'reports/journal_report.xml',
+        'reports/certificat_travail_report.xml',
+        'reports/attestation_travail_report.xml',
+        'reports/attestation_cess_report.xml',
+        'reports/attestation_salaire_report.xml',
     ],
 
-    # Modern Odoo 18 assets approach
-    'assets': {
-        'web.assets_backend': [
-            'softy_hr/static/src/js/accident_annotation.js',
-            'softy_hr/static/src/css/accident_annotation.css',
-        ],
-    },
 
     'installable': True,
     'application': True,

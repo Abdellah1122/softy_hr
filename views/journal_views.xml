@@ -190,7 +190,7 @@ action = env['softy.jornal'].generate_journal_from_bulletins()
     <menuitem id="menu_journal_paie_softy"
               name="Journal de Paie"
               parent="menu_editions_softy"
-              sequence="10"/>
+              sequence="9990"/>
 
     <menuitem id="menu_journal_paie_list"
               name="Liste des Journaux"

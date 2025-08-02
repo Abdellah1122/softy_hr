@@ -339,3 +339,16 @@ class AccidentTravail(models.Model):
                         'sticky': False,
                     }
                 }
+            
+    def open_point_editor(self):
+        """Open the point placement wizard"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Placer des Points sur le Diagramme',
+            'res_model': 'softy.accident.point.wizard',
+            'view_mode': 'form',
+            'target': 'new',  # Opens as popup
+            'context': {
+                'default_accident_id': self.id
+            }
+        }

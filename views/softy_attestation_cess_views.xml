@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Search View for Attestation de Cessation -->
+        <record id="view_attestation_cess_search" model="ir.ui.view">
+            <field name="name">softy.attestations.search</field>
+            <field name="model">softy.attestations</field>
+            <field name="arch" type="xml">
+                <search string="Recherche Attestations de Cessation">
+                    <!-- Quick Search Fields -->
+                    <field name="ref" string="Référence" 
+                           filter_domain="[('ref', 'ilike', self)]"/>
+                    <field name="name" string="Employé" 
+                           filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="matricule" string="Matricule" 
+                           filter_domain="[('matricule', 'ilike', self)]"/>
+                    <field name="cin" string="CIN" 
+                           filter_domain="[('cin', 'ilike', self)]"/>
+                    
+                    <!-- PERMANENT SIDEBAR PANEL -->
+                    <searchpanel>
+                        <!-- Societes Section -->
+                        <field name="societe_id" 
+                               string="Sociétés" 
+                               icon="fa-building"
+                               color="#007bff"
+                               select="multi"/>
+                        
+                        <!-- Departements Section -->
+                        <field name="departement_id" 
+                               string="Départements" 
+                               icon="fa-sitemap"
+                               color="#28a745"
+                               select="multi"/>
+                        
+                        <!-- Services Section -->
+                        <field name="service_id" 
+                               string="Services" 
+                               icon="fa-users"
+                               color="#fd7e14"
+                               select="multi"/>
+                        
+                        <!-- Type Contrat Section -->
+                        <field name="type_contrat" 
+                               string="Type Contrat" 
+                               icon="fa-file-contract"
+                               color="#6f42c1"
+                               select="multi"/>
+                    </searchpanel>
+                    
+                    <!-- Date Filters -->
+                    <filter string="Cessations Aujourd'hui" name="cess_today" 
+                            domain="[('date_cess', '=', context_today())]"/>
+                    <filter string="Cessations Cette Semaine" name="cess_this_week" 
+                            domain="[('date_cess', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Cessations Ce Mois" name="cess_this_month" 
+                            domain="[('date_cess', '>=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                     ('date_cess', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Creation Date Filters -->
+                    <filter string="Créées Aujourd'hui" name="created_today" 
+                            domain="[('date_creation', '=', context_today())]"/>
+                    <filter string="Créées Cette Semaine" name="created_this_week" 
+                            domain="[('date_creation', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Créées Ce Mois" name="created_this_month" 
+                            domain="[('date_creation', '>=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                     ('date_creation', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Contract Type Filters -->
+                    <filter string="CDI" name="filter_cdi" 
+                            domain="[('type_contrat', '=', 'cdi')]"/>
+                    <filter string="CDD" name="filter_cdd" 
+                            domain="[('type_contrat', 'in', ['cdd', 'cdd2', 'cdd3', 'cdd6', 'cdd11'])]"/>
+                    <filter string="Anapec" name="filter_anapec" 
+                            domain="[('type_contrat', '=', 'anapec')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Data Quality Filters -->
+                    <filter string="Avec Qualification" name="has_qualification" 
+                            domain="[('qualification', '!=', False)]"/>
+                    <filter string="Avec N° Affiliation" name="has_affiliation" 
+                            domain="[('n_aff', '!=', False)]"/>
+                    <filter string="Complets" name="complete_data" 
+                            domain="[('qualification', '!=', False), ('n_aff', '!=', False), ('type_contrat', '!=', False)]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Year Filters -->
+                    <filter string="Cessations 2025" name="cess_year_2025" 
+                            domain="[('date_cess', '>=', '2025-01-01'), ('date_cess', '&lt;=', '2025-12-31')]"/>
+                    <filter string="Cessations 2024" name="cess_year_2024" 
+                            domain="[('date_cess', '>=', '2024-01-01'), ('date_cess', '&lt;=', '2024-12-31')]"/>
+                    <filter string="Cessations 2023" name="cess_year_2023" 
+                            domain="[('date_cess', '>=', '2023-01-01'), ('date_cess', '&lt;=', '2023-12-31')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Group By Options -->
+                    <group expand="0" string="Grouper par">
+                        <filter string="Société" name="group_societe" 
+                                context="{'group_by': 'societe_id'}"/>
+                        <filter string="Département" name="group_departement" 
+                                context="{'group_by': 'departement_id'}"/>
+                        <filter string="Service" name="group_service" 
+                                context="{'group_by': 'service_id'}"/>
+                        <filter string="Type Contrat" name="group_type_contrat" 
+                                context="{'group_by': 'type_contrat'}"/>
+                        <filter string="Qualification" name="group_qualification" 
+                                context="{'group_by': 'qualification'}"/>
+                        <filter string="Date Cessation" name="group_date_cess" 
+                                context="{'group_by': 'date_cess'}"/>
+                        <filter string="Date Création" name="group_date_creation" 
+                                context="{'group_by': 'date_creation'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- List View for Attestation de Cessation -->
+        <record id="view_attestation_cess_list" model="ir.ui.view">
+            <field name="name">softy.attestations.list</field>
+            <field name="model">softy.attestations</field>
+            <field name="arch" type="xml">
+                <list string="Attestations de Cessation">
+                    <field name="ref"/>
+                    <field name="name"/>
+                    <field name="matricule"/>
+                    <field name="cin"/>
+                    <field name="n_aff"/>
+                    <field name="societe_name"/>
+                    <field name="departement"/>
+                    <field name="service"/>
+                    <field name="qualification"/>
+                    <field name="type_contrat" widget="badge"/>
+                    <field name="date_embauche"/>
+                    <field name="date_cess"/>
+                    <field name="date_creation"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View for Attestation de Cessation -->
+        <record id="view_attestation_cess_form" model="ir.ui.view">
+            <field name="name">softy.attestations.form</field>
+            <field name="model">softy.attestations</field>
+            <field name="arch" type="xml">
+                <form string="Attestation de Cessation">
+                    <header>
+                        <button name="action_print_attestation_cess" type="object" string="Imprimer Attestation" class="btn-primary" icon="fa-print"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="ref"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group name="basic_info" string="Informations de Base">
+                                <field name="employe_id" options="{'no_create': True, 'no_edit': True}"/>
+                                <field name="date_creation"/>
+                                <field name="date_cess"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <!-- Employee Information Tab -->
+                            <page string="Informations Employé" name="employee_info">
+                                <group>
+                                    <group name="personal_info" string="Informations Personnelles">
+                                        <field name="name" readonly="1"/>
+                                        <field name="matricule" readonly="1"/>
+                                        <field name="cin" readonly="1"/>
+                                        <field name="n_aff" readonly="1"/>
+                                    </group>
+                                    <group name="contract_info" string="Informations Contrat">
+                                        <field name="qualification" readonly="1"/>
+                                        <field name="type_contrat" readonly="1"/>
+                                        <field name="date_embauche" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <!-- Organization Information Tab -->
+                            <page string="Informations Organisation" name="organization_info">
+                                <group>
+                                    <group name="assignment_info" string="Affectation">
+                                        <field name="service" readonly="1"/>
+                                        <field name="departement" readonly="1"/>
+                                        <field name="societe_name" readonly="1"/>
+                                    </group>
+                                    <group name="location_info" string="Localisation">
+                                        <field name="societe_ville_nom" readonly="1"/>
+                                        <field name="societe_address" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for Attestation de Cessation -->
+        <record id="action_attestation_cess" model="ir.actions.act_window">
+            <field name="name">Attestations de Cessation</field>
+            <field name="res_model">softy.attestations</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_attestation_cess_list"/>
+            <field name="search_view_id" ref="view_attestation_cess_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer votre première attestation de cessation
+                </p>
+                <p>
+                    Les attestations de cessation documentent la fin du contrat de travail
+                    d'un employé avec toutes les informations nécessaires.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Structure -->
+        <menuitem id="menu_attestation_cess"
+                  name="Attestations de Cessation"
+                  parent="menu_editions_softy"
+                  action="action_attestation_cess"
+                  sequence="30"/>
+    </data>
+</odoo>

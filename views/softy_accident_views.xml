@@ -258,7 +258,7 @@
                 </div>
             </page>
             <!-- Page 4: Interactive Illustration -->
-<page string="🎯 Illustration">
+            <page string=" Illustration">
                 <div class="o_accident_illustration_container">
                     <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
                         
@@ -269,62 +269,24 @@
                             </h3>
                             
                             <!-- WORKING buttons -->
-                            <div style="display: flex; gap: 12px;">
-                                <button type="object" name="add_sample_annotation" class="btn btn-success btn-sm"
-                                        style="border-radius: 6px; font-size: 13px;">
-                                    <i class="fa fa-plus" title="Ajouter"/> Ajouter Point
-                                </button>
-                                <button type="object" name="update_image_with_dots" class="btn btn-primary btn-sm"
-                                        style="border-radius: 6px; font-size: 13px;">
-                                    <i class="fa fa-refresh" title="Mettre à jour"/> Mettre à jour Image
-                                </button>
-                                <button type="object" name="clear_annotations" class="btn btn-warning btn-sm"
-                                        style="border-radius: 6px; font-size: 13px;">
-                                    <i class="fa fa-eraser" title="Effacer"/> Effacer
-                                </button>
-                            </div>
+                        <div style="display: flex; gap: 12px;">
+                            <!-- NEW: Point Editor Button -->
+                            <button type="object" name="open_point_editor" class="btn btn-primary btn-sm"
+                                    style="border-radius: 6px; font-size: 13px;">
+                                <i class="fa fa-crosshairs" title="Placer Points"/>  Placer Points
+                            </button>
+                            <button type="object" name="clear_annotations" class="btn btn-warning btn-sm"
+                                    style="border-radius: 6px; font-size: 13px;">
+                                <i class="fa fa-eraser" title="Effacer"/> Effacer
+                            </button>
                         </div>
-                        
-                        <!-- Status -->
-                        <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 16px; border-left: 4px solid #007bff;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div><strong>Mode Annotation:</strong> <field name="annotation_mode" widget="boolean_toggle" readonly="1"/></div>
-                                <div><strong>Points:</strong> <span style="color: #28a745; font-weight: bold;">Voir JSON ci-dessous</span></div>
-                            </div>
                         </div>
-                        
                         <!-- Image -->
                         <div style="display: flex; justify-content: center; margin-bottom: 20px;">
                             <div style="border: 2px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
                                 <field name="diagram_image" widget="image" style="max-width: 800px; height: auto;"/>
                             </div>
                         </div>
-                        
-                        <!-- Annotations Data -->
-                        <group string="📍 Points d'Annotation" col="1">
-                            <field name="diagram_annotations" widget="text" 
-                                   placeholder="Les coordonnées des points d'annotation"/>
-                        </group>
-                        
-                        <field name="diagram_original_image" invisible="1"/>
-                        
-                        <!-- Instructions -->
-                        <div style="background: #fff3e0; border: 1px solid #ffcc02; border-radius: 8px; padding: 16px; margin-top: 20px;">
-                            <h4 style="color: #ef6c00; margin: 0 0 12px 0;">
-                                <i class="fa fa-lightbulb-o" title="Instructions"/> Mode d'emploi:
-                            </h4>
-                            <div style="color: #ef6c00; line-height: 1.6;">
-                                <ol style="margin: 8px 0; padding-left: 20px;">
-                                    <li><strong>"Ajouter Point"</strong> - Ajoute un point d'exemple dans les données JSON</li>
-                                    <li><strong>"Mettre à jour Image"</strong> - 🎯 <strong>DESSINE LES POINTS ROUGES SUR L'IMAGE</strong></li>
-                                    <li><strong>"Effacer"</strong> - Supprime tous les points et restaure l'image originale</li>
-                                </ol>
-                                <div style="background: rgba(239, 108, 0, 0.1); padding: 12px; border-radius: 6px; margin-top: 12px;">
-                                    <strong>⚠️ Important:</strong> Installez <code>pip install Pillow</code> sur votre serveur Odoo pour que les points rouges apparaissent sur l'image.
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
                 </div>
             </page>

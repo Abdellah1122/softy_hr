@@ -37,3 +37,8 @@ from . import app_emp
 from . import journalpaie
 from . import accident_travaille
 from . import dossier_maladie
+from . import certificat_travail
+from . import attestation_travail
+from . import attestation_cess
+from . import attestation_salaire
+from . import accident_point_wizard
